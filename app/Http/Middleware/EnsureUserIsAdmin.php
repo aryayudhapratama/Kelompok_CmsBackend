@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
+
+class EnsureUserIsAdmin
+{
+    // public function handle($request, $next)
+    // {
+    //     if (! auth()->check()) {
+    //         return $next($request); // Pengguna tidak login, biarkan akses
+    //     }
+
+    //     if (auth()->user()->role === 'admin') {
+    //         return $next($request); // Role admin → boleh lewat
+    //     }
+
+    //     return $next($request); // Jika bukan admin, tetap lewatkan ke halaman utama
+    // }
+
+    public function handle(Request $request, Closure $next)
+    {
+        return app(\App\Http\Middleware\EnsureUserHasRole::class)->handle($request, $next, 'admin');
+    }
+}
