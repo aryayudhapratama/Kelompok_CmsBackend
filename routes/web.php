@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\LandingSectionController;
+use App\Models\LandingSection;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +21,15 @@ use App\Http\Controllers\Admin\UserController;
 // });
 
 // Tamplate Bootstrap
+// Route::get('/', function () {
+//     return view('home2');
+// })->name('home2');
+
 Route::get('/', function () {
-    return view('home2');
-})->name('home2');
+    // Ambil data terbaru dari database
+    $hero = LandingSection::where('section_name', 'hero')->first();
+    return view('home2', compact('hero'));
+})->name('home');
 
 // // Halaman statis
 // Route::get('/about', function () {
@@ -113,6 +121,23 @@ Route::middleware(['auth', 'role.admin'])->group(function () {
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
     Route::put('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+});
+
+Route::middleware(['auth', 'role.admin'])->group(function () {
+    // Index: Tampilkan semua section
+    Route::get('/admin/landing', [LandingSectionController::class, 'index'])->name('admin.landing.index');
+
+    // Store: Simpan section baru
+    Route::post('/admin/landing', [LandingSectionController::class, 'store'])->name('admin.landing.store');
+
+    // Edit (untuk modal): Kembalikan data JSON
+    Route::get('/admin/landing/{id}/edit', [LandingSectionController::class, 'editJson'])->name('admin.landing.edit.json');
+
+    // Update: Update section
+    Route::put('/admin/landing/{id}', [LandingSectionController::class, 'update'])->name('admin.landing.update');
+
+    // Destroy: Hapus section
+    Route::delete('/admin/landing/{id}', [LandingSectionController::class, 'destroy'])->name('admin.landing.destroy');
 });
 
 // Untuk redaktur

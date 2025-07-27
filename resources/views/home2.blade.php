@@ -4,30 +4,28 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Index - Dewi Bootstrap Template</title>
-    <meta name="description" content="">
-    <meta name="keywords" content="">
+    <title>PPID Provinsi Jawa Timur</title>
+    <meta name="description" content="Portal PPID Provinsi Jawa Timur">
+    <meta name="keywords" content="PPID, Jawa Timur, informasi publik">
 
     <!-- Favicons -->
-    <link href="assets4/img/favicon.png" rel="icon">
-    <link href="assets4/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="{{ asset('assets4/img/favicon.png') }}" rel="icon">
+    <link href="{{ asset('assets4/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
-    <link href="assets4/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets4/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="assets4/vendor/aos/aos.css" rel="stylesheet">
-    <link href="assets4/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-    <link href="assets4/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <link href="{{ asset('assets4/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets4/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets4/vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets4/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets4/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
 
     <!-- Main CSS File -->
-    <link href="assets4/css/main.css" rel="stylesheet">
+    <link href="{{ asset('assets4/css/main.css') }}" rel="stylesheet">
 </head>
 
 <body class="index-page">
@@ -35,9 +33,7 @@
     <header id="header" class="header d-flex align-items-center fixed-top">
         <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-            <a href="index.html" class="logo d-flex align-items-center me-auto">
-                <!-- Uncomment the line below if you also wish to use an image logo -->
-                <!-- <img src="assets4/img/logo.png" alt=""> -->
+            <a href="/" class="logo d-flex align-items-center me-auto">
                 <h1 class="sitename">PPID Provinsi Jawa Timur</h1>
             </a>
 
@@ -85,15 +81,9 @@
                         </ul>
                     </li>
                     <li><a href="#">Data Publik</a></li>
-                    {{-- <li><a href="#services">Services</a></li>
-                    <li><a href="#portfolio">Portfolio</a></li>
-                    <li><a href="#team">Team</a></li>
-                    <li><a href="#contact">Contact</a></li> --}}
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
-
-            {{-- <a class="cta-btn" href="index.html#about">Get Started</a> --}}
 
         </div>
     </header>
@@ -103,16 +93,26 @@
         <!-- Hero Section -->
         <section id="hero" class="hero section dark-background">
 
-            <img src="assets4/img/hero-bg.jpg" alt="" data-aos="fade-in">
+            <!-- Ganti dengan data dari database -->
+            @if($hero)
+                <img src="{{ $hero->image ? asset('storage/' . $hero->image) : asset('assets4/img/hero-bg.jpg') }}" alt="Hero Background" data-aos="fade-in">
+            @else
+                <img src="{{ asset('assets4/img/hero-bg.jpg') }}" alt="Hero Background" data-aos="fade-in">
+            @endif
 
             <div class="container d-flex flex-column">
-                <h3 data-aos="fade-up" data-aos-delay="100"><b>Tralalalelo Tralala Tung Tung Tung Sahur Cappuchino Assasino berr berr patabim jdbcjsdbcjsdbicb jshdbsbdiwud ubduwbdwbedu jnsd jnbdsibn</b></h3>
-                <p data-aos="fade-up" data-aos-delay="200">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus excepturi accusantium sapiente, sunt nobis, possimus eos labore nesciunt accusamus sequi repudiandae, dolorem praesentium odit voluptate porro repellendus corrupti ducimus exercitationem.</p>
+                <h3 data-aos="fade-up" data-aos-delay="100">
+                    <b>{{ $hero->title ?? 'Tralalalelo Tralala Tung Tung Tung Sahur Cappuchino Assasino' }}</b>
+                </h3>
+                <p data-aos="fade-up" data-aos-delay="200">
+                    {{ $hero->content ?? 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus excepturi accusantium sapiente, sunt nobis, possimus eos labore nesciunt accusamus sequi repudiandae, dolorem praesentium odit voluptate porro repellendus corrupti ducimus exercitationem.' }}
+                </p>
                 <div class="d-flex mt-4" data-aos="fade-up" data-aos-delay="300">
-                    <a href="#about" class="btn-get-started">Selengkapnya</a>
-                    {{-- <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8"
-                        class="glightbox btn-watch-video d-flex align-items-center"><i
-                            class="bi bi-play-circle"></i><span>Watch Video</span></a> --}}
+                    @if($hero && $hero->link)
+                        <a href="{{ $hero->link }}" class="btn-get-started">{{ $hero->button_text ?? 'Selengkapnya' }}</a>
+                    @else
+                        <a href="#about" class="btn-get-started">Selengkapnya</a>
+                    @endif
                 </div>
             </div>
 

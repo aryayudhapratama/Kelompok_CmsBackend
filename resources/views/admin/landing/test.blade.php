@@ -96,7 +96,6 @@
             </ul>
         </div>
     </aside>
-
     <!-- end sidenav -->
 
     <main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
@@ -121,8 +120,8 @@
         <div class="w-full px-6 py-6 mx-auto">
             <!-- Button Tambah -->
             <div class="flex justify-end mb-4">
-                <button onclick="document.getElementById('modalTambah').classList.remove('hidden')" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:shadow-xs hover:-translate-y-px dark:bg-gradient-to-tl dark:from-slate-750 dark:to-gray-850 bg-150 bg-x-25 leading-pro text-xs ease-in tracking-tight-rem shadow-md bg-clip-padding bg-gradient-to-tl from-blue-500 to-violet-500">
-                    + Tambah User
+                <button onclick="openModal('modalTambah')" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:shadow-xs hover:-translate-y-px bg-150 bg-x-25 leading-pro text-xs ease-in tracking-tight-rem shadow-md bg-clip-padding bg-gradient-to-tl from-blue-500 to-violet-500">
+                    + Tambah Section
                 </button>
             </div>
 
@@ -131,44 +130,39 @@
                 <div class="w-full max-w-full px-3 mt-0 mb-6">
                     <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
                         <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
-                            <h6 class="dark:text-white">Daftar User</h6>
+                            <h6 class="dark:text-white">Daftar Section</h6>
                         </div>
                         <div class="flex-auto px-0 pt-0 pb-2">
                             <div class="p-0 overflow-x-auto">
                                 <table class="items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
                                     <thead class="align-bottom">
                                         <tr>
-                                            <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Nama</th>
-                                            <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Email</th>
-                                            <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Role</th>
+                                            <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Section</th>
+                                            <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Judul</th>
+                                            <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Gambar</th>
                                             <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($users as $user)
+                                        @foreach($sections as $section)
                                         <tr>
                                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                <div class="flex px-2 py-1">
-                                                    <div class="my-auto">
-                                                        <img src="{{ asset('assets2/img/team-2.jpg') }}" class="inline-flex items-center justify-center mr-4 text-sm text-white transition-all duration-200 ease-in-out h-9 w-9 rounded-xl" alt="user" />
-                                                    </div>
-                                                    <div class="flex flex-col justify-center">
-                                                        <h6 class="mb-0 text-sm leading-normal dark:text-white">{{ $user->name }}</h6>
-                                                    </div>
-                                                </div>
+                                                <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">{{ $section->section_name }}</p>
                                             </td>
                                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">{{ $user->email }}</p>
+                                                <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">{{ $section->title }}</p>
                                             </td>
                                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">{{ ucfirst($user->role) }}</p>
+                                                @if($section->image)
+                                                    <img src="{{ asset('storage/' . $section->image) }}" class="h-10 w-auto" alt="Image">
+                                                @endif
                                             </td>
                                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                <a href="javascript:;" onclick="document.getElementById('modalEdit{{ $user->id }}').classList.remove('hidden')" class="text-xs font-semibold leading-tight dark:text-white dark:opacity-80 text-slate-400"> Edit </a>
-                                                <a href="javascript:;" onclick="if(confirm('Yakin hapus user ini?')) document.getElementById('deleteForm{{ $user->id }}').submit()" class="text-xs font-semibold leading-tight dark:text-white dark:opacity-80 text-red-500 ml-2"> Hapus </a>
-                                                <form id="deleteForm{{ $user->id }}" action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display: none;">
+                                                <a href="javascript:;" onclick="editSection({{ $section->id }})" class="text-xs font-semibold leading-tight dark:text-white dark:opacity-80 text-slate-400"> Edit </a>
+                                                <form action="{{ route('admin.landing.destroy', $section->id) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('DELETE')
+                                                    <button type="submit" class="text-xs font-semibold leading-tight dark:text-white dark:opacity-80 text-red-500 ml-2" onclick="return confirm('Yakin hapus?')">Hapus</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -185,29 +179,39 @@
 
     <!-- Modal Tambah -->
     <div id="modalTambah" class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000]">
-        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/3 shadow-2xl">
-            <h5 class="text-lg font-bold mb-4 dark:text-white">Tambah User Baru</h5>
-            <form action="{{ route('admin.users.store') }}" method="POST">
+        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/2 shadow-2xl">
+            <h5 class="text-lg font-bold mb-4 dark:text-white">Tambah Section Baru</h5>
+            <form action="{{ route('admin.landing.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Nama</label>
-                    <input type="text" name="name" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Nama Section</label>
+                        <input type="text" name="section_name" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Judul</label>
+                        <input type="text" name="title" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Link</label>
+                        <input type="url" name="link" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Teks Tombol</label>
+                        <input type="text" name="button_text" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Urutan</label>
+                        <input type="number" name="order" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Gambar</label>
+                        <input type="file" name="image" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
+                    </div>
                 </div>
                 <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Email</label>
-                    <input type="email" name="email" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Password</label>
-                    <input type="password" name="password" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Role</label>
-                    <select name="role" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
-                        <option value="admin">Admin</option>
-                        <option value="redaktur">Redaktur</option>
-                        <option value="reporter">Reporter</option>
-                    </select>
+                    <label class="block mb-1 text-sm dark:text-white">Konten</label>
+                    <textarea name="content" rows="4" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required></textarea>
                 </div>
                 <div class="flex justify-end">
                     <button type="button" onclick="closeModal('modalTambah')" class="px-4 py-2 mr-2 text-sm bg-gray-300 rounded-lg dark:bg-slate-600 dark:text-white">Batal</button>
@@ -217,91 +221,101 @@
         </div>
     </div>
 
-    {{-- Modal Edit --}}
-    @foreach($users as $user)
-    <div id="modalEdit{{ $user->id }}" class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000]">
-        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/3 shadow-2xl">
-            <h5 class="text-lg font-bold mb-4 dark:text-white">Edit User</h5>
-            <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
+    <!-- Modal Edit -->
+    <div id="modalEdit" class="hidden fixed inset-0 z-[1000] flex items-center justify-center bg-black/50">
+        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/2 shadow-2xl">
+            <h5 class="text-lg font-bold mb-4 dark:text-white">Edit Section</h5>
+            <form id="editForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Nama</label>
-                    <input type="text" name="name" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" value="{{ $user->name }}" required>
+                <input type="hidden" name="id" id="editId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Nama Section</label>
+                        <input type="text" name="section_name" id="editSectionName" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Judul</label>
+                        <input type="text" name="title" id="editTitle" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Link</label>
+                        <input type="url" name="link" id="editLink" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Teks Tombol</label>
+                        <input type="text" name="button_text" id="editButtonText" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Urutan</label>
+                        <input type="number" name="order" id="editOrder" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm dark:text-white">Gambar (Kosongkan jika tidak diubah)</label>
+                        <input type="file" name="image" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
+                    </div>
                 </div>
                 <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Email</label>
-                    <input type="email" name="email" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" value="{{ $user->email }}" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Password (Kosongkan jika tidak diubah)</label>
-                    <input type="password" name="password" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
-                </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Role</label>
-                    <select name="role" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
-                        <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="redaktur" {{ $user->role == 'redaktur' ? 'selected' : '' }}>Redaktur</option>
-                        <option value="reporter" {{ $user->role == 'reporter' ? 'selected' : '' }}>Reporter</option>
-                    </select>
+                    <label class="block mb-1 text-sm dark:text-white">Konten</label>
+                    <textarea name="content" id="editContent" rows="4" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required></textarea>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" onclick="closeModal('modalEdit{{ $user->id }}')" class="px-4 py-2 mr-2 text-sm bg-gray-300 rounded-lg dark:bg-slate-600 dark:text-white">Batal</button>
+                    <button type="button" onclick="closeModal('modalEdit')" class="px-4 py-2 mr-2 text-sm bg-gray-300 rounded-lg dark:bg-slate-600 dark:text-white">Batal</button>
                     <button type="submit" class="px-4 py-2 text-sm text-white bg-blue-500 rounded-lg">Update</button>
                 </div>
             </form>
         </div>
     </div>
-    @endforeach
-
 </body>
-<script>
-function openModal(id) {
-    const modal = document.getElementById(id);
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex';
-    }
-}
+<!-- Scripts -->
+    <script src="{{ asset('assets2/js/plugins/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets2/js/argon-dashboard-tailwind.js') }}"></script>
 
-function closeModal(id) {
-    const modal = document.getElementById(id);
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.style.display = 'none';
-    }
-}
-
-// Saat DOM siap
-document.addEventListener('DOMContentLoaded', function () {
-    // Tombol Tambah
-    const tambahBtn = document.querySelector('[onclick*="modalTambah"]');
-    if (tambahBtn) {
-        tambahBtn.removeAttribute('onclick');
-        tambahBtn.addEventListener('click', () => openModal('modalTambah'));
-    }
-
-    // Semua tombol Edit
-    document.querySelectorAll('[onclick*="modalEdit"]').forEach(btn => {
-        const match = btn.getAttribute('onclick').match(/modalEdit\d+/);
-        if (match) {
-            const id = match[0];
-            btn.removeAttribute('onclick');
-            btn.addEventListener('click', () => openModal(id));
-        }
-    });
-
-    // Tutup modal saat klik luar
-    document.querySelectorAll('.fixed.inset-0').forEach(modal => {
-        modal.addEventListener('click', function (e) {
-            if (e.target === modal) {
-                closeModal(modal.id);
+    <!-- JavaScript untuk Modal -->
+    <script>
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex';
             }
-        });
-    });
-});
-</script>
-<script src="{{ asset('assets2/js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script src="{{ asset('assets2/js/argon-dashboard-tailwind.js') }}"></script>
+        }
 
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        }
+
+        // Tutup modal saat klik luar
+        document.querySelectorAll('.fixed.inset-0').forEach(modal => {
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    closeModal(modal.id);
+                }
+            });
+        });
+
+        // Isi form edit dengan data dari server
+        function editSection(id) {
+            fetch(`/admin/landing/${id}/edit`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editSectionName').value = data.section_name;
+                    document.getElementById('editTitle').value = data.title;
+                    document.getElementById('editContent').value = data.content;
+                    document.getElementById('editLink').value = data.link || '';
+                    document.getElementById('editButtonText').value = data.button_text || '';
+                    document.getElementById('editOrder').value = data.order;
+
+                    const form = document.getElementById('editForm');
+                    form.action = `/admin/landing/${id}`;
+                    openModal('modalEdit');
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
 </html>
