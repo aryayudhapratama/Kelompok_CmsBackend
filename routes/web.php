@@ -143,8 +143,12 @@ Route::middleware(['auth', 'role.admin'])->group(function () {
 // Untuk redaktur
 Route::middleware(['auth', 'role:redaktur'])->group(function () {
     Route::get('/redaktur', function () {
-        return view('redaktur.redaktur');
-    })->name('redaktur.redaktur');
+        return view('redaktur.dashboard');
+    })->name('redaktur.dashboard');
+
+    Route::get('/redaktur/kelola', function () {
+        return view('redaktur.kelola');
+    })->name('redaktur.kelola');
 });
 
 // Untuk reporter
