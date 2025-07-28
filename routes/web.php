@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LandingSectionController;
+use App\Http\Controllers\BeritaController;
 use App\Models\LandingSection;
 
 /*
@@ -146,10 +147,13 @@ Route::middleware(['auth', 'role:redaktur'])->group(function () {
         return view('redaktur.dashboard');
     })->name('redaktur.dashboard');
 
-    Route::get('/redaktur/kelola', function () {
-        return view('redaktur.kelola');
-    })->name('redaktur.kelola');
+    Route::get('/redaktur/kelola', [BeritaController::class, 'index'])->name('redaktur.kelola');
+    
+    Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
+    Route::post('/berita/{id}/approve', [BeritaController::class, 'approve'])->name('berita.approve');
+    Route::post('/berita/{id}/reject', [BeritaController::class, 'reject'])->name('berita.reject');
 });
+
 
 // Untuk reporter
 Route::middleware(['auth', 'role:reporter'])->group(function () {
