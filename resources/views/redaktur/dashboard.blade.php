@@ -6,36 +6,40 @@
 @section('content')
 <!-- Stats Cards -->
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+  <!-- Approved -->
   <div class="bg-white p-5 rounded-xl shadow border-l-4 border-green-500 hover:scale-[1.02] hover:shadow-md transition duration-200 cursor-pointer">
     <div class="flex justify-between items-center">
       <div>
-        <p class="text-2xl font-semibold text-gray-800">1</p>
+        <p class="text-2xl font-semibold text-gray-800">{{ $approvedCount }}</p>
         <p class="text-sm text-gray-500">Approved</p>
       </div>
       <i class="fas fa-user-check text-green-500 text-3xl"></i>
     </div>
   </div>
 
+  <!-- Waiting -->
   <div class="bg-white p-5 rounded-xl shadow border-l-4 border-yellow-400 hover:scale-[1.02] hover:shadow-md transition duration-200 cursor-pointer">
     <div class="flex justify-between items-center">
       <div>
-        <p class="text-2xl font-semibold text-gray-800">0</p>
+        <p class="text-2xl font-semibold text-gray-800">{{ $waitingCount }}</p>
         <p class="text-sm text-gray-500">Waiting</p>
       </div>
       <i class="fas fa-user-clock text-yellow-400 text-3xl"></i>
     </div>
   </div>
 
+  <!-- Rejected -->
   <div class="bg-white p-5 rounded-xl shadow border-l-4 border-red-500 hover:scale-[1.02] hover:shadow-md transition duration-200 cursor-pointer">
     <div class="flex justify-between items-center">
       <div>
-        <p class="text-2xl font-semibold text-gray-800">0</p>
-        <p class="text-sm text-gray-500">Reject</p>
+        <p class="text-2xl font-semibold text-gray-800">{{ $rejectedCount }}</p>
+        <p class="text-sm text-gray-500">Rejected</p>
       </div>
       <i class="fas fa-user-times text-red-500 text-3xl"></i>
     </div>
   </div>
 
+  <!-- User Guide -->
   <div class="bg-white p-5 rounded-xl shadow border-l-4 border-blue-500">
     <div class="flex justify-between items-center">
       <div>
