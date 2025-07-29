@@ -143,12 +143,8 @@ Route::middleware(['auth', 'role.admin'])->group(function () {
 
 // Untuk redaktur
 Route::middleware(['auth', 'role:redaktur'])->group(function () {
-    Route::get('/redaktur', function () {
-        return view('redaktur.dashboard');
-    })->name('redaktur.dashboard');
-
+    Route::get('/redaktur', [BeritaController::class, 'dashboard'])->name('redaktur.dashboard');
     Route::get('/redaktur/kelola', [BeritaController::class, 'index'])->name('redaktur.kelola');
-    
     Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
     Route::post('/berita/{id}/approve', [BeritaController::class, 'approve'])->name('berita.approve');
     Route::post('/berita/{id}/reject', [BeritaController::class, 'reject'])->name('berita.reject');

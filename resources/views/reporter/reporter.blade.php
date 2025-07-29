@@ -76,12 +76,16 @@
                 </ul>
             </nav>
         </div>
-        <div class="p-2">
-            <a href="#" class="flex items-center p-3 text-gray-700 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                <span>Logout</span>
-            </a>
-        </div>
+        <li>
+          <form method="POST" action="/logout">
+            @csrf
+            <button type="submit"
+                    class="w-full text-left flex items-center px-6 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all">
+              <i class="fas fa-sign-out-alt mr-3 w-5"></i>
+              Logout
+            </button>
+          </form>
+        </li>
     </aside>
 
     <!-- Konten Utama -->

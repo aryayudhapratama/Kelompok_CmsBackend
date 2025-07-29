@@ -95,7 +95,13 @@
             <td class="px-4 py-2">{{ $berita->judul }}</td>
             <td class="px-4 py-2">
               <button type="button" class="btn-detail text-blue-600 hover:underline"
-                data-judul="{{ $berita->judul }}" data-konten="{{ $berita->konten }}">Detail</button>
+                data-judul="{{ $berita->judul }}"
+                data-konten="{{ $berita->konten }}"
+                data-nama="{{ $berita->nama_reporter }}"
+                data-email="{{ $berita->email_reporter }}"
+                data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
+                data-status="{{ $berita->status }}"
+              >Detail</button>
             </td>
           </tr>
         </tbody>
@@ -117,6 +123,11 @@
       btn.addEventListener('click', function () {
         document.getElementById('editJudul').value = this.dataset.judul;
         document.getElementById('editKonten').value = this.dataset.konten;
+        document.getElementById('editNama').value = this.dataset.nama;
+        document.getElementById('editEmail').value = this.dataset.email;
+        document.getElementById('editTanggal').value = this.dataset.tanggal;
+        document.getElementById('editStatus').value = this.dataset.status;
+
         document.getElementById('editModal').classList.remove('hidden');
         document.getElementById('editModal').classList.add('flex');
       });
