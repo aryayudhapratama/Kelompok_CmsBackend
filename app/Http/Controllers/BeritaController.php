@@ -52,4 +52,36 @@ class BeritaController extends Controller
 
         return view('redaktur.dashboard', compact('approvedCount', 'waitingCount', 'rejectedCount'));
     }
+
+   public function publish($id)
+{
+    $berita = Berita::findOrFail($id);
+
+    if ($berita->status !== 'approved') {
+        return redirect()->back()->with('error', 'Berita harus disetujui sebelum dipublikasikan.');
+    }
+
+    $berita->is_published = true;
+    $berita->save();
+
+    return redirect()->back()->with('success', 'Berita berhasil dipublikasikan.');
+}
+
+public function unpublish($id)
+{
+    $berita = Berita::findOrFail($id);
+    $berita->is_published = false;
+    $berita->save();
+
+    return redirect()->back()->with('success', 'Berita berhasil dihentikan tayangnya.');
+}
+
+
+public function daftarPublish()
+{
+    $beritas = Berita::where('status', 'approved')->get();
+    return view('redaktur.publish', compact('beritas'));
+}
+
+
 }

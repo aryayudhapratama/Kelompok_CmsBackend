@@ -77,7 +77,7 @@
                     <li class="dropdown"><a href="#"><span>Publikasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                         <ul>
                             <li><a href="#">Agenda</a></li>
-                            <li><a href="#">Berita</a></li>
+                            <li><a href="{{ route('berita.index') }}">Berita</a></li>
                         </ul>
                     </li>
                     <li><a href="#">Data Publik</a></li>
@@ -87,12 +87,9 @@
 
         </div>
     </header>
-
     <main class="main">
-
         <!-- Hero Section -->
         <section id="hero" class="hero section dark-background">
-
             <!-- Ganti dengan data dari database -->
             @if($hero)
     <img src="{{ asset('storage/' . $hero->image) }}" alt="Hero Background" data-aos="fade-in">
@@ -390,7 +387,7 @@
 
 <div class="col-12 mt-4 pt-2">
     <div class="text-center">
-        <a href="https://ppid-demo.jatimprov.go.id/berita/blog/list#blogdetail" class="btn btn-pills btn-primary">Lihat Semua Berita <i class="mdi mdi-arrow-right"></i></a>
+        <a href="{{ route('berita.index') }}" class="btn btn-pills btn-primary">Lihat Semua Berita <i class="mdi mdi-arrow-right"></i></a>
     </div>
  </div>
 </section>
@@ -635,6 +632,4 @@
     <script src="assets4/js/main.js"></script>
 
 </body>
-
 </html>
-

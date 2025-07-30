@@ -19,6 +19,7 @@ return new class extends Migration
     $table->string('nama_reporter')->nullable();
     $table->string('email_reporter')->nullable();
     $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+    $table->boolean('is_published')->default(false);
     $table->timestamps();
 });
 

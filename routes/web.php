@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LandingSectionController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\PublikasiController;
 use App\Models\LandingSection;
 
 /*
@@ -145,11 +146,16 @@ Route::middleware(['auth', 'role.admin'])->group(function () {
 Route::middleware(['auth', 'role:redaktur'])->group(function () {
     Route::get('/redaktur', [BeritaController::class, 'dashboard'])->name('redaktur.dashboard');
     Route::get('/redaktur/kelola', [BeritaController::class, 'index'])->name('redaktur.kelola');
+    Route::get('/redaktur/publish', [BeritaController::class, 'daftarPublish'])->name('redaktur.publish');
+
     Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
     Route::post('/berita/{id}/approve', [BeritaController::class, 'approve'])->name('berita.approve');
     Route::post('/berita/{id}/reject', [BeritaController::class, 'reject'])->name('berita.reject');
-});
+    Route::post('/berita/{id}/publish', [BeritaController::class, 'publish'])->name('berita.publish');
+    Route::post('/berita/{id}/unpublish', [BeritaController::class, 'unpublish'])->name('berita.unpublish');
 
+
+});
 
 // Untuk reporter
 Route::middleware(['auth', 'role:reporter'])->group(function () {
@@ -157,3 +163,8 @@ Route::middleware(['auth', 'role:reporter'])->group(function () {
         return view('reporter.reporter');
     })->name('reporter.reporter');
 });
+
+// Untuk publikasi
+Route::get('/berita', [PublikasiController::class, 'index'])->name('berita.index');
+Route::get('/berita/{id}', [PublikasiController::class, 'show'])->name('berita.show');
+

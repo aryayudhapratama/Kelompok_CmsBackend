@@ -101,6 +101,14 @@
         </li>
 
         <li class="mb-2">
+          <a href="/redaktur/publish" class="flex items-center px-4 py-3 rounded-lg transition
+            {{ request()->is('redaktur/publish*') ? 'bg-red-100 text-red-700 font-semibold' : 'text-slate-700 hover:bg-gray-100' }}">
+            <i class="fas fa-newspaper w-5 text-green-500"></i>
+            <span class="ml-3">Publish</span>
+          </a>
+        </li>
+
+        <li class="mb-2">
           <form method="POST" action="/logout">
             @csrf
             <button type="submit" class="w-full text-left flex items-center px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition">
