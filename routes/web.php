@@ -1,10 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\LandingSectionController;
-use App\Http\Controllers\BeritaController;
 use App\Models\LandingSection;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Reporter\ReporterController;
+use App\Http\Controllers\Admin\LandingSectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -156,4 +157,16 @@ Route::middleware(['auth', 'role:reporter'])->group(function () {
     Route::get('/reporter', function () {
         return view('reporter.reporter');
     })->name('reporter.reporter');
+});
+
+// Grup untuk Reporter
+Route::middleware(['auth', 'role.reporter'])->group(function () {
+    // Dashboard Reporter
+    Route::get('/reporter', [ReporterController::class, 'index'])->name('reporter.dashboard');
+
+    // Kelola Berita (untuk sidebar)
+    Route::get('/reporter/berita', [ReporterController::class, 'index'])->name('reporter.berita');
+
+    // Tambah Berita
+    Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
 });
