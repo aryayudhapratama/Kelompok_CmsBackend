@@ -1,117 +1,57 @@
 <?php
 
-use App\Models\LandingSection;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Redaktur\BeritaController;
+use App\Models\LandingSection;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LandingSectionController;
-use App\Http\Controllers\Reporter\Berita2Controller;
+use App\Http\Controllers\Redaktur\BeritaController as RedakturBeritaController;
+use App\Http\Controllers\Reporter\Berita2Controller as ReporterBeritaController;
 use App\Http\Controllers\Reporter\ReporterController;
 use App\Http\Controllers\PublikasiController;
+use App\Http\Controllers\HomeController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-Route::get('/', function () {
-    // Ambil data terbaru dari database
-    $hero = LandingSection::where('section_name', 'hero')->first();
-    return view('home2', compact('hero'));
-})->name('home');
+// Landing page
 
-// // Halaman statis
-// Route::get('/about', function () {
-//     return view('frontend.about');
-// })->name('about');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
-// Route::get('/404', function () {
-//     return view('frontend.404');
-// })->name('404');
-
-
-
-// Jetstream
-// Route::middleware([
-//     'auth:sanctum',
-//     config('jetstream.auth_session'),
-//     'verified',
-
-// ])->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('admin');
-//     })->name('admin');
-// });
-
-
-// Untuk admin
+// ======================= ADMIN =======================
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', function () {
-        return view('admin.admin');
-    })->name('admin.admin');
+    Route::get('/admin', fn() => view('admin.admin'))->name('admin.admin');
+
+    Route::prefix('admin')->group(function () {
+        // User Management
+        Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
+
+        // Landing Section
+        Route::get('/landing', [LandingSectionController::class, 'index'])->name('admin.landing.index');
+        Route::post('/landing', [LandingSectionController::class, 'store'])->name('admin.landing.store');
+        Route::get('/landing/{id}/edit', [LandingSectionController::class, 'editJson'])->name('admin.landing.edit.json');
+        Route::put('/landing/{id}', [LandingSectionController::class, 'update'])->name('admin.landing.update');
+        Route::delete('/landing/{id}', [LandingSectionController::class, 'destroy'])->name('admin.landing.destroy');
+    });
 });
 
-Route::middleware(['auth', 'role.admin'])->group(function () {
-    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
-    Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
-    Route::put('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
-    Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+// ======================= REDAKTUR =======================
+Route::middleware(['auth', 'role:redaktur'])->prefix('redaktur')->name('redaktur.')->group(function () {
+    Route::get('/', [RedakturBeritaController::class, 'dashboard'])->name('dashboard');
+    Route::get('/kelola', [RedakturBeritaController::class, 'index'])->name('kelola');
+    Route::get('/publish', [RedakturBeritaController::class, 'daftarPublish'])->name('publish');
+
+    Route::post('/berita', [RedakturBeritaController::class, 'store'])->name('berita.store');
+    Route::post('/berita/{id}/approve', [RedakturBeritaController::class, 'approve'])->name('berita.approve');
+    Route::post('/berita/{id}/reject', [RedakturBeritaController::class, 'reject'])->name('berita.reject');
+    Route::post('/berita/{id}/publish', [RedakturBeritaController::class, 'publish'])->name('berita.publish');
+    Route::post('/berita/{id}/unpublish', [RedakturBeritaController::class, 'unpublish'])->name('berita.unpublish');
 });
 
-Route::middleware(['auth', 'role.admin'])->group(function () {
-    // Index: Tampilkan semua section
-    Route::get('/admin/landing', [LandingSectionController::class, 'index'])->name('admin.landing.index');
-
-    // Store: Simpan section baru
-    Route::post('/admin/landing', [LandingSectionController::class, 'store'])->name('admin.landing.store');
-
-    // Edit (untuk modal): Kembalikan data JSON
-    Route::get('/admin/landing/{id}/edit', [LandingSectionController::class, 'editJson'])->name('admin.landing.edit.json');
-
-    // Update: Update section
-    Route::put('/admin/landing/{id}', [LandingSectionController::class, 'update'])->name('admin.landing.update');
-
-    // Destroy: Hapus section
-    Route::delete('/admin/landing/{id}', [LandingSectionController::class, 'destroy'])->name('admin.landing.destroy');
+// ======================= REPORTER =======================
+Route::middleware(['auth', 'role:reporter'])->prefix('reporter')->name('reporter.')->group(function () {
+    Route::get('/', [ReporterController::class, 'index'])->name('dashboard');
+    Route::get('/berita', [ReporterController::class, 'index'])->name('berita');
+    Route::post('/berita', [ReporterBeritaController::class, 'store'])->name('berita.store');
 });
 
-// Untuk redaktur
-Route::middleware(['auth', 'role:redaktur'])->group(function () {
-    Route::get('/redaktur', [BeritaController::class, 'dashboard'])->name('redaktur.dashboard');
-    Route::get('/redaktur/kelola', [BeritaController::class, 'index'])->name('redaktur.kelola');
-    Route::get('/redaktur/publish', [BeritaController::class, 'daftarPublish'])->name('redaktur.publish');
-    Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
-    Route::post('/berita/{id}/approve', [BeritaController::class, 'approve'])->name('berita.approve');
-    Route::post('/berita/{id}/reject', [BeritaController::class, 'reject'])->name('berita.reject');
-    Route::post('/berita/{id}/publish', [BeritaController::class, 'publish'])->name('berita.publish');
-    Route::post('/berita/{id}/unpublish', [BeritaController::class, 'unpublish'])->name('berita.unpublish');
-});
-
-// Untuk reporter
-Route::middleware(['auth', 'role:reporter'])->group(function () {
-    Route::get('/reporter', function () {
-        return view('reporter.reporter');
-    })->name('reporter.reporter');
-});
-
-// Untuk publikasi
+// ======================= PUBLIKASI =======================
 Route::get('/berita', [PublikasiController::class, 'index'])->name('berita.index');
 Route::get('/berita/{id}', [PublikasiController::class, 'show'])->name('berita.show');
-
-// Grup untuk Reporter
-Route::middleware(['auth', 'role.reporter'])->group(function () {
-    // Dashboard Reporter
-    Route::get('/reporter', [ReporterController::class, 'index'])->name('reporter.dashboard');
-
-    // Kelola Berita (untuk sidebar)
-    Route::get('/reporter/berita', [ReporterController::class, 'index'])->name('reporter.berita');
-
-    // Tambah Berita
-    Route::post('/berita', [Berita2Controller::class, 'store'])->name('berita.store');
-});

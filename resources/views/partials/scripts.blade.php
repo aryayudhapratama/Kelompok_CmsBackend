@@ -6,7 +6,9 @@
     <script src="assets4/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="assets4/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
     <script src="assets4/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-    <script src="assets4/js/main.js"></script>
+    
+    <!-- <script src="assets4/js/main.js"></script> -->
+
 <script>
   // AOS Init
   AOS.init();
@@ -20,4 +22,27 @@
       document.getElementById('modalTitle').textContent = title;
     });
   });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    AOS.init();
+
+    document.querySelectorAll('.view-image').forEach(button => {
+      button.addEventListener('click', function () {
+        const image = this.getAttribute('data-image');
+        const title = this.getAttribute('data-title');
+        document.getElementById('modalImage').src = image;
+        document.getElementById('modalTitle').textContent = title;
+      });
+    });
+
+    window.addEventListener("scroll", function () {
+      const header = document.getElementById("header");
+      if (window.scrollY > 50) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
+      }
+    });
+  });
 </script>
+

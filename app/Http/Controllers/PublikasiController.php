@@ -9,21 +9,22 @@ use App\Models\LandingSection;
 class PublikasiController extends Controller
 {
     public function index()
-{
-    $beritas = Berita::where('status', 'approved')
-                    ->where('is_published', true)
-                    ->latest()
-                    ->get();
+    {
+        $beritas = Berita::where('status', 'approved')
+                        ->where('is_published', true)
+                        ->latest()
+                        ->get();
 
-    $hero = LandingSection::where('section_name', 'hero')->first();
+        $kabarBerita = $beritas->take(3);
+        
+        $hero = LandingSection::where('section_name', 'hero')->first();
 
-    return view('publikasi.publikasi', compact('beritas', 'hero'));
-}
+        return view('publikasi.publikasi', compact('beritas', 'hero', 'kabarBerita'));
+    }
+
     public function show($id)
-{
-    $berita = Berita::findOrFail($id);
-    return view('publikasi.detail', compact('berita'));
+    {
+        $berita = Berita::findOrFail($id);
+        return view('publikasi.detail', compact('berita'));
+    }
 }
-
-}
-
