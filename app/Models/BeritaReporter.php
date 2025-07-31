@@ -10,16 +10,14 @@ class BeritaReporter extends Model
     protected $table = 'beritas';
 
     protected $fillable = [
-    'user_id',
-    'judul',
-    'gambar',
-    'konten',
-    'nama_reporter',
-    'email_reporter',
-    'status',
-    'is_published',
-];
-
+        'judul',
+        'konten',
+        'nama_reporter',
+        'email_reporter',
+        'gambar',
+        'status',
+        'user_id',
+    ];
 
     // Jika ingin relasi
     // public function user()

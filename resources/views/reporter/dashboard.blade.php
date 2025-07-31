@@ -35,7 +35,7 @@
                 <img src="{{ asset('assets2/img/logo-ct.png') }}"
                     class="hidden h-full max-w-full transition-all duration-200 dark:inline ease-nav-brand max-h-8"
                     alt="main_logo" />
-                <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">Reporter Panel</span>
+                <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">REPORTER PANEL</span>
             </a>
         </div>
 
@@ -144,58 +144,57 @@
                                                 Status</th>
                                             <th
                                                 class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
-                                                Aksi</th>
+                                                Gambar</th>
                                             <th
                                                 class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
-                                                Gambar</th>
+                                                Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($beritas as $berita)
                                             <tr>
                                                 <td
-                                                    class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                                    class="p-1 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                                     <p
                                                         class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
                                                         {{ $berita->judul }}</p>
                                                 </td>
                                                 <td
-                                                    class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                                    class="p-1 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                                     <p
                                                         class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
                                                         {{ $berita->nama_reporter }}</p>
                                                 </td>
                                                 <td
-                                                    class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                                    class="p-1 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                                     <p
                                                         class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
                                                         {{ $berita->email_reporter }}</p>
                                                 </td>
                                                 <td
-                                                    class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                                    class="p-1 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                                     <p
                                                         class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-80">
                                                         {{ $berita->created_at->format('d M Y') }}</p>
                                                 </td>
                                                 <td
-                                                    class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                                    class="p-1 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                                     <span
-                                                        class="text-xs font-semibold px-4 py-2 rounded-lg
-                {{ $berita->status == 'approved' ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200' : ($berita->status == 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200') }}">
+                                                        class="text-xs font-semibold px-2 py-2 rounded-lg
+                                                        {{ $berita->status == 'approved' ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200' : ($berita->status == 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200') }}">
                                                         {{ ucfirst($berita->status) }}
                                                     </span>
                                                 </td>
                                                 <td
-                                                    class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                                    class="p-1 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                                     @if ($berita->gambar)
-                                                        <img src="{{ asset('storage/' . $berita->gambar) }}"
-                                                            class="h-10 w-auto rounded" alt="Gambar">
+                                                        <img src="{{ asset('storage/' . $berita->gambar) }}" class="rounded" width="120" alt="Gambar">
                                                     @else
                                                         <span class="text-xs text-gray-500">Tidak ada</span>
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                                    class="p-1 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                                     <a href="javascript:;"
                                                         class="btn-detail text-xs font-semibold leading-tight dark:text-white dark:opacity-80 text-slate-400"
                                                         data-judul="{{ $berita->judul }}"
@@ -223,8 +222,7 @@
         class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000]">
         <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/2 shadow-2xl">
             <h5 class="text-lg font-bold mb-4 dark:text-white">Tambah Berita Baru</h5>
-            <form id="formAddNews" action="{{ route('berita.store') }}" method="POST"
-                enctype="multipart/form-data">
+            <form id="formAddNews" action="{{ route('berita.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
                     <label class="block mb-1 text-sm dark:text-white">Nama Lengkap</label>
@@ -304,7 +302,6 @@
                             class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"
                             readonly>
                     </div>
-                </div>
             </div>
             <div class="flex justify-end mt-6">
                 <button type="button" onclick="closeEditModal()"
