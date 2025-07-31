@@ -70,41 +70,50 @@
         </div>
       </div>
 
+      <!-- Tabel Berita -->
       <table class="w-full text-sm text-left table-fixed">
-        <colgroup>
-          <col style="width: 20%;">
-          <col style="width: 20%;">
-          <col style="width: 20%;">
-          <col style="width: 25%;">
-          <col style="width: 15%;">
-        </colgroup>
         <thead class="bg-gray-100 text-gray-600">
-          <tr>
-            <th class="px-4 py-2">Date Added</th>
-            <th class="px-4 py-2">Full Name</th>
-            <th class="px-4 py-2">Email</th>
-            <th class="px-4 py-2">Title</th>
-            <th class="px-4 py-2">Action</th>
-          </tr>
-        </thead>
+         <tr>
+    <th class="px-4 py-2">Date Added</th>
+    <th class="px-4 py-2">Full Name</th>
+    <th class="px-4 py-2">Email</th>
+    <th class="px-4 py-2">Title</th>
+    <th class="px-4 py-2">Image</th> {{-- Kolom gambar --}}
+    <th class="px-4 py-2">Action</th>
+  </tr>
+</thead>
+
         <tbody>
-          <tr class="border-t hover:bg-gray-50">
-            <td class="px-4 py-2">{{ $berita->created_at->format('d F Y') }}</td>
-            <td class="px-4 py-2">{{ $berita->nama_reporter }}</td>
-            <td class="px-4 py-2">{{ $berita->email_reporter }}</td>
-            <td class="px-4 py-2">{{ $berita->judul }}</td>
-            <td class="px-4 py-2">
-              <button type="button" class="btn-detail text-blue-600 hover:underline"
-                data-judul="{{ $berita->judul }}"
-                data-konten="{{ $berita->konten }}"
-                data-nama="{{ $berita->nama_reporter }}"
-                data-email="{{ $berita->email_reporter }}"
-                data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
-                data-status="{{ $berita->status }}"
-              >Detail</button>
-            </td>
-          </tr>
-        </tbody>
+  <tr class="border-t hover:bg-gray-50">
+    <td class="px-4 py-2">{{ $berita->created_at->format('d F Y') }}</td>
+    <td class="px-4 py-2">{{ $berita->nama_reporter }}</td>
+    <td class="px-4 py-2">{{ $berita->email_reporter }}</td>
+    <td class="px-4 py-2">{{ $berita->judul }}</td>
+
+    <td class="px-4 py-2">
+      @if($berita->gambar)
+        <img src="{{ asset('storage/' . $berita->gambar) }}" alt="Gambar"
+             class="w-24 h-16 object-cover rounded shadow border" />
+      @else
+        <span class="text-gray-400 italic">Tidak ada gambar</span>
+      @endif
+    </td>
+
+    <td class="px-4 py-2">
+     <button type="button" class="btn-detail text-blue-600 hover:underline"
+  data-judul="{{ $berita->judul }}"
+  data-konten="{{ $berita->konten }}"
+  data-nama="{{ $berita->nama_reporter }}"
+  data-email="{{ $berita->email_reporter }}"
+  data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
+  data-status="{{ $berita->status }}"
+  data-gambar="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : '' }}"
+>Detail</button>
+
+    </td>
+  </tr>
+</tbody>
+
       </table>
     </div>
     @endforeach
@@ -127,6 +136,18 @@
         document.getElementById('editEmail').value = this.dataset.email;
         document.getElementById('editTanggal').value = this.dataset.tanggal;
         document.getElementById('editStatus').value = this.dataset.status;
+        // Set gambar jika ada
+const gambarElement = document.getElementById('editGambar');
+const gambarContainer = document.getElementById('gambarContainer');
+if (this.dataset.gambar) {
+  gambarElement.src = this.dataset.gambar;
+  gambarElement.classList.remove('hidden');
+  gambarContainer.classList.remove('hidden');
+} else {
+  gambarElement.src = '';
+  gambarElement.classList.add('hidden');
+  gambarContainer.classList.add('hidden');
+}
 
         document.getElementById('editModal').classList.remove('hidden');
         document.getElementById('editModal').classList.add('flex');
@@ -149,6 +170,8 @@
       document.getElementById('addModal').classList.remove('flex');
       document.getElementById('formAddNews').reset();
     };
+
+    
 
     // Search
     document.getElementById('searchInput').addEventListener('keyup', function () {
