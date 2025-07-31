@@ -14,6 +14,7 @@ class BeritaReporter extends Model
         'konten',
         'nama_reporter',
         'email_reporter',
+        'gambar',
         'status',
         'user_id',
     ];

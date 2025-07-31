@@ -6,10 +6,8 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Reporter\ReporterController;
 use App\Http\Controllers\Admin\LandingSectionController;
-use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\PublikasiController;
-use App\Models\LandingSection;
-
+use App\Http\Controllers\Reporter\Berita2Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,7 +85,7 @@ Route::get('/', function () {
 //     'auth:sanctum',
 //     config('jetstream.auth_session'),
 //     'verified',
-    
+
 // ])->group(function () {
 //     Route::get('/dashboard', function () {
 //         return view('admin');
@@ -182,6 +180,6 @@ Route::middleware(['auth', 'role.reporter'])->group(function () {
     Route::get('/reporter/berita', [ReporterController::class, 'index'])->name('reporter.berita');
 
     // Tambah Berita
-    Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
+    Route::post('/berita', [Berita2Controller::class, 'store'])->name('berita.store');
 });
 
