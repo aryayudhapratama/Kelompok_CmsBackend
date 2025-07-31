@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Redaktur;
 
+use App\Http\Controllers\Controller; // ✅ Tambahkan baris ini
 use Illuminate\Http\Request;
 use App\Models\Berita;
 
@@ -13,17 +14,26 @@ class BeritaController extends Controller
         return view('redaktur.kelola', compact('beritas'));
     }
 
-    public function store(Request $request)
-    {
-        Berita::create([
-            'judul' => $request->judul,
-            'konten' => $request->konten,
-            'nama_reporter' => $request->nama_reporter,
-            'email_reporter' => $request->email_reporter,
-        ]);
+   public function store(Request $request)
+{
+    $data = $request->validate([
+        'judul' => 'required|string|max:255',
+        'konten' => 'required|string',
+        'nama_reporter' => 'required|string|max:100',
+        'email_reporter' => 'required|email',
+        'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        return redirect()->back()->with('success', 'Berita berhasil ditambahkan.');
+    if ($request->hasFile('gambar')) {
+        $data['gambar'] = $request->file('gambar')->store('berita', 'public');
     }
+
+    $data['status'] = 'pending';
+    Berita::create($data);
+
+    return redirect()->back()->with('success', 'Berita berhasil ditambahkan.');
+}
+
 
     public function approve($id)
     {
