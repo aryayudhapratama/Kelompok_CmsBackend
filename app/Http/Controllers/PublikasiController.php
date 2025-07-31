@@ -19,8 +19,6 @@ class PublikasiController extends Controller
 
     return view('publikasi.publikasi', compact('beritas', 'hero'));
 }
-
-
     public function show($id)
 {
     $berita = Berita::findOrFail($id);
