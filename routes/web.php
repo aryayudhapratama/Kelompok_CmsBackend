@@ -19,6 +19,7 @@ use App\Http\Controllers\PublikasiController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::get('/', function () {
     // Ambil data terbaru dari database
     $hero = LandingSection::where('section_name', 'hero')->first();
@@ -107,11 +108,14 @@ Route::get('/berita/{id}', [PublikasiController::class, 'show'])->name('berita.s
 // Grup untuk Reporter
 Route::middleware(['auth', 'role.reporter'])->group(function () {
     // Dashboard Reporter
-    Route::get('/reporter', [ReporterController::class, 'index'])->name('reporter.dashboard');
+    Route::get('/reporter', [ReporterController::class, 'dashboard'])->name('reporter.dashboard');
 
     // Kelola Berita (untuk sidebar)
     Route::get('/reporter/berita', [ReporterController::class, 'index'])->name('reporter.berita');
 
     // Tambah Berita
     Route::post('/berita', [Berita2Controller::class, 'store'])->name('berita.store');
+
+    // Update Berita Reporter
+    Route::put('/reporter/berita/{id}', [Berita2Controller::class, 'update'])->name('reporter.berita.update');
 });
