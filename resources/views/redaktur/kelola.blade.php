@@ -32,7 +32,9 @@
         <p class="font-semibold text-red-600">{{ $berita->judul }}</p>
         <div class="flex items-center space-x-2 relative">
           @if($berita->status === 'pending')
-          <form method="POST" action="{{ route('berita.approve', $berita->id) }}">
+          <!-- Approve -->
+<form method="POST" action="{{ route('redaktur.berita.approve', $berita->id) }}">
+
             @csrf
             <button type="submit"
               class="btn-approve flex items-center gap-1 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition">
@@ -52,7 +54,7 @@
             <div id="dropdownMenu-{{ $berita->id }}"
               class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
               @foreach (['Kurang Lengkap', 'Judul tidak sesuai', 'Konten tidak layak'] as $alasan)
-              <form method="POST" action="{{ route('berita.reject', $berita->id) }}">
+              <form method="POST" action="{{ route('redaktur.berita.reject', $berita->id) }}">
                 @csrf
                 <input type="hidden" name="alasan" value="{{ $alasan }}">
                 <button type="submit"

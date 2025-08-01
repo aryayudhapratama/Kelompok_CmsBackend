@@ -42,30 +42,29 @@
 </div>
 
         <!-- Latest Berita Kecil -->
-        <div class="col-lg-5">
-          <div class="row row-cols-1 row-cols-md-2 g-3">
-            @foreach ($beritas->skip(1)->take(4) as $berita)
-              <div class="col">
-                <div class="card card-berita border-0 shadow-sm rounded-4 overflow-hidden h-100">
-                  <img src="{{ asset('storage/' . $berita->gambar) }}" class="card-img-top" style="height: 120px; object-fit: cover;">
-                  <div class="p-3">
-                    <small class="text-muted d-block mb-1">
-                      {{ $berita->created_at->diffForHumans() }} &bull; {{ $berita->nama_reporter }}
-                    </small>
-                    <h6 class="fw-semibold mb-2">
-                      <a href="{{ route('berita.show', $berita->id) }}" class="text-dark text-decoration-none">
-                        {{ \Illuminate\Support\Str::limit($berita->judul, 60) }}
-                      </a>
-                    </h6>
-                    <small class="text-muted d-block">
-                      {{ \Illuminate\Support\Str::limit(strip_tags($berita->konten), 60) }}
-                    </small>
-                  </div>
-                </div>
-              </div>
-            @endforeach
-          </div>
+       <div class="col-12 overflow-auto">
+  <div class="d-flex gap-1 flex-nowrap">
+    @foreach ($beritas->skip(1)->take(4) as $berita)
+      <div class="card card-berita border-0 shadow-sm rounded-4 overflow-hidden" style="min-width: 260px;">
+        <img src="{{ asset('storage/' . $berita->gambar) }}" class="card-img-top" style="height: 120px; object-fit: cover;">
+        <div class="p-3">
+          <small class="text-muted d-block mb-1">
+            {{ $berita->created_at->diffForHumans() }} &bull; {{ $berita->nama_reporter }}
+          </small>
+          <h6 class="fw-semibold mb-2">
+            <a href="{{ route('berita.show', $berita->id) }}" class="text-dark text-decoration-none">
+              {{ \Illuminate\Support\Str::limit($berita->judul, 60) }}
+            </a>
+          </h6>
+          <small class="text-muted d-block">
+            {{ \Illuminate\Support\Str::limit(strip_tags($berita->konten), 60) }}
+          </small>
         </div>
+      </div>
+    @endforeach
+  </div>
+</div>
+
       @else
         <p class="text-muted text-center">Belum ada berita tersedia.</p>
       @endif
