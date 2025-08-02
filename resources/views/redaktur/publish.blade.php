@@ -28,7 +28,8 @@
         <p class="font-semibold text-red-600">{{ $berita->judul }}</p>
         <div class="flex items-center space-x-2 relative">
           @if($berita->status === 'pending')
-            <form method="POST" action="{{ route('berita.approve', $berita->id) }}">
+            <!-- Approve -->
+<form method="POST" action="{{ route('redaktur.berita.approve', $berita->id) }}">
               @csrf
               <button type="submit"
                 class="btn-approve flex items-center gap-1 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition">
@@ -38,7 +39,8 @@
 
           @elseif($berita->status === 'approved')
             @if($berita->is_published)
-              <form method="POST" action="{{ route('berita.unpublish', $berita->id) }}">
+              <form method="POST" action="{{ route('redaktur.berita.unpublish', $berita->id) }}"
+>
                 @csrf
                 <button type="submit"
                   class="btn-unpublish flex items-center gap-1 px-4 py-2 bg-yellow-500 text-white text-sm font-medium rounded-lg hover:bg-yellow-600 transition">
@@ -46,7 +48,9 @@
                 </button>
               </form>
             @else
-              <form method="POST" action="{{ route('berita.publish', $berita->id) }}">
+              <!-- Publish -->
+<form method="POST" action="{{ route('redaktur.berita.publish', $berita->id) }}">
+
                 @csrf
                 <button type="submit"
                   class="btn-publish flex items-center gap-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">

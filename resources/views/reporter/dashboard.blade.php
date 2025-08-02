@@ -222,7 +222,7 @@
         class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000]">
         <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/2 shadow-2xl">
             <h5 class="text-lg font-bold mb-4 dark:text-white">Tambah Berita Baru</h5>
-            <form id="formAddNews" action="{{ route('berita.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="formAddNews" action="{{ route('reporter.berita.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
                     <label class="block mb-1 text-sm dark:text-white">Nama Lengkap</label>

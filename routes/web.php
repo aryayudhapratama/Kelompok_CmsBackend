@@ -10,27 +10,26 @@ use App\Http\Controllers\Reporter\ReporterController;
 use App\Http\Controllers\PublikasiController;
 use App\Http\Controllers\HomeController;
 
-// Landing page
-
+// ======================= LANDING PAGE =======================
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
 
 // ======================= ADMIN =======================
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', fn() => view('admin.admin'))->name('admin.admin');
 
-    Route::prefix('admin')->group(function () {
+    Route::prefix('admin')->name('admin.')->group(function () {
         // User Management
         Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
 
         // Landing Section
-        Route::get('/landing', [LandingSectionController::class, 'index'])->name('admin.landing.index');
-        Route::post('/landing', [LandingSectionController::class, 'store'])->name('admin.landing.store');
-        Route::get('/landing/{id}/edit', [LandingSectionController::class, 'editJson'])->name('admin.landing.edit.json');
-        Route::put('/landing/{id}', [LandingSectionController::class, 'update'])->name('admin.landing.update');
-        Route::delete('/landing/{id}', [LandingSectionController::class, 'destroy'])->name('admin.landing.destroy');
+        Route::get('/landing', [LandingSectionController::class, 'index'])->name('landing.index');
+        Route::post('/landing', [LandingSectionController::class, 'store'])->name('landing.store');
+        Route::get('/landing/{id}/edit', [LandingSectionController::class, 'editJson'])->name('landing.edit.json');
+        Route::put('/landing/{id}', [LandingSectionController::class, 'update'])->name('landing.update');
+        Route::delete('/landing/{id}', [LandingSectionController::class, 'destroy'])->name('landing.destroy');
     });
 });
+
 
 // ======================= REDAKTUR =======================
 Route::middleware(['auth', 'role:redaktur'])->prefix('redaktur')->name('redaktur.')->group(function () {
