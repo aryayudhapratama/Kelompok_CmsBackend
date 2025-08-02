@@ -5,14 +5,11 @@
 
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow relative z-10">
-  <!-- Header -->
   <div class="flex justify-between items-center mb-4 border-b pb-2">
     <h2 class="text-lg font-semibold text-gray-800">Publish Bar</h2>
     <div class="flex items-center gap-2">
       <div class="relative">
-        <input type="text" placeholder="Cari berita..."
-          class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          id="searchInput" />
+        <input type="text" placeholder="Cari berita..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" id="searchInput" />
         <span class="absolute left-3 top-2.5 text-gray-400">
           <i class="fas fa-search"></i>
         </span>
@@ -20,7 +17,6 @@
     </div>
   </div>
 
-  <!-- Card List -->
   <div id="cardContainer" class="space-y-6">
     @foreach ($beritas as $berita)
     <div class="card border rounded-lg overflow-hidden shadow bg-white" data-title="{{ strtolower($berita->judul) }}">
@@ -28,40 +24,30 @@
         <p class="font-semibold text-red-600">{{ $berita->judul }}</p>
         <div class="flex items-center space-x-2 relative">
           @if($berita->status === 'pending')
-            <!-- Approve -->
-<form method="POST" action="{{ route('redaktur.berita.approve', $berita->id) }}">
+            <form method="POST" action="{{ route('redaktur.berita.approve', $berita->id) }}">
               @csrf
-              <button type="submit"
-                class="btn-approve flex items-center gap-1 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition">
+              <button type="submit" class="btn-approve flex items-center gap-1 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition">
                 <i class="fas fa-check-circle"></i> Approve
               </button>
             </form>
-
           @elseif($berita->status === 'approved')
             @if($berita->is_published)
-              <form method="POST" action="{{ route('redaktur.berita.unpublish', $berita->id) }}"
->
+              <form method="POST" action="{{ route('redaktur.berita.unpublish', $berita->id) }}">
                 @csrf
-                <button type="submit"
-                  class="btn-unpublish flex items-center gap-1 px-4 py-2 bg-yellow-500 text-white text-sm font-medium rounded-lg hover:bg-yellow-600 transition">
+                <button type="submit" class="btn-unpublish flex items-center gap-1 px-4 py-2 bg-yellow-500 text-white text-sm font-medium rounded-lg hover:bg-yellow-600 transition">
                   <i class="fas fa-eye-slash"></i> Unpublish
                 </button>
               </form>
             @else
-              <!-- Publish -->
-<form method="POST" action="{{ route('redaktur.berita.publish', $berita->id) }}">
-
+              <form method="POST" action="{{ route('redaktur.berita.publish', $berita->id) }}">
                 @csrf
-                <button type="submit"
-                  class="btn-publish flex items-center gap-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
+                <button type="submit" class="btn-publish flex items-center gap-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
                   <i class="fas fa-upload"></i> Publish
                 </button>
               </form>
             @endif
-
           @else
-            <span class="text-sm font-semibold px-4 py-2 rounded-lg
-              {{ $berita->status == 'rejected' ? 'bg-red-100 text-red-700' : '' }}">
+            <span class="text-sm font-semibold px-4 py-2 rounded-lg {{ $berita->status == 'rejected' ? 'bg-red-100 text-red-700' : '' }}">
               {{ ucfirst($berita->status) }}
             </span>
           @endif
@@ -70,90 +56,109 @@
 
       <table class="w-full text-sm text-left table-fixed">
         <thead class="bg-gray-100 text-gray-600">
-         <tr>
-    <th class="px-4 py-2">Date Added</th>
-    <th class="px-4 py-2">Full Name</th>
-    <th class="px-4 py-2">Email</th>
-    <th class="px-4 py-2">Title</th>
-    <th class="px-4 py-2">Image</th> {{-- Kolom gambar --}}
-    <th class="px-4 py-2">Action</th>
-  </tr>
-</thead>
-
+          <tr>
+            <th class="px-4 py-2">Date Added</th>
+            <th class="px-4 py-2">Full Name</th>
+            <th class="px-4 py-2">Email</th>
+            <th class="px-4 py-2">Title</th>
+            <th class="px-4 py-2">Image</th>
+            <th class="px-4 py-2">Action</th>
+          </tr>
+        </thead>
         <tbody>
-  <tr class="border-t hover:bg-gray-50">
-    <td class="px-4 py-2">{{ $berita->created_at->format('d F Y') }}</td>
-    <td class="px-4 py-2">{{ $berita->nama_reporter }}</td>
-    <td class="px-4 py-2">{{ $berita->email_reporter }}</td>
-    <td class="px-4 py-2">{{ $berita->judul }}</td>
-
-    <td class="px-4 py-2">
-      @if($berita->gambar)
-        <img src="{{ asset('storage/' . $berita->gambar) }}" alt="Gambar"
-             class="w-24 h-16 object-cover rounded shadow border" />
-      @else
-        <span class="text-gray-400 italic">Tidak ada gambar</span>
-      @endif
-    </td>
-
-    <td class="px-4 py-2">
-      <button type="button" class="btn-detail text-blue-600 hover:underline"
-  data-judul="{{ $berita->judul }}"
-  data-konten="{{ $berita->konten }}"
-  data-nama="{{ $berita->nama_reporter }}"
-  data-email="{{ $berita->email_reporter }}"
-  data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
-  data-status="{{ $berita->status }}"
-  data-gambar="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : '' }}"
->Detail</button>
-    </td>
-  </tr>
-</tbody>
-
+          <tr class="border-t hover:bg-gray-50">
+            <td class="px-4 py-2">{{ $berita->created_at->format('d F Y') }}</td>
+            <td class="px-4 py-2">{{ $berita->nama_reporter }}</td>
+            <td class="px-4 py-2">{{ $berita->email_reporter }}</td>
+            <td class="px-4 py-2">{{ $berita->judul }}</td>
+            <td class="px-4 py-2">
+              @if($berita->gambar)
+                <img src="{{ asset('storage/' . $berita->gambar) }}" alt="Gambar" class="w-24 h-16 object-cover rounded shadow border" />
+              @else
+                <span class="text-gray-400 italic">Tidak ada gambar</span>
+              @endif
+            </td>
+            <td class="px-4 py-2">
+              <button type="button" class="btn-detail text-blue-600 hover:underline"
+                data-id="{{ $berita->id }}"
+                data-judul="{{ $berita->judul }}"
+                data-konten="{{ $berita->konten }}"
+                data-nama="{{ $berita->nama_reporter }}"
+                data-email="{{ $berita->email_reporter }}"
+                data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
+                data-status="{{ $berita->status }}"
+                data-published="{{ $berita->is_published }}"
+                data-gambar="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : '' }}"
+              >Detail</button>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
     @endforeach
   </div>
 </div>
-
 @include('redaktur.partials.modal-add')
 @include('redaktur.partials.modal-detail')
 @endsection
+
 
 @push('scripts')
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     // Modal detail
-    document.querySelectorAll('.btn-detail').forEach(btn => {
-      btn.addEventListener('click', function () {
-        document.getElementById('editJudul').value = this.dataset.judul;
-        document.getElementById('editKonten').value = this.dataset.konten;
-        document.getElementById('editNama').value = this.dataset.nama;
-        document.getElementById('editEmail').value = this.dataset.email;
-        document.getElementById('editTanggal').value = this.dataset.tanggal;
-        document.getElementById('editStatus').value = this.dataset.status;
-        // Set gambar jika ada
-const gambarElement = document.getElementById('editGambar');
-const gambarContainer = document.getElementById('gambarContainer');
-if (this.dataset.gambar) {
-  gambarElement.src = this.dataset.gambar;
-  gambarElement.classList.remove('hidden');
-  gambarContainer.classList.remove('hidden');
-} else {
-  gambarElement.src = '';
-  gambarElement.classList.add('hidden');
-  gambarContainer.classList.add('hidden');
-}
+   document.querySelectorAll('.btn-detail').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const id = this.dataset.id;
+    const isPublished = this.dataset.published === '1';
 
-        document.getElementById('editModal').classList.remove('hidden');
-        document.getElementById('editModal').classList.add('flex');
-      });
-    });
+    document.getElementById('editId').value = id;
+    document.getElementById('editJudul').value = this.dataset.judul;
+    document.getElementById('editKonten').value = this.dataset.konten;
+    document.getElementById('editNama').value = this.dataset.nama;
+    document.getElementById('editEmail').value = this.dataset.email;
+    document.getElementById('editTanggal').value = this.dataset.tanggal;
+    document.getElementById('editStatus').value = this.dataset.status;
 
-    window.closeEditModal = function () {
-      document.getElementById('editModal').classList.add('hidden');
-      document.getElementById('editModal').classList.remove('flex');
-    };
+    const gambarElement = document.getElementById('editGambar');
+    const gambarContainer = document.getElementById('gambarContainer');
+    if (this.dataset.gambar) {
+      gambarElement.src = this.dataset.gambar;
+      gambarElement.classList.remove('hidden');
+      gambarContainer.classList.remove('hidden');
+    } else {
+      gambarElement.src = '';
+      gambarElement.classList.add('hidden');
+      gambarContainer.classList.add('hidden');
+    }
+
+    // Editable hanya jika belum dipublish
+    document.getElementById('editJudul').readOnly = isPublished;
+    document.getElementById('editKonten').readOnly = isPublished;
+
+    // Set form action (harus disesuaikan dengan route update)
+    document.getElementById('formUpdateDetail').action = `/redaktur/berita/${id}/update`;
+
+    document.getElementById('editModal').classList.remove('hidden');
+    document.getElementById('editModal').classList.add('flex');
+  });
+});
+// Close dropdown on outside click
+window.addEventListener('click', function (e) {
+  document.querySelectorAll('[id^="dropdownMenu-"]').forEach(menu => {
+    if (!menu.contains(e.target) && !e.target.closest('[id^="dropdownBtn-"]')) {
+      menu.classList.add('hidden');
+    }
+  });
+});
+
+// 🔽 Tambahkan ini
+window.closeEditModal = function () {
+  const modal = document.getElementById('editModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+};
+
 
     // Modal tambah
     document.getElementById('btnAddNews')?.addEventListener('click', function () {
@@ -186,14 +191,6 @@ if (this.dataset.gambar) {
       });
     });
 
-    // Close dropdown on outside click
-    window.addEventListener('click', function (e) {
-      document.querySelectorAll('[id^="dropdownMenu-"]').forEach(menu => {
-        if (!menu.contains(e.target) && !e.target.closest('[id^="dropdownBtn-"]')) {
-          menu.classList.add('hidden');
-        }
-      });
-    });
   });
 </script>
 @endpush
