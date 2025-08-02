@@ -93,5 +93,25 @@ public function daftarPublish()
     return view('redaktur.publish', compact('beritas'));
 }
 
+public function update(Request $request, $id)
+{
+    $berita = Berita::findOrFail($id);
+
+    $validated = $request->validate([
+        'judul' => 'required|string|max:255',
+        'konten' => 'required|string',
+        'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    // Jika upload gambar baru
+    if ($request->hasFile('gambar')) {
+        $validated['gambar'] = $request->file('gambar')->store('berita', 'public');
+    }
+
+    $berita->update($validated);
+
+    return redirect()->back()->with('success', 'Berita berhasil diperbarui.');
+}
+
 
 }

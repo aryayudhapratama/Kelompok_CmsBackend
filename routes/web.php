@@ -36,7 +36,7 @@ Route::middleware(['auth', 'role:redaktur'])->prefix('redaktur')->name('redaktur
     Route::get('/', [RedakturBeritaController::class, 'dashboard'])->name('dashboard');
     Route::get('/kelola', [RedakturBeritaController::class, 'index'])->name('kelola');
     Route::get('/publish', [RedakturBeritaController::class, 'daftarPublish'])->name('publish');
-
+    Route::put('/berita/{id}/update', [RedakturBeritaController::class, 'update'])->name('berita.update');
     Route::post('/berita', [RedakturBeritaController::class, 'store'])->name('berita.store');
     Route::post('/berita/{id}/approve', [RedakturBeritaController::class, 'approve'])->name('berita.approve');
     Route::post('/berita/{id}/reject', [RedakturBeritaController::class, 'reject'])->name('berita.reject');
