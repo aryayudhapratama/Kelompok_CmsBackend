@@ -8,10 +8,12 @@
     <link rel="icon" type="image/png" href="{{ asset('assets2/img/favicon.png') }}" />
     <title>REPORTER - KELOLA BERITA</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <script src=" https://kit.fontawesome.com/42d5adcbca.js " crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link href="{{ asset('assets2/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets2/css/nucleo-svg.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets2/css/argon-dashboard-tailwind.css?v=1.0.1') }}" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 
 <body
@@ -219,16 +221,6 @@
                 enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Nama Lengkap</label>
-                    <input type="text" name="nama_reporter" value="{{ auth()->user()->name }}"
-                        class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" readonly>
-                </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Email</label>
-                    <input type="email" name="email_reporter" value="{{ auth()->user()->email }}"
-                        class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" readonly>
-                </div>
-                <div class="mb-4">
                     <label class="block mb-1 text-sm dark:text-white">Judul Berita</label>
                     <input type="text" name="judul"
                         class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
@@ -239,7 +231,7 @@
                         required></textarea>
                 </div>
                 <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Gambar (Opsional)</label>
+                    <label class="block mb-1 text-sm dark:text-white">Gambar (Optional)</label>
                     <input type="file" name="gambar" accept="image/*"
                         class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
                 </div>
@@ -279,20 +271,6 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block mb-1 text-sm dark:text-white">Nama Reporter</label>
-                            <input type="text" id="editNama"
-                                class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"
-                                readonly>
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-sm dark:text-white">Email</label>
-                            <input type="text" id="editEmail"
-                                class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"
-                                readonly>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
                             <label class="block mb-1 text-sm dark:text-white">Tanggal Dibuat</label>
                             <input type="text" id="editTanggal"
                                 class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"
@@ -327,8 +305,6 @@
             btn.addEventListener('click', function() {
                 document.getElementById('editJudul').value = this.dataset.judul;
                 document.getElementById('editKonten').value = this.dataset.konten;
-                document.getElementById('editNama').value = this.dataset.nama;
-                document.getElementById('editEmail').value = this.dataset.email;
                 document.getElementById('editTanggal').value = this.dataset.tanggal;
                 document.getElementById('editStatus').value = this.dataset.status;
                 document.getElementById('editId').value = this.dataset.id;
