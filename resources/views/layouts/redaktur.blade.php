@@ -10,6 +10,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
 
     <style>
         body {
@@ -24,6 +30,22 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        
+        @keyframes fade-in-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.3s ease-out;
+}
+
     </style>
 
 </head>
@@ -76,8 +98,9 @@
     </header>
 
     {{-- === SIDEBAR === --}}
-    <aside id="sidebar"
-        class="fixed inset-y-0 left-0 z-40 my-4 ml-6 w-64 rounded-2xl bg-white shadow-xl transition-transform duration-200 ease-in-out -translate-x-full xl:translate-x-0">
+   <aside id="sidebar"
+  class="fixed inset-y-0 left-0 z-40 my-4 ml-6 w-64 rounded-2xl bg-white shadow-xl transition-all duration-300 ease-in-out -translate-x-full xl:translate-x-0">
+
         <div class="h-19">
             <a href="/redaktur" class="flex items-center px-6 py-5">
                 <img src="{{ asset('assets2/img/logo-ct-dark.png') }}" class="h-8" alt="Logo" />
@@ -88,49 +111,64 @@
         <hr class="my-2 mx-4 border-t border-gray-200" />
 
         <div class="overflow-y-auto h-[calc(100vh-120px)] scrollbar-hide">
-            <ul class="flex flex-col px-2">
-                <li class="mb-2">
-                    <a href="/redaktur"
-                        class="flex items-center px-4 py-3 rounded-lg transition {{ request()->is('redaktur') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-slate-700 hover:bg-gray-100' }}">
-                        <i class="fas fa-tachometer-alt w-5 text-blue-500"></i>
-                        <span class="ml-3">Dashboard</span>
-                    </a>
-                </li>
+            <ul class="flex flex-col px-3 py-2 space-y-1 text-sm">
+  <li>
+    <a href="/redaktur"
+      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
+      {{ request()->is('redaktur') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+      <i class="fas fa-tachometer-alt text-base"></i>
+      <span>Dashboard</span>
+    </a>
+  </li>
 
-                <li class="mb-2">
-                    <a href="/redaktur/kelola"
-                        class="flex items-center px-4 py-3 rounded-lg transition {{ request()->is('redaktur/kelola*') ? 'bg-green-100 text-green-700 font-semibold' : 'text-slate-700 hover:bg-gray-100' }}">
-                        <i class="fas fa-newspaper w-5 text-green-500"></i>
-                        <span class="ml-3">Kelola Berita</span>
-                    </a>
-                </li>
+  <li>
+    <a href="/redaktur/kelola"
+      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
+      {{ request()->is('redaktur/kelola*') ? 'bg-green-100 text-green-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+      <i class="fas fa-newspaper text-base"></i>
+      <span>Kelola Berita</span>
+    </a>
+  </li>
 
-                <li class="mb-2">
-                    <a href="/redaktur/publish"
-                        class="flex items-center px-4 py-3 rounded-lg transition {{ request()->is('redaktur/publish*') ? 'bg-red-100 text-red-700 font-semibold' : 'text-slate-700 hover:bg-gray-100' }}">
-                        <i class="fas fa-newspaper w-5 text-green-500"></i>
-                        <span class="ml-3">Publish</span>
-                    </a>
-                </li>
+  <li>
+    <a href="/redaktur/publish"
+      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
+      {{ request()->is('redaktur/publish*') ? 'bg-red-100 text-red-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+      <i class="fas fa-check-circle text-base"></i>
+      <span>Publish</span>
+    </a>
+  </li>
 
-                <li class="mb-2">
-                    <a href="{{ route('redaktur.landing.index') }}"
-                        class="flex items-center px-4 py-3 rounded-lg transition {{ request()->is('redaktur/landing*') ? 'bg-red-100 text-red-700 font-semibold' : 'text-slate-700 hover:bg-gray-100' }}">
-                        <i class="fas fa-newspaper w-5 text-green-500"></i>
-                        <span class="ml-3">Carousel</span>
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <form method="POST" action="/logout">
-                        @csrf
-                        <button type="submit"
-                            class="w-full text-left flex items-center px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition">
-                            <i class="fas fa-sign-out-alt w-5"></i>
-                            <span class="ml-3">Logout</span>
-                        </button>
-                    </form>
-                </li>
-            </ul>
+  <li>
+    <a href="{{ route('redaktur.landing.index') }}"
+      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
+      {{ request()->is('redaktur/landing*') ? 'bg-yellow-100 text-yellow-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+      <i class="fas fa-images text-base"></i>
+      <span>Carousel</span>
+    </a>
+  </li>
+
+  <li>
+    <a href="{{ route('redaktur.file.index') }}"
+      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
+      {{ request()->routeIs('redaktur.file.index') ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+      <i class="fas fa-folder-open text-base"></i>
+      <span>File Manager</span>
+    </a>
+  </li>
+
+  <li>
+    <form method="POST" action="/logout">
+      @csrf
+      <button type="submit"
+        class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-all duration-150">
+        <i class="fas fa-sign-out-alt text-base"></i>
+        <span>Logout</span>
+      </button>
+    </form>
+  </li>
+</ul>
+
         </div>
     </aside>
 

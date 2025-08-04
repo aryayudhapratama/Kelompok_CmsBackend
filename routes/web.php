@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\LandingSection;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Redaktur\LandingSectionController;
+use App\Http\Controllers\Redaktur\RedakturFileController;
 use App\Http\Controllers\Redaktur\BeritaController as RedakturBeritaController;
 use App\Http\Controllers\Reporter\Berita2Controller as ReporterBeritaController;
 use App\Http\Controllers\Reporter\ReporterController;
@@ -32,6 +33,7 @@ Route::middleware(['auth', 'role:redaktur'])
     ->group(function () {
         Route::get('/', [RedakturBeritaController::class, 'dashboard'])->name('dashboard');
         Route::get('/kelola', [RedakturBeritaController::class, 'index'])->name('kelola');
+        
         Route::get('/publish', [RedakturBeritaController::class, 'daftarPublish'])->name('publish');
         Route::put('/berita/{id}/update', [RedakturBeritaController::class, 'update'])->name('berita.update');
         Route::post('/berita', [RedakturBeritaController::class, 'store'])->name('berita.store');
@@ -39,6 +41,12 @@ Route::middleware(['auth', 'role:redaktur'])
         Route::post('/berita/{id}/reject', [RedakturBeritaController::class, 'reject'])->name('berita.reject');
         Route::post('/berita/{id}/publish', [RedakturBeritaController::class, 'publish'])->name('berita.publish');
         Route::post('/berita/{id}/unpublish', [RedakturBeritaController::class, 'unpublish'])->name('berita.unpublish');
+        Route::delete('/berita/{id}', [RedakturBeritaController::class, 'destroy'])->name('berita.delete');
+
+
+        Route::post('/upload-file', [RedakturFileController::class, 'upload'])->name('upload.file');
+        Route::get('/file', [RedakturFileController::class, 'index'])->name('file.index');
+        Route::delete('/file/{id}', [RedakturFileController::class, 'destroy'])->name('file.delete');
 
         // ✅ Perbaikan: Hapus "/redaktur" dari dalam route
         Route::get('/landing', [LandingSectionController::class, 'index'])->name('landing.index');
