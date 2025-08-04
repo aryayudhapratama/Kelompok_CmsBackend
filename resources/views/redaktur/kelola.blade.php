@@ -10,12 +10,11 @@
     <h2 class="text-lg font-semibold text-gray-800">Approval Queue</h2>
     <div class="flex items-center gap-2">
       <div class="relative">
-        <input type="text" placeholder="Cari berita..."
-          class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          id="searchInput" />
-        <span class="absolute left-3 top-2.5 text-gray-400">
-          <i class="fas fa-search"></i>
-        </span>
+        <input type="text" id="searchInput" name="search"
+       value="{{ request('search') }}"
+       placeholder="Cari nama berita..."
+       class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+
       </div>
       <button id="btnAddNews"
         class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
@@ -76,6 +75,7 @@
       <table class="w-full text-sm text-left table-fixed">
         <thead class="bg-gray-100 text-gray-600">
          <tr>
+          <th class="px-4 py-2">ID</th>
     <th class="px-4 py-2">Date Added</th>
     <th class="px-4 py-2">Full Name</th>
     <th class="px-4 py-2">Email</th>
@@ -87,6 +87,7 @@
 
         <tbody>
   <tr class="border-t hover:bg-gray-50">
+    <td class="px-4 py-2">{{ $berita->id }}</td>
     <td class="px-4 py-2">{{ $berita->created_at->format('d F Y') }}</td>
     <td class="px-4 py-2">{{ $berita->nama_reporter }}</td>
     <td class="px-4 py-2">{{ $berita->email_reporter }}</td>
@@ -102,23 +103,51 @@
     </td>
 
     <td class="px-4 py-2">
-     <button type="button" class="btn-detail text-blue-600 hover:underline"
-  data-judul="{{ $berita->judul }}"
-  data-konten="{{ $berita->konten }}"
-  data-nama="{{ $berita->nama_reporter }}"
-  data-email="{{ $berita->email_reporter }}"
-  data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
-  data-status="{{ $berita->status }}"
-  data-gambar="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : '' }}"
->Detail</button>
+  <div class="flex items-center gap-2">
+    <!-- Tombol Detail -->
+    <button type="button"
+      class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition"
+      title="Lihat Detail"
+      data-judul="{{ $berita->judul }}"
+      data-konten="{{ $berita->konten }}"
+      data-nama="{{ $berita->nama_reporter }}"
+      data-email="{{ $berita->email_reporter }}"
+      data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
+      data-status="{{ $berita->status }}"
+      data-gambar="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : '' }}"
+    >
+      <i class="fas fa-eye text-base"></i>
+    </button>
 
-    </td>
+    <!-- Tombol Hapus -->
+    <!-- Tombol Hapus (pakai SweetAlert) -->
+<form method="POST" action="{{ route('redaktur.berita.delete', $berita->id) }}" class="form-hapus">
+  @csrf
+  @method('DELETE')
+  <button 
+    type="button"
+    class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition btn-hapus"
+    title="Hapus Berita"
+    data-id="{{ $berita->id }}"
+  >
+    <i class="fas fa-trash text-base"></i>
+  </button>
+</form>
+
+  </div>
+</td>
+
   </tr>
 </tbody>
 
       </table>
     </div>
     @endforeach
+    <!-- Pagination -->
+<div class="mt-6">
+    {{ $beritas->links('vendor.pagination.tailwind') }}
+</div>
+
   </div>
 </div>
 
@@ -176,13 +205,26 @@ if (this.dataset.gambar) {
     
 
     // Search
-    document.getElementById('searchInput').addEventListener('keyup', function () {
-      const keyword = this.value.toLowerCase();
-      document.querySelectorAll('#cardContainer .card').forEach(card => {
-        const title = card.getAttribute('data-title').toLowerCase();
-        card.style.display = title.includes(keyword) ? '' : 'none';
-      });
-    });
+    let searchTimeout;
+
+document.getElementById('searchInput').addEventListener('input', function () {
+    clearTimeout(searchTimeout); // Reset debounce
+
+    searchTimeout = setTimeout(() => {
+        const keyword = this.value.trim();
+        const url = new URL(window.location.href);
+
+        if (keyword.length > 0) {
+            url.searchParams.set('search', keyword);
+        } else {
+            url.searchParams.delete('search');
+        }
+
+        url.searchParams.set('page', 1); // Reset ke halaman pertama
+        window.location.href = url.toString();
+    }, 500); // Delay 500ms, bisa diubah
+});
+
 
     // Dropdown toggle
     document.querySelectorAll('[id^="dropdownBtn-"]').forEach(btn => {
@@ -201,5 +243,28 @@ if (this.dataset.gambar) {
       });
     });
   });
+
+  document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.btn-hapus').forEach(button => {
+    button.addEventListener('click', function () {
+      const form = this.closest('form');
+
+      Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Berita yang dihapus tidak bisa dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e3342f',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    });
+  });
+});
 </script>
 @endpush
