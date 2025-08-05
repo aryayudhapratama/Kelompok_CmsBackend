@@ -106,16 +106,18 @@ Route::get('/berita', [PublikasiController::class, 'index'])->name('berita.index
 Route::get('/berita/{id}', [PublikasiController::class, 'show'])->name('berita.show');
 
 // Grup untuk Reporter
-Route::middleware(['auth', 'role.reporter'])->group(function () {
-    // Dashboard Reporter
-    Route::get('/reporter', [ReporterController::class, 'dashboard'])->name('reporter.dashboard');
+Route::middleware(['auth', 'role.reporter'])->group(
+    function () {
+        // Dashboard Reporter
+        Route::get('/reporter', [ReporterController::class, 'dashboard'])->name('reporter.dashboard');
 
-    // Kelola Berita (untuk sidebar)
-    Route::get('/reporter/berita', [ReporterController::class, 'index'])->name('reporter.berita');
+        // Kelola Berita (untuk sidebar)
+        Route::get('/reporter/berita', [ReporterController::class, 'index'])->name('reporter.berita');
 
-    // Tambah Berita
-    Route::post('/berita', [Berita2Controller::class, 'store'])->name('berita.store');
+        // Tambah Berita
+        Route::post('/berita', [Berita2Controller::class, 'store'])->name('berita.store');
 
-    // Update Berita Reporter
-    Route::put('/reporter/berita/{id}', [Berita2Controller::class, 'update'])->name('reporter.berita.update');
-});
+        // Update Berita Reporter
+        Route::put('/reporter/berita/{id}', [Berita2Controller::class, 'update'])->name('reporter.berita.update');
+    });
+
