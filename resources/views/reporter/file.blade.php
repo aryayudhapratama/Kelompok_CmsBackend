@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets2/img/apple-icon.png') }}" />
     <link rel="icon" type="image/png" href="{{ asset('assets2/img/favicon.png') }}" />
-    <title>REPORTER - KELOLA BERITA</title>
+    <title>REPORTER - FILE MANAGER</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link href="{{ asset('assets2/css/nucleo-icons.css') }}" rel="stylesheet" />
@@ -52,7 +52,7 @@
                     </a>
                 </li>
                 <li class="mt-0.5 w-full">
-                    <a class="py-2.7 bg-blue-500/13 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
+                    <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
                         href="{{ route('reporter.berita') }}">
                         <div
                             class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
@@ -62,7 +62,7 @@
                     </a>
                 </li>
                 <li class="mt-0.5 w-full">
-                    <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+                    <a class="py-2.7 bg-blue-500/13 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
                         href="{{ route('reporter.file') }}">
                         <div
                             class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
@@ -98,9 +98,9 @@
                             <a class="text-white opacity-50" href="javascript:;">Pages</a>
                         </li>
                         <li class="text-sm pl-2 capitalize leading-normal text-white before:float-left before:pr-2 before:text-white before:content-['/']"
-                            aria-current="page">Kelola Berita</li>
+                            aria-current="page">File Manager</li>
                     </ol>
-                    <h6 class="mb-0 font-bold text-white capitalize">Kelola Berita</h6>
+                    <h6 class="mb-0 font-bold text-white capitalize">File Manager</h6>
                 </nav>
             </div>
         </nav>
@@ -113,7 +113,7 @@
                 </button>
             </div>
 
-            <div class="flex flex-wrap -mx-3">
+            {{-- <div class="flex flex-wrap -mx-3">
                 <div class="w-full max-w-full px-3 mt-0 mb-6">
                     <div
                         class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
@@ -216,7 +216,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </main>
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\Redaktur\RedakturFileController;
 use App\Http\Controllers\Redaktur\BeritaController as RedakturBeritaController;
 use App\Http\Controllers\Reporter\Berita2Controller as ReporterBeritaController;
 use App\Http\Controllers\Reporter\ReporterController;
+use App\Http\Controllers\Reporter\ReporterFileController;
 use App\Http\Controllers\PublikasiController;
 use App\Http\Controllers\HomeController;
 
@@ -76,10 +77,18 @@ Route::middleware(['auth', 'role.reporter'])->group(
         // Kelola Berita (untuk sidebar)
         Route::get('/reporter/berita', [ReporterController::class, 'index'])->name('reporter.berita');
 
+        // Kelola Files (untuk sidebar)
+        Route::get('/reporter/file', [ReporterFileController::class, 'index'])->name('reporter.file');
+
         // Tambah Berita
-        Route::post('/berita', [Berita2Controller::class, 'store'])->name('berita.store');
+        Route::post('/berita', [ReporterBeritaController::class, 'store'])->name('berita.store');
 
         // Update Berita Reporter
-        Route::put('/reporter/berita/{id}', [Berita2Controller::class, 'update'])->name('reporter.berita.update');
-    });
+        Route::put('/reporter/berita/{id}', [ReporterBeritaController::class, 'update'])->name('reporter.berita.update');
+
+        Route::post('/upload-file', [ReporterFileController::class, 'upload'])->name('upload.file');
+        Route::get('/file', [ReporterFileController::class, 'index'])->name('file.index');
+        Route::delete('/file/{id}', [ReporterFileController::class, 'destroy'])->name('file.delete');
+    }
+);
 
