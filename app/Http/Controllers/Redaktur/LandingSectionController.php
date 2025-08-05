@@ -1,22 +1,34 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\redaktur;
 
-use App\Http\Controllers\Controller;
-use App\Models\LandingSection;
 use Illuminate\Http\Request;
+use App\Models\LandingSection;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class LandingSectionController extends Controller
 {
-    // Tampilkan semua section
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         $sections = LandingSection::orderBy('order')->get();
-        return view('admin.landing.index', compact('sections'));
+        return view('redaktur.landing.index', compact('sections'));
     }
 
-    // Simpan section baru
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -37,7 +49,7 @@ class LandingSectionController extends Controller
 
         LandingSection::create($data);
 
-        return redirect()->route('admin.landing.index')->with('success', 'Section berhasil ditambahkan');
+        return redirect()->route('redaktur.landing.index')->with('success', 'Section berhasil ditambahkan');
     }
 
     // Kembalikan data section untuk modal edit (JSON)
@@ -47,8 +59,26 @@ class LandingSectionController extends Controller
         return response()->json($section);
     }
 
-    // Update section
-    public function update(Request $request, $id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
         $section = LandingSection::findOrFail($id);
 
@@ -73,11 +103,13 @@ class LandingSectionController extends Controller
 
         $section->update($data);
 
-        return redirect()->route('admin.landing.index')->with('success', 'Section berhasil diperbarui');
+        return redirect()->route('redaktur.landing.index')->with('success', 'Section berhasil diperbarui');
     }
 
-    // Hapus section
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
         $section = LandingSection::findOrFail($id);
 
@@ -87,6 +119,6 @@ class LandingSectionController extends Controller
 
         $section->delete();
 
-        return redirect()->route('admin.landing.index')->with('success', 'Section berhasil dihapus');
+        return redirect()->route('redaktur.landing.index')->with('success', 'Section berhasil dihapus');
     }
 }

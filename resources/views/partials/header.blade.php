@@ -52,17 +52,25 @@
           </ul>
         </li>
 
-        <li class="dropdown {{ request()->is('berita*') ? 'active' : '' }}">
+        <li class="dropdown {{ request()->routeIs('berita.index') || request()->routeIs('berita.show') ? 'active' : '' }}">
           <a href="#"><span>Publikasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
             <li><a href="#">Agenda</a></li>
             <li>
-              <a href="{{ route('berita.index') }}" class="{{ request()->is('berita*') ? 'active' : '' }}">Berita</a>
+              <a href="{{ route('berita.index') }}"
+                 class="{{ request()->routeIs('berita.index') || request()->routeIs('berita.show') ? 'active' : '' }}">
+                Berita
+              </a>
             </li>
           </ul>
         </li>
 
-        <li><a href="#" class="{{ request()->is('data-publik*') ? 'active' : '' }}">Data Publik</a></li>
+        <li>
+          <a href="#"
+             class="{{ request()->is('data-publik*') ? 'active' : '' }}">
+            Data Publik
+          </a>
+        </li>
       </ul>
 
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

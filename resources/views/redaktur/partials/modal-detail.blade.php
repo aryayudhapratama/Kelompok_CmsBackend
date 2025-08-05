@@ -1,39 +1,65 @@
-<!-- Modal Detail -->
-<div id="editModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-  <div class="bg-white p-6 rounded-lg w-full max-w-2xl relative">
-    <h3 class="text-lg font-semibold text-blue-700 mb-4">Detail Berita</h3>
-    <form>
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-1">Judul</label>
-        <input type="text" id="editJudul" class="w-full px-4 py-2 border rounded text-gray-800" readonly />
+<!-- Modal Detail Berita -->
+<div id="editModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 transition-all duration-300">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-fade-in-up">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold">Detail Berita</h2>
+      <button onclick="closeEditModal()" class="text-white hover:text-gray-200 text-sm">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <form method="POST" action="" id="formUpdateDetail" enctype="multipart/form-data" class="px-6 py-5 text-sm text-gray-700 space-y-4">
+      @csrf
+      @method('PUT')
+      <input type="hidden" id="editId" name="id" />
+
+      <div>
+        <label class="block font-medium mb-1">Judul</label>
+        <input type="text" id="editJudul" name="judul" class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
       </div>
-      <div class="mb-4" id="gambarContainer">
-        <label class="block text-sm font-medium mb-1">Gambar Berita</label>
-        <img id="editGambar" src="" alt="Gambar Berita" class="w-64 h-40 object-cover rounded border shadow hidden" />
+
+      <div id="gambarContainer">
+        <label class="block font-medium mb-1">Gambar Berita</label>
+        <img id="editGambar" src="" alt="Gambar Berita" class="w-64 h-40 object-cover rounded shadow border mb-2 hidden" />
+        <input type="file" name="gambar" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
       </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-1">Konten</label>
-        <textarea id="editKonten" rows="6" class="w-full px-4 py-2 border rounded text-gray-800" readonly></textarea>
+
+      <div>
+        <label class="block font-medium mb-1">Konten</label>
+        <textarea id="editKonten" name="konten" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
       </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-1">Nama Reporter</label>
-        <input type="text" id="editNama" class="w-full px-4 py-2 border rounded text-gray-800" readonly />
+
+      <div>
+        <label class="block font-medium mb-1">Nama Reporter</label>
+        <input type="text" id="editNama" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly />
       </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-1">Email Reporter</label>
-        <input type="text" id="editEmail" class="w-full px-4 py-2 border rounded text-gray-800" readonly />
+
+      <div>
+        <label class="block font-medium mb-1">Email Reporter</label>
+        <input type="text" id="editEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly />
       </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-1">Tanggal Dibuat</label>
-        <input type="text" id="editTanggal" class="w-full px-4 py-2 border rounded text-gray-800" readonly />
+
+      <div>
+        <label class="block font-medium mb-1">Tanggal Dibuat</label>
+        <input type="text" id="editTanggal" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly />
       </div>
-      <div class="mb-4">
-        <label class="block text-sm font-medium mb-1">Status</label>
-        <input type="text" id="editStatus" class="w-full px-4 py-2 border rounded text-gray-800" readonly />
+
+      <div>
+        <label class="block font-medium mb-1">Status</label>
+        <input type="text" id="editStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly />
       </div>
-      
-      <div class="flex justify-end space-x-2">
-        <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Tutup</button>
+
+      <!-- Footer -->
+      <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+          <i class="fas fa-save mr-1"></i> Simpan
+        </button>
+        <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
+          <i class="fas fa-times mr-1"></i> Tutup
+        </button>
       </div>
     </form>
   </div>

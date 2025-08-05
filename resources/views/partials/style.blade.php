@@ -209,6 +209,88 @@
   color: inherit !important;
 }
 
+.card-berita:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-berita {
+  transition: all 0.3s ease-in-out;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+  background-color: transparent;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  height: 80px;
+}
+
+.header.scrolled {
+  background-color: rgba(28, 34, 48, 0.98) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+#berita-detail {
+  background: #f4f8fb;
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+#berita-detail h2 {
+  font-size: 2rem;
+  color: #1c2230;
+}
+
+#berita-detail .content {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  color: #444;
+}
+
+.btn-back {
+  border: 1px solid #2FC3FF;
+  background-color: #fff;
+  color: #2FC3FF;
+  font-weight: 500;
+  transition: 0.3s ease;
+  border-radius: 8px;
+}
+
+.btn-back:hover {
+  background-color: #2FC3FF;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(47, 195, 255, 0.3);
+}
+
+.card-berita {
+  transition: all 0.3s ease;
+}
+
+.card-berita:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.07);
+}
+
+.card h6 a:hover {
+  color: #2FC3FF;
+}
+
+#blogdetail .row .text-muted small {
+  font-size: 13px;
+}
+
+#blogdetail h3 a:hover {
+  color: #2FC3FF;
+}
+
+#blogdetail img {
+  border-radius: 16px;
+}
+
+
 
 
 </style>
