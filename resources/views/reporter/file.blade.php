@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- 🔐 Penting untuk AJAX -->
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets2/img/apple-icon.png') }}" />
     <link rel="icon" type="image/png" href="{{ asset('assets2/img/favicon.png') }}" />
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-uMu7F1...etc" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>REPORTER - FILE MANAGER</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
@@ -13,7 +16,6 @@
     <link href="{{ asset('assets2/css/nucleo-svg.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets2/css/argon-dashboard-tailwind.css?v=1.0.1') }}" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
 
 <body
@@ -35,10 +37,8 @@
                 <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">REPORTER PANEL</span>
             </a>
         </div>
-
         <hr
             class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
-
         <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
             <ul class="flex flex-col pl-0 mb-0">
                 <li class="mt-0.5 w-full">
@@ -106,20 +106,24 @@
         </nav>
 
         <div class="w-full px-6 py-6 mx-auto">
-            <div class="flex justify-end mb-4">
-                <button id="btnAddNews"
-                    class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:shadow-xs hover:-translate-y-px bg-150 bg-x-25 leading-pro text-xs ease-in tracking-tight-rem shadow-md bg-clip-padding bg-gradient-to-tl from-blue-500 to-violet-500">
-                    + Tambah Berita
-                </button>
+            <div class="flex flex-wrap items-center justify-between mb-4 -mx-3">
+                <div class="w-full max-w-full px-3 shrink-0 md:w-8/12 md:flex-0">
+                </div>
+                <div class="w-full max-w-full px-3 shrink-0 md:w-4/12 md:flex-0">
+                    <div class="flex items-center justify-end gap-2">
+                        <button id="btnAddNew"
+                            class="inline-block px-6 py-2.5 font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg cursor-pointer hover:shadow-lg hover:-translate-y-px text-xs leading-pro ease-in tracking-tight-rem shadow-md">
+                            <i class="fas fa-plus mr-1"></i> Tambah Baru
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            {{-- <div class="flex flex-wrap -mx-3">
+            <!-- Table -->
+            <div class="flex flex-wrap -mx-3">
                 <div class="w-full max-w-full px-3 mt-0 mb-6">
                     <div
                         class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-                        <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
-                            <h6 class="dark:text-white">Daftar Berita</h6>
-                        </div>
                         <div class="flex-auto px-0 pt-0 pb-2">
                             <div class="p-0 overflow-x-auto">
                                 <table
@@ -127,227 +131,258 @@
                                     <thead class="align-bottom">
                                         <tr>
                                             <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Judul
-                                            </th>
+                                                class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
+                                                ID</th>
                                             <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Nama Reporter
-                                            </th>
+                                                class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
+                                                Date Added</th>
                                             <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Email
-                                            </th>
+                                                class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
+                                                Nama File</th>
                                             <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Tanggal
-                                            </th>
+                                                class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
+                                                Slug Path</th>
                                             <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Status
-                                            </th>
+                                                class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
+                                                User</th>
                                             <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Gambar
-                                            </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Aksi
-                                            </th>
+                                                class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
+                                                Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @foreach ($beritas as $berita)
-                                            <tr
-                                                class="border-b dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700">
-                                                <td
-                                                    class="px-6 py-4 text-sm text-slate-700 dark:text-white whitespace-nowrap">
-                                                    {{ $berita->judul }}
+                                    <tbody id="file-table-body">
+                                        @forelse($files as $file)
+                                            <tr class="border-t hover:bg-gray-50">
+                                                <td class="px-4 py-2">{{ $file->id }}</td>
+                                                <td class="px-4 py-2">{{ $file->created_at->format('d F Y') }}</td>
+                                                <td class="px-4 py-2">{{ $file->nama }}</td>
+                                                <td class="px-4 py-2 text-blue-600 underline">
+                                                    <a href="{{ $file->slug_path }}"
+                                                        target="_blank">{{ Str::limit($file->slug_path, 50) }}</a>
                                                 </td>
-                                                <td
-                                                    class="px-6 py-4 text-sm text-slate-700 dark:text-white whitespace-nowrap">
-                                                    {{ $berita->nama_reporter }}
-                                                </td>
-                                                <td
-                                                    class="px-6 py-4 text-sm text-slate-700 dark:text-white whitespace-nowrap">
-                                                    {{ $berita->email_reporter }}
-                                                </td>
-                                                <td
-                                                    class="px-6 py-4 text-sm text-slate-700 dark:text-white whitespace-nowrap">
-                                                    {{ $berita->created_at->format('d M Y') }}
-                                                </td>
-                                                <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                                    <span
-                                                        class="text-xs font-semibold px-3 py-1 rounded-full
-                    {{ $berita->status == 'approved' ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200' : ($berita->status == 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200') }}">
-                                                        {{ ucfirst($berita->status) }}
-                                                    </span>
-                                                </td>
-                                                <td
-                                                    class="p-1 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                    @if ($berita->gambar)
-                                                        <img src="{{ asset('storage/' . $berita->gambar) }}"
-                                                            class="rounded" width="120" alt="Gambar">
-                                                    @else
-                                                        <span class="text-xs text-gray-500">Tidak ada</span>
-                                                    @endif
-                                                </td>
-                                                <td
-                                                    class="px-6 py-4 text-sm text-blue-500 hover:underline whitespace-nowrap">
-                                                    <a href="javascript:;" class="btn-detail"
-                                                        data-id="{{ $berita->id }}"
-                                                        data-url="{{ route('reporter.berita.update', $berita->id) }}"
-                                                        data-judul="{{ $berita->judul }}"
-                                                        data-konten="{{ $berita->konten }}"
-                                                        data-nama="{{ $berita->nama_reporter }}"
-                                                        data-email="{{ $berita->email_reporter }}"
-                                                        data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
-                                                        data-gambar="{{ $berita->gambar }}"
-                                                        data-status="{{ $berita->status }}">
-                                                        Detail
-                                                    </a>
+                                                <td class="px-4 py-2">{{ $file->user }}</td>
+                                                <td class="px-4 py-2">
+                                                    <div class="flex items-center gap-2">
+                                                        <!-- Tombol Lihat Detail -->
+                                                        <button type="button"
+                                                            class="w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition btn-detail"
+                                                            title="Lihat Detail" data-judul="{{ $file->nama }}"
+                                                            data-konten="{{ $file->konten ?? 'Tidak tersedia' }}"
+                                                            data-path="{{ $file->slug_path }}">
+                                                            <i class="fas fa-eye text-base"></i>
+                                                        </button>
 
+                                                        <!-- Tombol Hapus (AJAX) -->
+                                                        <button type="button"
+                                                            class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition btn-hapus"
+                                                            title="Hapus File" data-id="{{ $file->id }}"
+                                                            data-url="{{ route('file.delete', $file->id) }}">
+                                                            <i class="fas fa-trash text-base"></i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        @empty
+                                            <tr>
+                                                <td colspan="6"
+                                                    class="px-4 py-6 text-center text-gray-500 dark:text-gray-400">
+                                                    Tidak ada file ditemukan.
+                                                </td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> --}}
+            </div>
         </div>
     </main>
 
+    <!-- Modal Tambah -->
     <div id="addModal"
-        class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000]">
-        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/2 shadow-2xl">
-            <h5 class="text-lg font-bold mb-4 dark:text-white">Tambah Berita Baru</h5>
-            <form id="formAddNews" action="{{ route('berita.store') }}" method="POST"
-                enctype="multipart/form-data">
+        class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000] p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="text-lg font-bold dark:text-white">Tambah Konten Baru</h5>
+                <button onclick="closeAddModal()"
+                    class="text-gray-500 hover:text-gray-800 dark:text-gray-400">&times;</button>
+            </div>
+            <form id="formAddNew" action="{{ route('upload.file') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Judul Berita</label>
-                    <input type="text" name="judul"
-                        class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Konten Berita</label>
-                    <textarea name="konten" rows="6" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white"
-                        required></textarea>
-                </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Gambar (Optional)</label>
-                    <input type="file" name="gambar" accept="image/*"
-                        class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="closeAddModal()"
-                        class="px-4 py-2 mr-2 text-sm bg-gray-300 rounded-lg dark:bg-slate-600 dark:text-white">Batal</button>
-                    <button type="submit" class="px-4 py-2 text-sm text-white bg-blue-500 rounded-lg">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {{-- Modal Edit --}}
-    <div id="editModal"
-        class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000]">
-        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/2 shadow-2xl">
-            <h5 class="text-lg font-bold mb-4 dark:text-white">Edit Berita</h5>
-            <form id="formEditNews" method="POST" action="#" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="id" id="editId">
                 <div class="space-y-4">
                     <div>
-                        <label class="block mb-1 text-sm dark:text-white">Judul</label>
-                        <input type="text" name="judul" id="editJudul"
-                            class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white">
+                        <label class="block mb-1 text-sm font-medium dark:text-white">Judul</label>
+                        <input type="text" name="judul"
+                            class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
                     </div>
                     <div>
-                        <label class="block mb-1 text-sm dark:text-white">Konten</label>
-                        <textarea name="konten" id="editKonten" rows="6"
-                            class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"></textarea>
+                        <label class="block mb-1 text-sm font-medium dark:text-white">Isi Konten</label>
+                        <textarea name="konten" rows="6"
+                            class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
-                    <div class="mb-4">
-                        <label class="block mb-1 text-sm dark:text-white">Gambar (Opsional)</label>
-                        <input type="file" name="gambar" accept="image/*"
-                            class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload File
+                            PDF</label>
+                        <input type="file" name="file" accept=".pdf" required
+                            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                        <p class="mt-1 text-sm text-gray-500">Hanya file PDF yang diizinkan (max 20MB).</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block mb-1 text-sm dark:text-white">Tanggal Dibuat</label>
-                            <input type="text" id="editTanggal"
-                                class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"
-                                readonly>
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-sm dark:text-white">Status</label>
-                            <input type="text" id="editStatus"
-                                class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"
-                                readonly>
-                        </div>
-                    </div>
-                    <div class="flex justify-end mt-6 gap-2">
-                        <button type="button" onclick="closeEditModal()"
-                            class="px-4 py-2 text-sm bg-gray-300 rounded-lg dark:bg-slate-600 dark:text-white">Tutup</button>
-                        <button type="submit"
-                            class="px-4 py-2 text-sm bg-gray-300 rounded-lg dark:bg-slate-600 dark:text-white">Simpan</button>
-                    </div>
+                </div>
+                <div class="flex justify-end gap-2 mt-6">
+                    <button type="button" onclick="closeAddModal()"
+                        class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-slate-600 dark:text-white">Batal</button>
+                    <button type="submit"
+                        class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
-</body>
-<script src="{{ asset('assets2/js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script src="{{ asset('assets2/js/argon-dashboard-tailwind.js') }}"></script>
+    <!-- Modal Detail -->
+    <div id="detailModal"
+        class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000] p-4">
+        <div
+            class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-3/4 lg:w-2/3 shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center mb-4">
+                <h5 id="detailJudul" class="text-xl font-bold dark:text-white">Detail File</h5>
+                <button onclick="closeDetailModal()"
+                    class="text-gray-500 hover:text-gray-800 dark:text-gray-400">&times;</button>
+            </div>
+            <div class="flex-grow overflow-y-auto pr-2 space-y-4">
+                <div>
+                    <h6 class="text-sm font-bold text-slate-500 dark:text-slate-400">Konten</h6>
+                    <p id="detailKonten" class="text-sm dark:text-white whitespace-pre-wrap"></p>
+                </div>
+                <hr class="dark:border-slate-600">
+                <div>
+                    <h6 class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-2">Pratinjau PDF</h6>
+                    <div class="w-full h-[50vh] bg-gray-200 dark:bg-slate-700 rounded">
+                        <iframe id="detailPdfPreview" class="w-full h-full" src=""></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button type="button" onclick="closeDetailModal()"
+                    class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-slate-600 dark:text-white">Tutup</button>
+            </div>
+        </div>
+    </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Modal Edit
-        document.querySelectorAll('.btn-detail').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('editJudul').value = this.dataset.judul;
-                document.getElementById('editKonten').value = this.dataset.konten;
-                document.getElementById('editTanggal').value = this.dataset.tanggal;
-                document.getElementById('editStatus').value = this.dataset.status;
-                document.getElementById('editId').value = this.dataset.id;
+    <!-- JavaScript -->
+    <script src="https://demos.creative-tim.com/argon-dashboard-tailwind/assets/js/plugins/perfect-scrollbar.min.js">
+    </script>
+    <script src="https://demos.creative-tim.com/argon-dashboard-tailwind/assets/js/argon-dashboard-tailwind.js?v=1.0.1">
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addModal = document.getElementById('addModal');
+            const detailModal = document.getElementById('detailModal');
+            const formAddNew = document.getElementById('formAddNew');
 
-                // Set form action ke URL update Laravel
-                document.getElementById('formEditNews').action = this.dataset.url;
+            // --- Modal Tambah ---
+            document.getElementById('btnAddNew')?.addEventListener('click', () => {
+                addModal.classList.remove('hidden');
+                addModal.classList.add('flex');
+            });
 
-                // Tampilkan modal
-                const modal = document.getElementById('editModal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+            window.closeAddModal = () => {
+                addModal.classList.add('hidden');
+                addModal.classList.remove('flex');
+                formAddNew?.reset();
+            };
+
+            // --- Upload File (AJAX) ---
+            formAddNew?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const btn = this.querySelector('button[type="submit"]');
+                const original = btn.innerHTML;
+                btn.innerHTML = 'Mengunggah...';
+                btn.disabled = true;
+
+                fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Berhasil diunggah!');
+                            closeAddModal();
+                            location.reload();
+                        } else {
+                            alert(data.message || 'Gagal!');
+                        }
+                    })
+                    .catch(() => alert('Kesalahan jaringan.'))
+                    .finally(() => {
+                        btn.innerHTML = original;
+                        btn.disabled = false;
+                    });
+            });
+
+            // --- Modal Detail ---
+            document.getElementById('file-table-body').addEventListener('click', function(e) {
+                const btn = e.target.closest('.btn-detail');
+                if (btn) {
+                    document.getElementById('detailJudul').textContent = btn.dataset.judul;
+                    document.getElementById('detailKonten').textContent = btn.dataset.konten;
+                    document.getElementById('detailPdfPreview').src = btn.dataset.path;
+                    detailModal.classList.remove('hidden');
+                    detailModal.classList.add('flex');
+                }
+            });
+
+            window.closeDetailModal = () => {
+                detailModal.classList.add('hidden');
+                detailModal.classList.remove('flex');
+                document.getElementById('detailPdfPreview').src = '';
+            };
+
+            // --- Hapus File (AJAX) ---
+document.getElementById('file-table-body').addEventListener('click', function(e) {
+    const btn = e.target.closest('.btn-hapus');
+    if (btn) {
+        const url = btn.dataset.url;
+        if (confirm('Yakin ingin hapus file ini?')) {
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('File dihapus!');
+                    // Hapus baris dari tabel
+                    btn.closest('tr').remove();
+                } else {
+                    alert(data.message || 'Gagal hapus.');
+                }
+            })
+            .catch(() => alert('Kesalahan jaringan.'));
+        }
+    }
+});
+
+
+            // Tutup modal dengan Escape
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    closeAddModal();
+                    closeDetailModal();
+                }
             });
         });
-
-        // Tutup Modal Edit
-        window.closeEditModal = function() {
-            const modal = document.getElementById('editModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        };
-
-        // Modal Tambah (jika ada)
-        document.getElementById('btnAddNews')?.addEventListener('click', function() {
-            const modal = document.getElementById('addModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        });
-
-        window.closeAddModal = function() {
-            const modal = document.getElementById('addModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.getElementById('formAddNews')?.reset();
-        };
-    });
-</script>
-
+    </script>
+</body>
 
 </html>
