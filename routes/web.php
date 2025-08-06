@@ -1,16 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Models\LandingSection;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PublikasiController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Redaktur\LandingSectionController;
+use App\Http\Controllers\Admin\AdminFile2Controller;
+use App\Http\Controllers\Reporter\ReporterController;
 use App\Http\Controllers\Redaktur\RedakturFileController;
+use App\Http\Controllers\Reporter\ReporterFileController;
+use App\Http\Controllers\Redaktur\LandingSectionController;
 use App\Http\Controllers\Redaktur\BeritaController as RedakturBeritaController;
 use App\Http\Controllers\Reporter\Berita2Controller as ReporterBeritaController;
-use App\Http\Controllers\Reporter\ReporterController;
-use App\Http\Controllers\Reporter\ReporterFileController;
-use App\Http\Controllers\PublikasiController;
-use App\Http\Controllers\HomeController;
 
 // ======================= LANDING PAGE =======================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -25,6 +26,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
     Route::put('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+    // Route Untuk File Manager
+     Route::get('/admin/file-manager', [AdminFile2Controller::class, 'index'])->name('admin.file-manager.index');
+    Route::post('/admin/file-manager/upload', [AdminFile2Controller::class, 'upload'])->name('admin.file-manager.upload');
+    Route::delete('/admin/file-manager/{id}', [AdminFile2Controller::class, 'destroy'])->name('admin.file-manager.destroy');
 });
 
 // ======================= REDAKTUR =======================

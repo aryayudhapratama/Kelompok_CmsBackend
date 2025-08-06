@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\redaktur;
+namespace App\Http\Controllers\Redaktur;
 
 use Illuminate\Http\Request;
 use App\Models\LandingSection;
