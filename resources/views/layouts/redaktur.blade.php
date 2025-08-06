@@ -1,248 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@yield('title', 'Redaktur')</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@yield('title', 'Redaktur')</title>
 
-    {{-- TailwindCSS & FontAwesome --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        
-        @keyframes fade-in-up {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.3s ease-out;
-}
-
-    </style>
-
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes fade-in-up {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-fade-in-up { animation: fade-in-up 0.3s ease-out; }
+    [x-cloak] { display: none !important; }
+  </style>
 </head>
 
-<body class="bg-gray-100 text-gray-800">
+<body x-data="sidebarState()" x-init="init()" x-cloak>
 
-    {{-- === NAVBAR === --}}
-    <header class="fixed top-0 left-0 right-0 z-30 bg-white shadow px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-4">
-            {{-- Hamburger Button: Always visible --}}
-            <button id="menu-button" class="text-blue-700 text-2xl">
-                <i class="fas fa-bars"></i>
+
+  <!-- SIDEBAR -->
+  <aside
+    class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transition-transform duration-300 ease-in-out translate-x-0"
+    :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
+    id="sidebar"
+  >
+    <div class="px-6 py-6">
+  <!-- Logo / Title -->
+  <a href="/redaktur" class="flex items-center gap-3 mb-4">
+    <div class="bg-blue-600 p-2 rounded-lg shadow-sm">
+      <i class="fas fa-pen-nib text-white text-lg"></i>
+    </div>
+    <span class="text-xl font-extrabold text-gray-800 tracking-wide">Redaktur</span>
+  </a>
+
+  <!-- Divider -->
+  <hr class="border-t border-gray-200 mb-4">
+
+  <!-- Profile Info -->
+  <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+    <!-- Foto Profil -->
+    <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+         alt="User Photo"
+         class="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500 shadow" />
+
+    <!-- Nama + Role -->
+    <div>
+      <div class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</div>
+      <div class="text-xs text-gray-500 capitalize">{{ Auth::user()->role ?? 'User' }}</div>
+    </div>
+  </div>
+</div>
+
+
+    <hr class="my-2 mx-4 border-t border-gray-200" />
+    <div class="overflow-y-auto h-[calc(100vh-120px)] scrollbar-hide">
+      <ul class="flex flex-col px-3 py-2 space-y-1 text-sm">
+        <li>
+          <a href="/redaktur"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 {{ request()->is('redaktur') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+            <i class="fas fa-tachometer-alt text-base"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/redaktur/kelola"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 {{ request()->is('redaktur/kelola*') ? 'bg-green-100 text-green-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+            <i class="fas fa-newspaper text-base"></i>
+            <span>Kelola Berita</span>
+          </a>
+        </li>
+        <li>
+          <a href="/redaktur/publish"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 {{ request()->is('redaktur/publish*') ? 'bg-red-100 text-red-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+            <i class="fas fa-check-circle text-base"></i>
+            <span>Publish</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('redaktur.landing.index') }}"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 {{ request()->is('redaktur/landing*') ? 'bg-yellow-100 text-yellow-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+            <i class="fas fa-images text-base"></i>
+            <span>Carousel</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('redaktur.file.index') }}"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 {{ request()->routeIs('redaktur.file.index') ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+            <i class="fas fa-folder-open text-base"></i>
+            <span>File Manager</span>
+          </a>
+        </li>
+        <li>
+          <form method="POST" action="/logout">
+            @csrf
+            <button type="submit"
+              class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-all duration-150">
+              <i class="fas fa-sign-out-alt text-base"></i>
+              <span>Logout</span>
             </button>
-            <h1 class="text-xl font-semibold text-blue-700">@yield('page-title', 'Dashboard')</h1>
-        </div>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </aside>
 
-        <div class="flex items-center space-x-6">
-            {{-- Notification --}}
-            <div class="relative">
-                <button class="relative text-blue-600 text-xl focus:outline-none">
-                    <i class="fas fa-bell"></i>
-                    <span
-                        class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">3</span>
-                </button>
-            </div>
+  <!-- Overlay -->
+  <div x-show="sidebarOpen" class="fixed inset-0 bg-black/40 z-30 xl:hidden" @click="sidebarOpen = false"></div>
 
-            {{-- Language Dropdown --}}
-            <div class="relative">
-                <button onclick="toggleLangDropdown()" class="focus:outline-none" id="langButton">
-                    <img src="https://flagcdn.com/us.svg" alt="Lang" class="w-6 h-4 rounded" id="flag-icon">
-                </button>
-                <div id="langDropdown"
-                    class="hidden absolute right-0 mt-2 w-32 bg-white border rounded shadow z-50 text-sm">
-                    <button onclick="setLanguage('en')" class="flex items-center px-3 py-2 hover:bg-gray-100 w-full">
-                        <img src="https://flagcdn.com/us.svg" class="w-5 h-3 mr-2"> English
-                    </button>
-                    <button onclick="setLanguage('id')" class="flex items-center px-3 py-2 hover:bg-gray-100 w-full">
-                        <img src="https://flagcdn.com/id.svg" class="w-5 h-3 mr-2"> Bahasa
-                    </button>
-                </div>
-            </div>
-
-            {{-- Profile --}}
-            <div>
-                <button class="text-blue-600 text-xl">
-                    <i class="fas fa-user-circle"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    {{-- === SIDEBAR === --}}
-   <aside id="sidebar"
-  class="fixed inset-y-0 left-0 z-40 my-4 ml-6 w-64 rounded-2xl bg-white shadow-xl transition-all duration-300 ease-in-out -translate-x-full xl:translate-x-0">
-
-        <div class="h-19">
-            <a href="/redaktur" class="flex items-center px-6 py-5">
-                <img src="{{ asset('assets2/img/logo-ct-dark.png') }}" class="h-8" alt="Logo" />
-                <span class="ml-3 font-semibold text-blue-700 text-lg">Redaktur</span>
-            </a>
-        </div>
-
-        <hr class="my-2 mx-4 border-t border-gray-200" />
-
-        <div class="overflow-y-auto h-[calc(100vh-120px)] scrollbar-hide">
-            <ul class="flex flex-col px-3 py-2 space-y-1 text-sm">
-  <li>
-    <a href="/redaktur"
-      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
-      {{ request()->is('redaktur') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-      <i class="fas fa-tachometer-alt text-base"></i>
-      <span>Dashboard</span>
-    </a>
-  </li>
-
-  <li>
-    <a href="/redaktur/kelola"
-      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
-      {{ request()->is('redaktur/kelola*') ? 'bg-green-100 text-green-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-      <i class="fas fa-newspaper text-base"></i>
-      <span>Kelola Berita</span>
-    </a>
-  </li>
-
-  <li>
-    <a href="/redaktur/publish"
-      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
-      {{ request()->is('redaktur/publish*') ? 'bg-red-100 text-red-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-      <i class="fas fa-check-circle text-base"></i>
-      <span>Publish</span>
-    </a>
-  </li>
-
-  <li>
-    <a href="{{ route('redaktur.landing.index') }}"
-      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
-      {{ request()->is('redaktur/landing*') ? 'bg-yellow-100 text-yellow-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-      <i class="fas fa-images text-base"></i>
-      <span>Carousel</span>
-    </a>
-  </li>
-
-  <li>
-    <a href="{{ route('redaktur.file.index') }}"
-      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150
-      {{ request()->routeIs('redaktur.file.index') ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-      <i class="fas fa-folder-open text-base"></i>
-      <span>File Manager</span>
-    </a>
-  </li>
-
-  <li>
-    <form method="POST" action="/logout">
-      @csrf
-      <button type="submit"
-        class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-all duration-150">
-        <i class="fas fa-sign-out-alt text-base"></i>
-        <span>Logout</span>
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow px-6 py-4 flex justify-between items-center transition-[margin] duration-300 ease-in-out"
+    :class="{ 'xl:ml-64': sidebarOpen, 'ml-0': !sidebarOpen }">
+    <div class="flex items-center space-x-4">
+      <button @click="sidebarOpen = !sidebarOpen" class="text-blue-700 text-2xl block">
+        <i class="fas fa-bars"></i>
       </button>
-    </form>
-  </li>
-</ul>
-
+    </div>
+    <div class="flex items-center space-x-6">
+      <div class="relative">
+        <button class="relative text-blue-600 text-xl focus:outline-none">
+          <i class="fas fa-bell"></i>
+          <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">3</span>
+        </button>
+      </div>
+      <div class="relative">
+        <button onclick="toggleLangDropdown()" class="focus:outline-none" id="langButton">
+          <img src="https://flagcdn.com/us.svg" alt="Lang" class="w-6 h-4 rounded" id="flag-icon">
+        </button>
+        <div id="langDropdown" class="hidden absolute right-0 mt-2 w-32 bg-white border rounded shadow z-50 text-sm">
+          <button onclick="setLanguage('en')" class="flex items-center px-3 py-2 hover:bg-gray-100 w-full">
+            <img src="https://flagcdn.com/us.svg" class="w-5 h-3 mr-2"> English
+          </button>
+          <button onclick="setLanguage('id')" class="flex items-center px-3 py-2 hover:bg-gray-100 w-full">
+            <img src="https://flagcdn.com/id.svg" class="w-5 h-3 mr-2"> Bahasa
+          </button>
         </div>
-    </aside>
+      </div>
+      <button class="text-blue-600 text-xl">
+        <i class="fas fa-user-circle"></i>
+      </button>
+    </div>
+  </header>
 
-    {{-- === MAIN CONTENT === --}}
-    <main class="pt-24 pb-10 px-6 transition-all duration-200 xl:ml-[280px]" id="main-content">
-        @yield('content')
-    </main>
+  <!-- MAIN -->
+  <main class="pt-24 pb-10 px-6 transition-[margin] duration-300 ease-in-out"
+    :class="{ 'xl:ml-64': sidebarOpen, 'ml-0': !sidebarOpen }">
+    @yield('content')
+  </main>
 
-    {{-- === PAGE-SPECIFIC SCRIPTS === --}}
-    @stack('scripts')
+  <!-- Notifikasi -->
+  @if (session('success'))
+  <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition.opacity
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div class="bg-gradient-to-br from-teal-400 to-cyan-500 text-white rounded-xl shadow-xl p-8 w-[90%] max-w-md text-center relative">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      <h2 class="text-2xl font-bold mb-1">Success!</h2>
+      <p class="text-sm">{{ session('success') }}</p>
+    </div>
+  </div>
+  @endif
 
-    @if (session('success'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition.opacity
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div
-                class="bg-gradient-to-br from-teal-400 to-cyan-500 text-white rounded-xl shadow-xl p-8 w-[90%] max-w-md text-center relative">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 mb-4" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <h2 class="text-2xl font-bold mb-1">Success!</h2>
-                <p class="text-sm">{{ session('success') }}</p>
-            </div>
-        </div>
-    @endif
+  @if (session('error'))
+  <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition.opacity
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div class="bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-xl shadow-xl p-8 w-[90%] max-w-md text-center relative">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 9v2m0 4h.01M12 5a7 7 0 110 14a7 7 0 010-14z" />
+      </svg>
+      <h2 class="text-2xl font-bold mb-1">Whoops!</h2>
+      <p class="text-sm">{{ session('error') }}</p>
+    </div>
+  </div>
+  @endif
 
-    @if (session('error'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition.opacity
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div
-                class="bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-xl shadow-xl p-8 w-[90%] max-w-md text-center relative">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 mb-4" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01M12 5a7 7 0 110 14a7 7 0 010-14z" />
-                </svg>
-                <h2 class="text-2xl font-bold mb-1">Whoops!</h2>
-                <p class="text-sm">{{ session('error') }}</p>
-            </div>
-        </div>
-    @endif
+  <!-- Language Script -->
+  <script>
+    function toggleLangDropdown() {
+      document.getElementById('langDropdown').classList.toggle('hidden');
+    }
 
+    function setLanguage(lang) {
+      if (lang === 'id') {
+        document.getElementById('flag-icon').src = 'https://flagcdn.com/id.svg';
+        document.querySelector('h1').innerText = 'Beranda';
+      } else {
+        document.getElementById('flag-icon').src = 'https://flagcdn.com/us.svg';
+        document.querySelector('h1').innerText = 'Dashboard';
+      }
+      document.getElementById('langDropdown').classList.add('hidden');
+    }
 
+    document.addEventListener('click', function (event) {
+      const dropdown = document.getElementById('langDropdown');
+      const langBtn = document.getElementById('langButton');
+      if (!dropdown.contains(event.target) && !langBtn.contains(event.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
 
-    <script>
-        function toggleLangDropdown() {
-            document.getElementById('langDropdown').classList.toggle('hidden');
-        }
+    function sidebarState() {
+    return {
+      sidebarOpen: true,
+      init() {
+        this.sidebarOpen = JSON.parse(localStorage.getItem('sidebarOpen')) ?? true;
+        this.$watch('sidebarOpen', value => localStorage.setItem('sidebarOpen', value));
+      }
+    }
+  }
+  </script>
 
-        function setLanguage(lang) {
-            if (lang === 'id') {
-                document.getElementById('flag-icon').src = 'https://flagcdn.com/id.svg';
-                document.querySelector('h1').innerText = 'Beranda';
-            } else {
-                document.getElementById('flag-icon').src = 'https://flagcdn.com/us.svg';
-                document.querySelector('h1').innerText = 'Dashboard';
-            }
-            document.getElementById('langDropdown').classList.add('hidden');
-        }
-
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('langDropdown');
-            const langBtn = document.getElementById('langButton');
-            if (!dropdown.contains(event.target) && !langBtn.contains(event.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
-
-        // Toggle sidebar
-        document.getElementById('menu-button')?.addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('-translate-x-full');
-        });
-    </script>
+  @stack('scripts')
 </body>
-
 </html>

@@ -98,7 +98,9 @@
 @endsection
 
 <!-- Modal Upload -->
-<div id="uploadModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+<div id="uploadModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all">
+
+
   <div class="bg-white p-6 rounded-lg w-full max-w-md mx-auto">
     <h2 class="text-lg font-semibold mb-4 text-blue-700">Upload File</h2>
     <form id="uploadForm" enctype="multipart/form-data">
@@ -107,15 +109,15 @@
       <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Upload</button>
       <button type="button" onclick="closeUploadModal()" class="ml-2 text-gray-500">Batal</button>
     </form>
-    <div class="mt-4">
-      <label class="block text-sm text-gray-600">URL Publik:</label>
-      <input type="text" id="fileUrl" class="w-full border p-2 rounded bg-gray-100" readonly>
-    </div>
+    
   </div>
 </div>
 
 <!-- Modal Detail -->
-<div id="detailModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 transition-all duration-300">
+<div id="detailModal"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all duration-300">
+
+
   <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-fade-in-up">
     <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
       <h2 class="text-lg font-semibold">Detail File</h2>
@@ -155,7 +157,7 @@
     document.getElementById('uploadModal').classList.add('hidden');
     document.getElementById('uploadModal').classList.remove('flex');
     document.getElementById('uploadForm').reset();
-    document.getElementById('fileUrl').value = '';
+   
   }
 
   // Upload File
@@ -171,7 +173,6 @@
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        document.getElementById('fileUrl').value = data.url;
         closeUploadModal();
         showUploadSuccessToast("File berhasil diupload!");
         setTimeout(() => window.location.reload(), 2000);

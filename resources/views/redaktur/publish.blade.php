@@ -1,7 +1,7 @@
 @extends('layouts.redaktur')
 
 @section('title', 'Approval Berita - Redaktur')
-@section('page-title', 'Kelola Berita')
+@section('page-title', 'Publish Berita')
 
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow relative z-10">
