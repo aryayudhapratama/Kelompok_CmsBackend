@@ -48,10 +48,9 @@
   <!-- Profile Info -->
   <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
     <!-- Foto Profil -->
-    <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
-         alt="User Photo"
-         class="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500 shadow" />
-
+    <img class="h-10 w-10 rounded-full object-cover"
+     src="{{ Auth::user()->profile_photo_path ? asset('storage/profile-photos/' . Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+     alt="{{ Auth::user()->name }}" />
     <!-- Nama + Role -->
     <div>
       <div class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</div>
@@ -59,8 +58,6 @@
     </div>
   </div>
 </div>
-
-
     <hr class="my-2 mx-4 border-t border-gray-200" />
     <div class="overflow-y-auto h-[calc(100vh-120px)] scrollbar-hide">
       <ul class="flex flex-col px-3 py-2 space-y-1 text-sm">
@@ -144,9 +141,14 @@
           </button>
         </div>
       </div>
-      <button class="text-blue-600 text-xl">
-        <i class="fas fa-user-circle"></i>
-      </button>
+  <!-- Trigger Modal Langsung -->
+<button @click="openEditModal = true" class="ml-3 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+    <img class="h-10 w-10 rounded-full object-cover"
+     src="{{ Auth::user()->profile_photo_path ? asset('storage/profile-photos/' . Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+     alt="{{ Auth::user()->name }}" />
+
+</button>
+
     </div>
   </header>
 
@@ -155,6 +157,49 @@
     :class="{ 'xl:ml-64': sidebarOpen, 'ml-0': !sidebarOpen }">
     @yield('content')
   </main>
+    <!-- Modal Edit Profil -->
+<div x-show="openEditModal" x-cloak
+     class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+  <div @click.away="openEditModal = false" class="bg-white rounded-xl p-6 w-full max-w-lg shadow-lg animate-fade-in-up">
+
+    <h2 class="text-xl font-bold mb-4">Edit Profil</h2>
+
+    <form method="POST" action="{{ route('redaktur.settings.update') }}" enctype="multipart/form-data">
+      @csrf
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Nama</label>
+        <input type="text" name="name" value="{{ Auth::user()->name }}" required
+               class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Foto Profil</label>
+        <input type="file" name="profile_photo"
+               class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Password Baru (Opsional)</label>
+        <input type="password" name="password"
+               class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
+        <input type="password" name="password_confirmation"
+               class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" @click="openEditModal = false"
+                class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Batal</button>
+        <button type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
 
   <!-- Notifikasi -->
   @if (session('success'))
@@ -210,14 +255,16 @@
     });
 
     function sidebarState() {
-    return {
-      sidebarOpen: true,
-      init() {
-        this.sidebarOpen = JSON.parse(localStorage.getItem('sidebarOpen')) ?? true;
-        this.$watch('sidebarOpen', value => localStorage.setItem('sidebarOpen', value));
-      }
+  return {
+    sidebarOpen: true,
+    openEditModal: false, // ← Tambahkan ini
+    init() {
+      this.sidebarOpen = JSON.parse(localStorage.getItem('sidebarOpen')) ?? true;
+      this.$watch('sidebarOpen', value => localStorage.setItem('sidebarOpen', value));
     }
   }
+}
+
   </script>
 
   @stack('scripts')

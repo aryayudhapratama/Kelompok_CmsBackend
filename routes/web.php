@@ -12,6 +12,10 @@ use App\Http\Controllers\Reporter\ReporterFileController;
 use App\Http\Controllers\Redaktur\LandingSectionController;
 use App\Http\Controllers\Redaktur\BeritaController as RedakturBeritaController;
 use App\Http\Controllers\Reporter\Berita2Controller as ReporterBeritaController;
+use App\Http\Controllers\Redaktur\ProfileController;
+
+
+
 
 // ======================= LANDING PAGE =======================
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -49,10 +53,12 @@ Route::middleware(['auth', 'role:redaktur'])
         Route::post('/berita/{id}/unpublish', [RedakturBeritaController::class, 'unpublish'])->name('berita.unpublish');
         Route::delete('/berita/{id}', [RedakturBeritaController::class, 'destroy'])->name('berita.delete');
 
-
         Route::post('/upload-file', [RedakturFileController::class, 'upload'])->name('upload.file');
         Route::get('/file', [RedakturFileController::class, 'index'])->name('file.index');
         Route::delete('/file/{id}', [RedakturFileController::class, 'destroy'])->name('file.delete');
+        Route::get('/settings', [ProfileController::class, 'edit'])->name('settings');
+        Route::post('/settings', [ProfileController::class, 'update'])->name('settings.update');
+
 
         // ✅ Perbaikan: Hapus "/redaktur" dari dalam route
         Route::get('/landing', [LandingSectionController::class, 'index'])->name('landing.index');
