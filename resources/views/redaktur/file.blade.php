@@ -43,10 +43,16 @@
       <tr class="border-t hover:bg-gray-50">
         <td class="px-4 py-2">{{ $file->id }}</td>
         <td class="px-4 py-2">{{ $file->created_at->format('d F Y') }}</td>
-        <td class="px-4 py-2">{{ $file->nama }}</td>
-        <td class="px-4 py-2 text-blue-600 underline">
-          <a href="{{ $file->slug_path }}" target="_blank">{{ Str::limit($file->slug_path, 50) }}</a>
-        </td>
+        <td class="px-4 py-2 max-w-[180px] truncate whitespace-nowrap overflow-hidden">
+  {{ $file->nama }}
+</td>
+
+<td class="px-4 py-2 max-w-[260px] truncate whitespace-nowrap overflow-hidden text-blue-600 underline">
+  <a href="{{ url($file->slug_path) }}" target="_blank" class="text-blue-600 underline">
+    {{ url($file->slug_path) }}
+  </a>
+</td>
+
         <td class="px-4 py-2">{{ $file->user }}</td>
        <td class="px-4 py-2">
   <div class="flex items-center gap-2">
@@ -64,6 +70,16 @@
     >
       <i class="fas fa-eye text-base"></i>
     </button>
+    <!-- Tombol Copy -->
+<button 
+  type="button"
+  class="w-10 h-10 bg-green-100 text-green-700 hover:bg-green-200 rounded-md flex items-center justify-center transition btn-copy"
+  title="Copy Link"
+  data-url="{{ url($file->slug_path) }}"
+>
+  <i class="fas fa-copy text-base"></i>
+</button>
+
 
     <!-- Tombol Hapus -->
     <form method="POST" action="{{ route('redaktur.file.delete', $file->id) }}" class="form-hapus inline-block m-0 p-0">
@@ -128,6 +144,12 @@
     <div class="px-6 py-5 text-sm text-gray-700 space-y-3">
       <div class="flex items-center gap-3"><i class="fas fa-file-alt text-blue-500"></i>
         <p><strong>Nama:</strong> <span id="detailNama"></span></p></div>
+      <div class="mt-4" id="previewContainer">
+  <p class="font-semibold mb-1">Preview:</p>
+  <div id="filePreview" class="w-full h-64 border rounded overflow-hidden bg-white flex items-center justify-center">
+    <span class="text-gray-400 italic">Tidak ada preview tersedia</span>
+  </div>
+</div>
       <div class="flex items-center gap-3"><i class="fas fa-link text-blue-500"></i>
         <p><strong>URL:</strong> <a id="detailUrl" href="#" target="_blank" class="text-blue-600 underline break-all"></a></p></div>
       <div class="flex items-center gap-3"><i class="fas fa-user text-blue-500"></i>
@@ -189,15 +211,34 @@
   // Modal Detail
   document.querySelectorAll('.btn-detail').forEach(btn => {
     btn.addEventListener('click', function () {
-      document.getElementById('detailNama').innerText = this.dataset.nama;
-      document.getElementById('detailUrl').innerText = this.dataset.url;
-      document.getElementById('detailUrl').href = this.dataset.url;
-      document.getElementById('detailUser').innerText = this.dataset.user;
-      document.getElementById('detailCreated').innerText = this.dataset.created;
-      document.getElementById('detailUpdated').innerText = this.dataset.updated;
-      document.getElementById('detailModal').classList.remove('hidden');
-      document.getElementById('detailModal').classList.add('flex');
-    });
+  document.getElementById('detailNama').innerText = this.dataset.nama;
+  document.getElementById('detailUrl').innerText = this.dataset.url;
+  document.getElementById('detailUrl').href = this.dataset.url;
+  document.getElementById('detailUser').innerText = this.dataset.user;
+  document.getElementById('detailCreated').innerText = this.dataset.created;
+  document.getElementById('detailUpdated').innerText = this.dataset.updated;
+
+  // Preview file
+  const previewContainer = document.getElementById('filePreview');
+  const fileUrl = this.dataset.url.toLowerCase();
+  previewContainer.innerHTML = ""; // Kosongkan
+
+  if (fileUrl.endsWith(".pdf")) {
+    previewContainer.innerHTML = `
+      <iframe src="${this.dataset.url}" class="w-full h-full" frameborder="0"></iframe>
+    `;
+  } else if (fileUrl.match(/\.(jpeg|jpg|png|gif|webp)$/)) {
+    previewContainer.innerHTML = `
+      <img src="${this.dataset.url}" alt="Preview Gambar" class="max-h-full max-w-full object-contain">
+    `;
+  } else {
+    previewContainer.innerHTML = `<span class="text-gray-400 italic">Preview tidak tersedia untuk jenis file ini</span>`;
+  }
+
+  document.getElementById('detailModal').classList.remove('hidden');
+  document.getElementById('detailModal').classList.add('flex');
+});
+
   });
 
 // Filter file berdasarkan nama
@@ -293,5 +334,20 @@ document.getElementById('searchInput').addEventListener('input', function () {
     });
   });
 });
+
+document.querySelectorAll('.btn-copy').forEach(button => {
+    button.addEventListener('click', function () {
+      const url = this.dataset.url;
+
+      navigator.clipboard.writeText(url)
+        .then(() => {
+          showUploadSuccessToast("URL berhasil disalin!");
+        })
+        .catch(() => {
+          showUploadErrorToast("Gagal menyalin URL.");
+        });
+    });
+  });
+  
 </script>
 @endpush
