@@ -1,6 +1,6 @@
 @extends('layouts.redaktur')
 
-@section('title', 'Approval Berita - Redaktur')
+@section('title', 'Kelola Berita - Redaktur')
 @section('page-title', 'Kelola Berita')
 
 @section('content')

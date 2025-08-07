@@ -158,48 +158,66 @@
     @yield('content')
   </main>
     <!-- Modal Edit Profil -->
+<!-- Modal Edit Profil -->
 <div x-show="openEditModal" x-cloak
-     class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-  <div @click.away="openEditModal = false" class="bg-white rounded-xl p-6 w-full max-w-lg shadow-lg animate-fade-in-up">
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[1000] flex items-center justify-center transition-all duration-300">
 
-    <h2 class="text-xl font-bold mb-4">Edit Profil</h2>
+  <div @click.away="openEditModal = false" class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-fade-in-up">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold">Edit Profil</h2>
+      <button @click="openEditModal = false" class="text-white hover:text-gray-200 text-sm">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
 
-    <form method="POST" action="{{ route('redaktur.settings.update') }}" enctype="multipart/form-data">
+    <!-- Body -->
+    <form method="POST" action="{{ route('redaktur.settings.update') }}" enctype="multipart/form-data" class="px-6 py-5 space-y-4 text-sm text-gray-700">
       @csrf
+      @method('PUT')
+      <input type="hidden" name="redirect_to" value="{{ url()->current() }}">
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Nama</label>
+      <div>
+        <label class="block font-medium mb-1">Nama</label>
         <input type="text" name="name" value="{{ Auth::user()->name }}" required
-               class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
       </div>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Foto Profil</label>
+      <div>
+        <label class="block font-medium mb-1">Foto Profil</label>
         <input type="file" name="profile_photo"
-               class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 bg-white" />
       </div>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Password Baru (Opsional)</label>
+      <div>
+        <label class="block font-medium mb-1">Password Baru (Opsional)</label>
         <input type="password" name="password"
-               class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
       </div>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
+      <div>
+        <label class="block font-medium mb-1">Konfirmasi Password</label>
         <input type="password" name="password_confirmation"
-               class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
       </div>
 
-      <div class="flex justify-end gap-2">
+      <!-- Footer Buttons -->
+      <div class="flex justify-end gap-2 pt-2 border-t mt-4">
         <button type="button" @click="openEditModal = false"
-                class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Batal</button>
+                class="text-sm text-blue-600 hover:text-blue-800 transition font-semibold">
+          <i class="fas fa-arrow-left mr-1"></i> Batal
+        </button>
         <button type="submit"
-                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Simpan</button>
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-semibold">
+          <i class="fas fa-save mr-1"></i> Simpan
+        </button>
       </div>
     </form>
+
   </div>
 </div>
+
 
   <!-- Notifikasi -->
   @if (session('success'))
