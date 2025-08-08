@@ -57,9 +57,7 @@
         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
           <i class="fas fa-save mr-1"></i> Simpan
         </button>
-        <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
-          <i class="fas fa-times mr-1"></i> Tutup
-        </button>
+       
       </div>
     </form>
   </div>

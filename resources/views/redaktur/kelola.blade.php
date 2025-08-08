@@ -119,7 +119,6 @@
       <i class="fas fa-eye text-base"></i>
     </button>
 
-    <!-- Tombol Hapus -->
     <!-- Tombol Hapus (pakai SweetAlert) -->
 <form method="POST" action="{{ route('redaktur.berita.delete', $berita->id) }}" class="form-hapus">
   @csrf
@@ -133,10 +132,8 @@
     <i class="fas fa-trash text-base"></i>
   </button>
 </form>
-
   </div>
 </td>
-
   </tr>
 </tbody>
 
@@ -191,18 +188,26 @@ if (this.dataset.gambar) {
     };
 
     // Modal tambah
-    document.getElementById('btnAddNews')?.addEventListener('click', function () {
-      document.getElementById('addModal').classList.remove('hidden');
-      document.getElementById('addModal').classList.add('flex');
-    });
+document.getElementById('btnAddNews')?.addEventListener('click', function () {
+  const modal = document.getElementById('addModal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
 
-    window.closeAddModal = function () {
-      document.getElementById('addModal').classList.add('hidden');
-      document.getElementById('addModal').classList.remove('flex');
-      document.getElementById('formAddNews').reset();
-    };
+  // 🔒 Kunci scroll background
+  document.body.classList.add('overflow-hidden');
+});
 
-    
+window.closeAddModal = function () {
+  const modal = document.getElementById('addModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+
+  // 🔓 Buka kunci scroll background
+  document.body.classList.remove('overflow-hidden');
+
+  // Reset form
+  document.getElementById('formAddNews').reset();
+};
 
     // Search
     let searchTimeout;

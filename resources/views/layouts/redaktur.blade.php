@@ -204,10 +204,7 @@
 
       <!-- Footer Buttons -->
       <div class="flex justify-end gap-2 pt-2 border-t mt-4">
-        <button type="button" @click="openEditModal = false"
-                class="text-sm text-blue-600 hover:text-blue-800 transition font-semibold">
-          <i class="fas fa-arrow-left mr-1"></i> Batal
-        </button>
+        
         <button type="submit"
                 class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-semibold">
           <i class="fas fa-save mr-1"></i> Simpan

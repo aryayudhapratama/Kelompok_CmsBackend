@@ -114,20 +114,42 @@
 @endsection
 
 <!-- Modal Upload -->
-<div id="uploadModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all">
+<div id="uploadModal"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all duration-300">
 
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-fade-in-up">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold">Upload File</h2>
+      <button type="button" onclick="closeUploadModal()" class="text-white hover:text-gray-200 text-sm">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
 
-  <div class="bg-white p-6 rounded-lg w-full max-w-md mx-auto">
-    <h2 class="text-lg font-semibold mb-4 text-blue-700">Upload File</h2>
-    <form id="uploadForm" enctype="multipart/form-data">
-      @csrf
-      <input type="file" name="file" id="uploadFile" class="mb-3 w-full border p-2 rounded" required>
-      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Upload</button>
-      <button type="button" onclick="closeUploadModal()" class="ml-2 text-gray-500">Batal</button>
-    </form>
-    
+    <!-- Body -->
+    <div class="px-6 py-5">
+      <form id="uploadForm" enctype="multipart/form-data" class="space-y-4">
+        @csrf
+        <div>
+          <label for="uploadFile" class="block text-sm font-medium text-gray-700 mb-1">Pilih File</label>
+          <input type="file" name="file" id="uploadFile"
+                 class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                 required>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-gray-100 px-6 py-3 text-right space-x-2">
+      
+      <button type="submit" form="uploadForm"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-semibold transition">
+        Upload
+      </button>
+    </div>
   </div>
 </div>
+
 
 <!-- Modal Detail -->
 <div id="detailModal"
@@ -186,7 +208,7 @@
   document.getElementById('uploadForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const formData = new FormData(this);
-
+    
     fetch("{{ route('redaktur.upload.file') }}", {
       method: "POST",
       headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
