@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    public function edit()
-    {
-        $user = Auth::user();
-        return view('redaktur.settings', compact('user'));
-    }
-
     public function update(Request $request)
     {
         $user = Auth::user();

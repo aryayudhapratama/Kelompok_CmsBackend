@@ -56,8 +56,7 @@ Route::middleware(['auth', 'role:redaktur'])
         Route::post('/upload-file', [RedakturFileController::class, 'upload'])->name('upload.file');
         Route::get('/file', [RedakturFileController::class, 'index'])->name('file.index');
         Route::delete('/file/{id}', [RedakturFileController::class, 'destroy'])->name('file.delete');
-        Route::get('/settings', [ProfileController::class, 'edit'])->name('settings');
-        Route::post('/settings', [ProfileController::class, 'update'])->name('settings.update');
+        Route::put('/settings', [ProfileController::class, 'update'])->name('settings.update');
 
 
         // ✅ Perbaikan: Hapus "/redaktur" dari dalam route

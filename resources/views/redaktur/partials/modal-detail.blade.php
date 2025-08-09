@@ -1,5 +1,7 @@
 <!-- Modal Detail Berita -->
-<div id="editModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 transition-all duration-300">
+<div id="editModal" 
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden flex items-center justify-center z-50 transition-all duration-300">
+
   <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-fade-in-up">
     
     <!-- Header -->
@@ -30,6 +32,11 @@
       <div>
         <label class="block font-medium mb-1">Konten</label>
         <textarea id="editKonten" name="konten" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Tanggal Berita</label>
+        <input type="date" id="editBeritaDate" name="berita_date" class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
       </div>
 
       <div>

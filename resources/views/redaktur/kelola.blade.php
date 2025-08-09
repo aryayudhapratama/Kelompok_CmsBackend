@@ -5,148 +5,125 @@
 
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow relative z-10">
-  <!-- Header -->
-  <div class="flex justify-between items-center mb-4 border-b pb-2">
-    <h2 class="text-lg font-semibold text-gray-800">Approval Queue</h2>
-    <div class="flex items-center gap-2">
-      <div class="relative">
-        <input type="text" id="searchInput" name="search"
-       value="{{ request('search') }}"
-       placeholder="Cari nama berita..."
-       class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-      </div>
-      <button id="btnAddNews"
-        class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
-        <i class="fas fa-plus-circle mr-1"></i> Tambah Berita
-      </button>
+    <div class="flex justify-between items-center mb-4 border-b pb-2">
+        <h2 class="text-lg font-semibold text-gray-800">Approval Queue</h2>
+        <button id="btnAddNews"
+            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
+            <i class="fas fa-plus-circle mr-1"></i> Tambah Berita
+        </button>
     </div>
-  </div>
 
-  <!-- Card List -->
-  <div id="cardContainer" class="space-y-6">
-    @foreach ($beritas as $berita)
-    <div class="card border rounded-lg overflow-hidden shadow bg-white" data-title="{{ strtolower($berita->judul) }}">
-      <div class="bg-gray-50 px-4 py-3 flex justify-between items-center">
-        <p class="font-semibold text-red-600">{{ $berita->judul }}</p>
-        <div class="flex items-center space-x-2 relative">
-          @if($berita->status === 'pending')
-          <!-- Approve -->
-<form method="POST" action="{{ route('redaktur.berita.approve', $berita->id) }}">
-
-            @csrf
-            <button type="submit"
-              class="btn-approve flex items-center gap-1 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition">
-              <i class="fas fa-check-circle"></i> Approve
-            </button>
-          </form>
-
-          <div class="relative inline-block text-left">
-            <button id="dropdownBtn-{{ $berita->id }}" type="button"
-              class="flex items-center gap-1 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition">
-              <i class="fas fa-times-circle"></i> Reject
-              <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </button>
-            <div id="dropdownMenu-{{ $berita->id }}"
-              class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
-              @foreach (['Kurang Lengkap', 'Judul tidak sesuai', 'Konten tidak layak'] as $alasan)
-              <form method="POST" action="{{ route('redaktur.berita.reject', $berita->id) }}">
-                @csrf
-                <input type="hidden" name="alasan" value="{{ $alasan }}">
-                <button type="submit"
-                  class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">{{ $alasan }}</button>
-              </form>
-              @endforeach
-            </div>
-          </div>
-          @else
-          <span class="text-sm font-semibold px-4 py-2 rounded-lg
-            {{ $berita->status == 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-            {{ ucfirst($berita->status) }}
-          </span>
-          @endif
-        </div>
-      </div>
-
-      <!-- Tabel Berita -->
-      <table class="w-full text-sm text-left table-fixed">
+    <table id="beritaTable" class="w-full text-sm text-left table-fixed">
         <thead class="bg-gray-100 text-gray-600">
-         <tr>
-          <th class="px-4 py-2">ID</th>
-    <th class="px-4 py-2">Date Added</th>
-    <th class="px-4 py-2">Full Name</th>
-    <th class="px-4 py-2">Email</th>
-    <th class="px-4 py-2">Title</th>
-    <th class="px-4 py-2">Image</th> {{-- Kolom gambar --}}
-    <th class="px-4 py-2">Action</th>
-  </tr>
-</thead>
-
+            <tr>
+                <th class="px-4 py-2">ID</th>
+                <th class="px-4 py-2">Date Added</th>
+                <th class="px-4 py-2">Title</th>
+                <th class="px-4 py-2">Image</th>
+                <th class="px-4 py-2">Berita Date</th>
+                <th class="px-4 py-2">Full Name</th>
+                <th class="px-4 py-2">Email</th>
+                <th class="px-4 py-2">Action</th>
+                <th class="px-4 py-2">Status</th>
+            </tr>
+        </thead>
         <tbody>
-  <tr class="border-t hover:bg-gray-50">
-    <td class="px-4 py-2">{{ $berita->id }}</td>
-    <td class="px-4 py-2">{{ $berita->created_at->format('d F Y') }}</td>
-    <td class="px-4 py-2">{{ $berita->nama_reporter }}</td>
-    <td class="px-4 py-2">{{ $berita->email_reporter }}</td>
-    <td class="px-4 py-2">{{ $berita->judul }}</td>
+            @foreach ($beritas as $berita)
+            <tr class="border-t hover:bg-gray-50">
+                <td class="px-4 py-2">{{ $berita->id }}</td>
+                <td class="px-4 py-2">{{ $berita->created_at->format('d F Y') }}</td>
+                <td class="px-4 py-2">{{ $berita->judul }}</td>
+                <td class="px-4 py-2">
+                    @if($berita->gambar)
+                        <img src="{{ asset('storage/' . $berita->gambar) }}" class="w-24 h-16 object-cover rounded shadow border"/>
+                    @else
+                        <span class="text-gray-400 italic">Tidak ada gambar</span>
+                    @endif
+                </td>
+                <td class="px-4 py-2">
+                    @if($berita->berita_date)
+                        {{ \Carbon\Carbon::parse($berita->berita_date)->format('d F Y') }}
+                    @else
+                        <span class="text-gray-400 italic">Tanggal tidak tersedia</span>
+                    @endif
+                </td>
+                <td class="px-4 py-2">{{ $berita->nama_reporter }}</td>
+                <td class="px-4 py-2">{{ $berita->email_reporter }}</td>
+                
+                <td class="px-4 py-2">
+                    <div class="flex items-center gap-2">
+                        <button type="button"
+                            class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition"
+                            title="Lihat Detail"
+                            data-id="{{ $berita->id }}" 
+                            data-judul="{{ $berita->judul }}"
+                            data-konten="{{ $berita->konten }}"
+                            data-nama="{{ $berita->nama_reporter }}"
+                            data-email="{{ $berita->email_reporter }}"
+                            data-tanggal="{{ $berita->created_at ? $berita->created_at->format('d F Y H:i') : '' }}"
+                            data-status="{{ $berita->status }}"
+                            data-gambar="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : '' }}"
+                            data-date="{{ $berita->berita_date ? \Carbon\Carbon::parse($berita->berita_date)->format('d F Y H:i') : '' }}"
+                        >
+                            <i class="fas fa-eye text-base"></i>
+                        </button>
+                        <form method="POST" action="{{ route('redaktur.berita.delete', $berita->id) }}" class="form-hapus">
+                            @csrf
+                            @method('DELETE')
+                            <button 
+                                type="button"
+                                class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition btn-hapus"
+                                title="Hapus Berita"
+                                data-id="{{ $berita->id }}"
+                            >
+                                <i class="fas fa-trash text-base"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+                <td class="px-4 py-2">
+                    @if($berita->status === 'pending')
+                        <div class="flex items-center gap-2">
+                            <form method="POST" action="{{ route('redaktur.berita.approve', $berita->id) }}">
+                                @csrf
+                                <button type="submit"
+                                    class="w-10 h-10 bg-green-100 text-green-700 hover:bg-green-200 rounded-md flex items-center justify-center transition"
+                                    title="Approve">
+                                    <i class="fas fa-check text-base"></i>
+                                </button>
+                            </form>
 
-    <td class="px-4 py-2">
-      @if($berita->gambar)
-        <img src="{{ asset('storage/' . $berita->gambar) }}" alt="Gambar"
-             class="w-24 h-16 object-cover rounded shadow border" />
-      @else
-        <span class="text-gray-400 italic">Tidak ada gambar</span>
-      @endif
-    </td>
+                            <button type="button"
+                                class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition btn-reject"
+                                title="Reject"
+                                data-id="{{ $berita->id }}">
+                                <i class="fas fa-times text-base"></i>
+                            </button>
+                        </div>
+                    @else
+                        <span class="text-sm font-semibold px-4 py-2 rounded-lg
+                            {{ $berita->status == 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                            {{ ucfirst($berita->status) }}
+                        </span>
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
-    <td class="px-4 py-2">
-  <div class="flex items-center gap-2">
-    <!-- Tombol Detail -->
-    <button type="button"
-      class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition"
-      title="Lihat Detail"
-      data-judul="{{ $berita->judul }}"
-      data-konten="{{ $berita->konten }}"
-      data-nama="{{ $berita->nama_reporter }}"
-      data-email="{{ $berita->email_reporter }}"
-      data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
-      data-status="{{ $berita->status }}"
-      data-gambar="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : '' }}"
-    >
-      <i class="fas fa-eye text-base"></i>
-    </button>
-
-    <!-- Tombol Hapus (pakai SweetAlert) -->
-<form method="POST" action="{{ route('redaktur.berita.delete', $berita->id) }}" class="form-hapus">
-  @csrf
-  @method('DELETE')
-  <button 
-    type="button"
-    class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition btn-hapus"
-    title="Hapus Berita"
-    data-id="{{ $berita->id }}"
-  >
-    <i class="fas fa-trash text-base"></i>
-  </button>
-</form>
-  </div>
-</td>
-  </tr>
-</tbody>
-
-      </table>
-    </div>
+<div id="dynamic-dropdown-menu" class="hidden absolute w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
+    @foreach (['Kurang Lengkap', 'Judul tidak sesuai', 'Konten tidak layak'] as $alasan)
+        <form method="POST" action="" class="reject-form-template">
+            @csrf
+            <input type="hidden" name="alasan" value="{{ $alasan }}">
+            <button type="submit"
+                class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">{{ $alasan }}</button>
+        </form>
     @endforeach
-    <!-- Pagination -->
-<div class="mt-6">
-    {{ $beritas->links('vendor.pagination.tailwind') }}
 </div>
 
-  </div>
-</div>
 
 @include('redaktur.partials.modal-add')
 @include('redaktur.partials.modal-detail')
@@ -154,122 +131,213 @@
 
 @push('scripts')
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Modal detail
-    document.querySelectorAll('.btn-detail').forEach(btn => {
-      btn.addEventListener('click', function () {
-        document.getElementById('editJudul').value = this.dataset.judul;
-        document.getElementById('editKonten').value = this.dataset.konten;
-        document.getElementById('editNama').value = this.dataset.nama;
-        document.getElementById('editEmail').value = this.dataset.email;
-        document.getElementById('editTanggal').value = this.dataset.tanggal;
-        document.getElementById('editStatus').value = this.dataset.status;
-        // Set gambar jika ada
-const gambarElement = document.getElementById('editGambar');
-const gambarContainer = document.getElementById('gambarContainer');
-if (this.dataset.gambar) {
-  gambarElement.src = this.dataset.gambar;
-  gambarElement.classList.remove('hidden');
-  gambarContainer.classList.remove('hidden');
-} else {
-  gambarElement.src = '';
-  gambarElement.classList.add('hidden');
-  gambarContainer.classList.add('hidden');
-}
+    // Inisialisasi DataTable (tetap di luar DOMContentLoaded)
+    $(document).ready(function() {
+        $('#beritaTable').DataTable({
+            pageLength: 10,
+            ordering: true,
+            responsive: true,
+            // Konfigurasi DOM untuk memodernisasi tata letak
+            dom: '<"top flex flex-col md:flex-row md:items-center justify-between mb-4"lf><"table-responsive"t><"bottom flex flex-col md:flex-row md:items-center justify-between mt-4"ip>',
+            language: {
+                search: "_INPUT_", // Mengatur input pencarian tanpa label bawaan
+                searchPlaceholder: "Cari...", // Placeholder modern untuk input pencarian
+                lengthMenu: "Tampilkan _MENU_ data",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                paginate: {
+                    first: "Pertama",
+                    last: "Terakhir",
+                    next: "<i class='fas fa-chevron-right'></i>",
+                    previous: "<i class='fas fa-chevron-left'></i>"
+                }
+            },
+            // Fungsi ini akan dijalankan setelah tabel selesai diinisialisasi
+            initComplete: function() {
+                // Styling untuk elemen pencarian
+                const searchInput = $('#beritaTable_filter input');
+                searchInput.addClass('w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500');
 
-        document.getElementById('editModal').classList.remove('hidden');
-        document.getElementById('editModal').classList.add('flex');
-      });
+                // Styling untuk elemen dropdown "Tampilkan data"
+                const lengthSelect = $('#beritaTable_length select');
+                lengthSelect.addClass('border rounded-lg p-2 mr-2');
+
+                // Styling untuk tombol paginasi
+                const paginateContainer = $('#beritaTable_paginate');
+                paginateContainer.addClass('flex items-center gap-2');
+                
+                // Tambahkan kelas untuk setiap tombol paginasi
+                $('#beritaTable_paginate .paginate_button').each(function() {
+                    $(this).addClass('px-3 py-1 border rounded-lg hover:bg-gray-200 transition');
+                });
+                // Hapus kelas 'current' dari tombol aktif untuk styling yang lebih bersih
+                $('#beritaTable_paginate .paginate_button.current').addClass('bg-blue-600 text-white hover:bg-blue-700').removeClass('bg-gray-100');
+            }
+        });
     });
 
-    window.closeEditModal = function () {
-      document.getElementById('editModal').classList.add('hidden');
-      document.getElementById('editModal').classList.remove('flex');
-    };
+    document.addEventListener('DOMContentLoaded', function () {
+        // Logika untuk SweetAlert
+        const setupSwalConfirm = (button, form, title, text, icon, confirmText) => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault(); // Mencegah form terkirim secara langsung
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon,
+                    showCancelButton: true,
+                    confirmButtonColor: icon === 'success' ? '#3085d6' : '#e3342f',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: confirmText,
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        };
 
-    // Modal tambah
-document.getElementById('btnAddNews')?.addEventListener('click', function () {
-  const modal = document.getElementById('addModal');
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
+        // Konfirmasi Approve
+        document.querySelectorAll('form[action*="/approve"] button[type="submit"]').forEach(button => {
+            const form = button.closest('form');
+            setupSwalConfirm(
+                button,
+                form,
+                'Yakin ingin menyetujui?',
+                'Berita ini akan langsung dipublikasikan.',
+                'success',
+                'Ya, Setuju!'
+            );
+        });
 
-  // 🔒 Kunci scroll background
-  document.body.classList.add('overflow-hidden');
-});
+        // Konfirmasi Reject dari Dropdown (sekarang dinamis)
+        document.querySelectorAll('.reject-form-template button[type="submit"]').forEach(button => {
+            const form = button.closest('form');
+            const alasan = form.querySelector('input[name="alasan"]').value;
+            setupSwalConfirm(
+                button,
+                form,
+                'Yakin ingin menolak?',
+                `Berita ini akan ditolak dengan alasan: "${alasan}".`,
+                'warning',
+                'Ya, Tolak!'
+            );
+        });
 
-window.closeAddModal = function () {
-  const modal = document.getElementById('addModal');
-  modal.classList.add('hidden');
-  modal.classList.remove('flex');
+        // Modal detail
+        document.querySelectorAll('.btn-detail').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                document.getElementById('editId').value = id;
 
-  // 🔓 Buka kunci scroll background
-  document.body.classList.remove('overflow-hidden');
+                // set form action sesuai ID
+                document.getElementById('formUpdateDetail').action =
+                    `/redaktur/berita/${id}/update`;
 
-  // Reset form
-  document.getElementById('formAddNews').reset();
-};
+                // isi data form
+                document.getElementById('editJudul').value = btn.dataset.judul;
+                document.getElementById('editKonten').value = btn.dataset.konten;
+                document.getElementById('editNama').value = btn.dataset.nama;
+                document.getElementById('editEmail').value = btn.dataset.email;
+                document.getElementById('editStatus').value = btn.dataset.status;
+                document.getElementById('editTanggal').value = btn.dataset.tanggal;
 
-    // Search
-    let searchTimeout;
+                if (btn.dataset.date) {
+                    const dateVal = new Date(btn.dataset.date);
+                    document.getElementById('editBeritaDate').value =
+                        dateVal.toISOString().split('T')[0];
+                }
 
-document.getElementById('searchInput').addEventListener('input', function () {
-    clearTimeout(searchTimeout); // Reset debounce
+                if (btn.dataset.gambar) {
+                    const img = document.getElementById('editGambar');
+                    img.src = btn.dataset.gambar;
+                    img.classList.remove('hidden');
+                }
 
-    searchTimeout = setTimeout(() => {
-        const keyword = this.value.trim();
-        const url = new URL(window.location.href);
+                // buka modal
+                document.getElementById('editModal').classList.remove('hidden');
+                document.getElementById('editModal').classList.add('flex');
+                document.body.classList.add('overflow-hidden');
+            });
+        });
 
-        if (keyword.length > 0) {
-            url.searchParams.set('search', keyword);
-        } else {
-            url.searchParams.delete('search');
-        }
-
-        url.searchParams.set('page', 1); // Reset ke halaman pertama
-        window.location.href = url.toString();
-    }, 500); // Delay 500ms, bisa diubah
-});
+        window.closeEditModal = function () {
+            const modal = document.getElementById('editModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+        };
 
 
-    // Dropdown toggle
-    document.querySelectorAll('[id^="dropdownBtn-"]').forEach(btn => {
-      const id = btn.id.split('-')[1];
-      btn.addEventListener('click', function () {
-        document.getElementById(`dropdownMenu-${id}`).classList.toggle('hidden');
-      });
+        // Modal tambah
+        document.getElementById('btnAddNews')?.addEventListener('click', function () {
+            const modal = document.getElementById('addModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+        });
+
+        window.closeAddModal = function () {
+            const modal = document.getElementById('addModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+            document.getElementById('formAddNews').reset();
+        };
+
+        // --- Logika Baru untuk Dropdown Reject Dinamis ---
+        const dynamicDropdown = document.getElementById('dynamic-dropdown-menu');
+
+        document.querySelectorAll('.btn-reject').forEach(btn => {
+            btn.addEventListener('click', function (event) {
+                event.stopPropagation(); // Mencegah event dari menutup dropdown
+                const rect = btn.getBoundingClientRect();
+                const beritaId = this.dataset.id;
+                
+                // Tutup dropdown lain yang terbuka
+                dynamicDropdown.classList.add('hidden');
+
+                // Atur posisi dropdown agar muncul di bawah tombol
+                dynamicDropdown.style.top = `${rect.bottom + window.scrollY}px`;
+                dynamicDropdown.style.right = `${window.innerWidth - (rect.right + window.scrollX)}px`;
+                dynamicDropdown.style.left = 'auto'; // Pastikan left tidak diatur agar `right` berfungsidynamicDropdown.style.left = `${rect.right + window.scrollX - dynamicDropdown.offsetWidth}px`;
+                dynamicDropdown.classList.remove('hidden');
+
+                // Update form action di dalam dropdown
+                const forms = dynamicDropdown.querySelectorAll('.reject-form-template');
+                forms.forEach(form => {
+                    form.action = `/redaktur/berita/${beritaId}/reject`;
+                });
+            });
+        });
+
+        // Tutup dropdown saat klik di luar
+        window.addEventListener('click', function (event) {
+            if (!dynamicDropdown.contains(event.target) && !event.target.closest('.btn-reject')) {
+                dynamicDropdown.classList.add('hidden');
+            }
+        });
+        
+        // Konfirmasi hapus
+        document.querySelectorAll('.form-hapus button').forEach(button => {
+            button.addEventListener('click', function () {
+                const form = this.closest('form');
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: "Berita yang dihapus tidak bisa dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e3342f',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
     });
-
-    // Close dropdown on outside click
-    window.addEventListener('click', function (e) {
-      document.querySelectorAll('[id^="dropdownMenu-"]').forEach(menu => {
-        if (!menu.contains(e.target) && !e.target.closest('[id^="dropdownBtn-"]')) {
-          menu.classList.add('hidden');
-        }
-      });
-    });
-  });
-
-  document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.btn-hapus').forEach(button => {
-    button.addEventListener('click', function () {
-      const form = this.closest('form');
-
-      Swal.fire({
-        title: 'Yakin ingin menghapus?',
-        text: "Berita yang dihapus tidak bisa dikembalikan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#e3342f',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          form.submit();
-        }
-      });
-    });
-  });
-});
 </script>
 @endpush
