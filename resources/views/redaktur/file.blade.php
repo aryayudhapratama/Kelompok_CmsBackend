@@ -4,150 +4,108 @@
 @section('page-title', 'File Manager')
 
 @section('content')
-<!-- Wrapper untuk seluruh konten file manager -->
 <div class="bg-white p-6 rounded-lg shadow relative z-10">
-
-  <!-- Header: Judul + Search + Button -->
-  <div class="flex justify-between items-center mb-4 border-b pb-2 flex-wrap gap-2">
-    <h2 class="text-lg font-semibold text-gray-800">Daftar File</h2>
-    
-    <div class="flex items-center gap-2">
-      <!-- Search Input -->
-      <input type="text" id="searchInput" name="search"
-       value="{{ request('search') }}"
-       placeholder="Cari nama file..."
-       class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-
-      <!-- Upload Button -->
-      <button id="btnUploadFile" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
-        + Upload File
-      </button>
+    <div class="flex justify-between items-center mb-4 border-b pb-2 flex-wrap gap-2">
+        <h2 class="text-lg font-semibold text-gray-800">Daftar File</h2>
+        <div class="flex items-center gap-2">
+            <button id="btnUploadFile" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                + Upload File
+            </button>
+        </div>
     </div>
-  </div>
 
-
-  <table class="w-full table-auto text-sm text-left border-collapse">
-    <thead class="bg-gray-100 text-gray-600">
-      <tr>
-        <th class="px-4 py-2">ID</th>
-        <th class="px-4 py-2">Date Added</th>
-        <th class="px-4 py-2">Nama File</th>
-        <th class="px-4 py-2">Slug Path</th>
-        <th class="px-4 py-2">User</th>
-        <th class="px-4 py-2">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      @forelse($files as $file)
-      <tr class="border-t hover:bg-gray-50">
-        <td class="px-4 py-2">{{ $file->id }}</td>
-        <td class="px-4 py-2">{{ $file->created_at->format('d F Y') }}</td>
-        <td class="px-4 py-2 max-w-[180px] truncate whitespace-nowrap overflow-hidden">
-  {{ $file->nama }}
-</td>
-
-<td class="px-4 py-2 max-w-[260px] truncate whitespace-nowrap overflow-hidden text-blue-600 underline">
-  <a href="{{ url($file->slug_path) }}" target="_blank" class="text-blue-600 underline">
-    {{ url($file->slug_path) }}
-  </a>
-</td>
-
-        <td class="px-4 py-2">{{ $file->user }}</td>
-       <td class="px-4 py-2">
-  <div class="flex items-center gap-2">
-
-    <!-- Tombol Detail -->
-    <button 
-      type="button"
-      class="w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition btn-detail"
-      title="Lihat Detail"
-      data-nama="{{ $file->nama }}"
-      data-url="{{ $file->slug_path }}"
-      data-user="{{ $file->user }}"
-      data-created="{{ $file->created_at }}"
-      data-updated="{{ $file->updated_at }}"
-    >
-      <i class="fas fa-eye text-base"></i>
-    </button>
-    <!-- Tombol Copy -->
-<button 
-  type="button"
-  class="w-10 h-10 bg-green-100 text-green-700 hover:bg-green-200 rounded-md flex items-center justify-center transition btn-copy"
-  title="Copy Link"
-  data-url="{{ url($file->slug_path) }}"
->
-  <i class="fas fa-copy text-base"></i>
-</button>
-
-
-    <!-- Tombol Hapus -->
-    <form method="POST" action="{{ route('redaktur.file.delete', $file->id) }}" class="form-hapus inline-block m-0 p-0">
-  @csrf
-  @method('DELETE')
-  <button 
-    type="button"
-    class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition btn-hapus"
-    title="Hapus File"
-    data-id="{{ $file->id }}"
-  >
-    <i class="fas fa-trash text-base"></i>
-  </button>
-</form>
-
-  </div>
-</td>
-      </tr>
-      @empty
-      <tr>
-        <td colspan="7" class="px-4 py-4 text-center text-gray-400 italic">Belum ada file</td>
-      </tr>
-      @endforelse
-    </tbody>
-  </table>
-  <div class="mt-4">
-    {{ $files->appends(request()->query())->links() }}
-
+    <table id="fileTable" class="w-full text-sm text-left table-fixed">
+        <thead class="bg-gray-100 text-gray-600">
+            <tr>
+                <th class="px-4 py-2">ID</th>
+                <th class="px-4 py-2">Date Added</th>
+                <th class="px-4 py-2">Nama File</th>
+                <th class="px-4 py-2">Slug Path</th>
+                <th class="px-4 py-2">User</th>
+                <th class="px-4 py-2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($files as $file)
+            <tr class="border-t hover:bg-gray-50">
+                <td class="px-4 py-2">{{ $file->id }}</td>
+                <td class="px-4 py-2">{{ $file->created_at->format('d F Y') }}</td>
+                <td class="px-4 py-2 max-w-[180px] truncate whitespace-nowrap overflow-hidden">{{ $file->nama }}</td>
+                <td class="px-4 py-2 max-w-[260px] truncate whitespace-nowrap overflow-hidden text-blue-600 underline">
+                    <a href="{{ url($file->slug_path) }}" target="_blank" class="text-blue-600 underline">
+                        {{ url($file->slug_path) }}
+                    </a>
+                </td>
+                <td class="px-4 py-2">{{ $file->user }}</td>
+                <td class="px-4 py-2">
+                    <div class="flex items-center gap-2">
+                        <button type="button" class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition" title="Lihat Detail"
+                            data-nama="{{ $file->nama }}"
+                            data-url="{{ url($file->slug_path) }}"
+                            data-user="{{ $file->user }}"
+                            data-created="{{ $file->created_at }}"
+                            data-updated="{{ $file->updated_at }}">
+                            <i class="fas fa-eye text-base"></i>
+                        </button>
+                        <button type="button" class="w-10 h-10 bg-green-100 text-green-700 hover:bg-green-200 rounded-md flex items-center justify-center transition btn-copy" title="Copy Link" data-url="{{ url($file->slug_path) }}">
+                            <i class="fas fa-copy text-base"></i>
+                        </button>
+                        <form method="POST" action="{{ route('redaktur.file.delete', $file->id) }}" class="form-hapus inline-block m-0 p-0">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition btn-hapus" title="Hapus File" data-id="{{ $file->id }}">
+                                <i class="fas fa-trash text-base"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="6" class="px-4 py-4 text-center text-gray-400 italic">Belum ada file</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 
-</div>
 @endsection
 
-<!-- Modal Upload -->
-<div id="uploadModal"
-     class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all duration-300">
-
-  <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-fade-in-up">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
-      <h2 class="text-lg font-semibold">Upload File</h2>
-      <button type="button" onclick="closeUploadModal()" class="text-white hover:text-gray-200 text-sm">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <!-- Body -->
-    <div class="px-6 py-5">
-      <form id="uploadForm" enctype="multipart/form-data" class="space-y-4">
-        @csrf
-        <div>
-          <label for="uploadFile" class="block text-sm font-medium text-gray-700 mb-1">Pilih File</label>
-          <input type="file" name="file" id="uploadFile"
-                 class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                 required>
+<div id="uploadModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all duration-300">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-fade-in-up">
+        <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Upload File</h2>
+            <button type="button" onclick="closeUploadModal()" class="text-white hover:text-gray-200 text-sm">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-      </form>
-    </div>
 
-    <!-- Footer -->
-    <div class="bg-gray-100 px-6 py-3 text-right space-x-2">
-      
-      <button type="submit" form="uploadForm"
-              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-semibold transition">
-        Upload
-      </button>
+        <div class="px-6 py-5">
+            <form id="uploadForm" enctype="multipart/form-data" class="space-y-4">
+                @csrf
+                <div>
+                    <label for="namaFile" class="block text-sm font-medium text-gray-700 mb-1">Nama File</label>
+                    <input type="text" name="nama_file" id="namaFile"
+                           class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                           placeholder="Masukkan nama file">
+                </div>
+                
+                <div>
+                    <label for="uploadFile" class="block text-sm font-medium text-gray-700 mb-1">Pilih File</label>
+                    <input type="file" name="file" id="uploadFile"
+                           class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                           required>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-gray-100 px-6 py-3 text-right space-x-2">
+            <button type="submit" form="uploadForm"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-semibold transition">
+                Upload
+            </button>
+        </div>
     </div>
-  </div>
 </div>
 
 
@@ -181,26 +139,79 @@
       <div class="flex items-center gap-3"><i class="fas fa-calendar-check text-blue-500"></i>
         <p><strong>Diupdate:</strong> <span id="detailUpdated"></span></p></div>
     </div>
-    <div class="bg-gray-100 px-6 py-3 text-right">
-      <button onclick="closeDetailModal()" class="text-sm text-blue-600 hover:text-blue-800 transition font-semibold">
-        <i class="fas fa-arrow-left mr-1"></i> Tutup
-      </button>
-    </div>
+    
   </div>
 </div>
 
 @push('scripts')
 <script>
+  // Inisialisasi DataTable untuk fileTable
+    $(document).ready(function() {
+        // Baris ini sudah dihapus dari kode sebelumnya, tetapi untuk memastikan
+        // Anda tidak memindahkan tombol upload, pastikan baris ini tidak ada.
+        // $('#searchInput').remove();
+
+        // Inisialisasi DataTable dengan DOM yang sama seperti halaman lain
+        $('#fileTable').DataTable({
+            pageLength: 10,
+            ordering: true,
+            responsive: true,
+            // Perhatikan konfigurasi DOM ini. 'l' dan 'f' yang mengatur
+            // "Tampilkan data" dan "Cari" akan berada di div terpisah dari tombol Anda.
+            // Ini akan memastikan tombol Anda tidak dipindahkan.
+            dom: '<"top flex flex-col md:flex-row md:items-center justify-between mb-4"lf><"table-responsive"t><"bottom flex flex-col md:flex-row md:items-center justify-between mt-4"ip>',
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Cari...",
+                lengthMenu: "Tampilkan _MENU_ data",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                paginate: {
+                    first: "Pertama",
+                    last: "Terakhir",
+                    next: "<i class='fas fa-chevron-right'></i>",
+                    previous: "<i class='fas fa-chevron-left'></i>"
+                }
+            },
+            initComplete: function() {
+                // Styling untuk elemen pencarian
+                const searchInput = $('#fileTable_filter input');
+                searchInput.addClass('w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500');
+
+                // Styling untuk dropdown "Tampilkan data"
+                const lengthSelect = $('#fileTable_length select');
+                lengthSelect.addClass('border rounded-lg p-2 mr-2');
+
+                // Styling untuk tombol paginasi
+                const paginateContainer = $('#fileTable_paginate');
+                paginateContainer.addClass('flex items-center gap-2');
+                
+                $('#fileTable_paginate .paginate_button').each(function() {
+                    $(this).addClass('px-3 py-1 border rounded-lg hover:bg-gray-200 transition');
+                });
+                
+                $('#fileTable_paginate .paginate_button.current').addClass('bg-blue-600 text-white hover:bg-blue-700').removeClass('bg-gray-100');
+
+                // Wrap the table in a div for better responsiveness
+                $('#fileTable').wrap('<div class="overflow-x-auto"></div>');
+
+                // Hapus baris ini yang memindahkan tombol upload.
+                // $('#fileTable_length').append($('#btnUploadFile').parent());
+            }
+        });
+    });
+
   // Buka Modal Upload
   document.getElementById('btnUploadFile').addEventListener('click', function () {
     document.getElementById('uploadModal').classList.remove('hidden');
     document.getElementById('uploadModal').classList.add('flex');
+    document.body.classList.add('overflow-hidden');
   });
 
   function closeUploadModal() {
     document.getElementById('uploadModal').classList.add('hidden');
     document.getElementById('uploadModal').classList.remove('flex');
     document.getElementById('uploadForm').reset();
+    document.body.classList.remove('overflow-hidden');
    
   }
 
@@ -259,35 +270,17 @@
 
   document.getElementById('detailModal').classList.remove('hidden');
   document.getElementById('detailModal').classList.add('flex');
+  document.body.classList.add('overflow-hidden');
 });
 
   });
 
-// Filter file berdasarkan nama
-
-let searchTimeout;
-
-document.getElementById('searchInput').addEventListener('input', function () {
-    clearTimeout(searchTimeout); // reset timeout sebelumnya
-
-    searchTimeout = setTimeout(() => {
-        const keyword = this.value.trim();
-        const url = new URL(window.location.href);
-
-        if (keyword.length > 0) {
-            url.searchParams.set('search', keyword);
-        } else {
-            url.searchParams.delete('search');
-        }
-
-        url.searchParams.set('page', 1);
-        window.location.href = url.toString();
-    }, 500); // delay 500ms (bisa diubah ke 300ms kalau mau lebih cepat)
-});
 
   function closeDetailModal() {
     document.getElementById('detailModal').classList.add('hidden');
     document.getElementById('detailModal').classList.remove('flex');
+    document.body.classList.remove('overflow-hidden');
+
   }
 
   function showUploadSuccessToast(message) {

@@ -35,6 +35,15 @@
         </div>
 
         <div>
+  <label class="block text-sm font-medium mb-1">Tanggal Berita</label>
+  <input type="date" 
+         name="berita_date" 
+         required 
+         class="w-full px-4 py-2 border rounded text-gray-800 bg-white" />
+</div>
+
+
+        <div>
           <label class="block text-sm font-medium mb-1">Nama Reporter</label>
           <input type="text" name="nama_reporter" required class="w-full px-4 py-2 border rounded text-gray-800" />
         </div>

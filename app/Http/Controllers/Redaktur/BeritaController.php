@@ -10,22 +10,9 @@ class BeritaController extends Controller
 {
     public function index(Request $request)
 {
+    
     $query = Berita::query();
-
-    // ✅ Cek apakah ada parameter 'search'
-    if ($request->has('search') && $request->search != '') {
-        $search = $request->search;
-
-        // Filter berdasarkan judul, nama reporter, atau email reporter
-        $query->where(function ($q) use ($search) {
-            $q->where('judul', 'like', '%' . $search . '%')
-              ->orWhere('nama_reporter', 'like', '%' . $search . '%')
-              ->orWhere('email_reporter', 'like', '%' . $search . '%');
-        });
-    }
-
-    // ✅ Pagination dan tetap mempertahankan query string (search)
-    $beritas = $query->orderBy('id', 'asc')->paginate(10)->appends($request->only('search'));
+    $beritas = $query->orderBy('id', 'asc')->get();
 
     return view('redaktur.kelola', compact('beritas'));
 }
@@ -40,6 +27,7 @@ class BeritaController extends Controller
         'nama_reporter' => 'required|string|max:100',
         'email_reporter' => 'required|email',
         'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'berita_date' => 'required|date',
     ]);
 
     if ($request->hasFile('gambar')) {
@@ -108,18 +96,8 @@ public function unpublish($id)
 public function daftarPublish(Request $request)
 {
     $query = Berita::where('status', 'approved'); // ✅ mulai dari berita yang status-nya approved saja
-    
-    if ($request->filled('search')) {
-        $search = $request->search;
 
-        $query->where(function ($q) use ($search) {
-            $q->where('judul', 'like', '%' . $search . '%')
-              ->orWhere('nama_reporter', 'like', '%' . $search . '%')
-              ->orWhere('email_reporter', 'like', '%' . $search . '%');
-        });
-    }
-
-    $beritas = $query->orderBy('id', 'asc')->paginate(10)->appends($request->only('search'));
+    $beritas = $query->orderBy('id', 'asc')->get();
 
     return view('redaktur.publish', compact('beritas'));
 }
@@ -133,6 +111,7 @@ public function update(Request $request, $id)
         'judul' => 'required|string|max:255',
         'konten' => 'required|string',
         'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'berita_date' => 'required|date',
     ]);
 
     // Jika upload gambar baru

@@ -10,6 +10,9 @@
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
   <style>
     body { font-family: 'Inter', sans-serif; }
@@ -157,7 +160,6 @@
     :class="{ 'xl:ml-64': sidebarOpen, 'ml-0': !sidebarOpen }">
     @yield('content')
   </main>
-    <!-- Modal Edit Profil -->
 <!-- Modal Edit Profil -->
 <div x-show="openEditModal" x-cloak
      class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[1000] flex items-center justify-center transition-all duration-300">
