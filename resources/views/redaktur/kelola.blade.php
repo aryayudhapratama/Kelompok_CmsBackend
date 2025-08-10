@@ -23,7 +23,7 @@
                 <th class="px-4 py-2">Article Date</th>
                 <th class="px-4 py-2">Full Name</th>
                 <th class="px-4 py-2">Email</th>
-                <th class="px-4 py-2">Action</th>
+                <th class="px-4 py-2">Actions</th>
                 <th class="px-4 py-2">Status</th>
             </tr>
         </thead>

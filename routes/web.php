@@ -13,6 +13,7 @@ use App\Http\Controllers\Redaktur\LandingSectionController;
 use App\Http\Controllers\Redaktur\BeritaController as RedakturBeritaController;
 use App\Http\Controllers\Reporter\Berita2Controller as ReporterBeritaController;
 use App\Http\Controllers\Redaktur\ProfileController;
+use App\Http\Controllers\Redaktur\BannerController;
 
 
 
@@ -58,14 +59,17 @@ Route::middleware(['auth', 'role:redaktur'])
         Route::delete('/file/{id}', [RedakturFileController::class, 'destroy'])->name('file.delete');
         Route::put('/settings', [ProfileController::class, 'update'])->name('settings.update');
 
-
-        // ✅ Perbaikan: Hapus "/redaktur" dari dalam route
+        // ✅ Carousel
         Route::get('/landing', [LandingSectionController::class, 'index'])->name('landing.index');
         Route::post('/landing', [LandingSectionController::class, 'store'])->name('landing.store');
         Route::get('/landing/{id}/edit', [LandingSectionController::class, 'editJson'])->name('landing.edit.json');
         Route::put('/landing/{id}', [LandingSectionController::class, 'update'])->name('landing.update');
         Route::delete('/landing/{id}', [LandingSectionController::class, 'destroy'])->name('landing.destroy');
+
+        // ✅ Banner
+        Route::get('/banner', [\App\Http\Controllers\Redaktur\BannerController::class, 'index'])->name('banner.index');
     });
+
 
 // ======================= REPORTER =======================
 Route::middleware(['auth', 'role:reporter'])->prefix('reporter')->name('reporter.')->group(function () {
