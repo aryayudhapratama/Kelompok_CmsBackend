@@ -19,7 +19,6 @@ class RedakturFileController extends Controller
     return view('redaktur.file', compact('files'));
 }
 
-
       public function upload(Request $request)
     {
         $request->validate([
@@ -64,7 +63,7 @@ public function destroy($id)
 
     $file->delete();
 
-    return redirect()->back()->with('success', 'File berhasil dihapus.');
+    return redirect()->back()->with('success', 'File deleted successfully.');
 }
 
 
