@@ -17,8 +17,6 @@ class BeritaController extends Controller
     return view('redaktur.kelola', compact('beritas'));
 }
 
-
-
    public function store(Request $request)
 {
     $data = $request->validate([

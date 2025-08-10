@@ -86,7 +86,7 @@
     <button @click="open = !open"
       class="w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-150 
       {{ request()->is('redaktur') || request()->is('redaktur/kelola*') || request()->is('redaktur/publish*') 
-        ? 'bg-blue-100 text-blue-700 font-semibold' 
+        ? 'bg-pink-100 text-pink-700 font-semibold' 
         : 'text-gray-700 hover:bg-gray-100' }}">
       <div class="flex items-center gap-3">
         <i class="fas fa-newspaper text-base"></i>
@@ -135,9 +135,9 @@
   </li>
 
   <li>
-    <a href="{{ route('redaktur.file.index') }}"
+    <a href="{{ route('redaktur.banner.index') }}"
       class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
-      {{ request()->routeIs('redaktur.file.index') ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+      {{ request()->routeIs('redaktur.banner.index') ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
       <i class="fas fa-bullhorn text-base"></i>
       <span>Banner</span>
     </a>
