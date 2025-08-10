@@ -5,7 +5,7 @@
   <div class="bg-white rounded-xl shadow-2xl w-full max-w-xl mx-auto overflow-hidden animate-fade-in-up">
     <!-- Header -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
-      <h2 class="text-lg font-semibold">Tambah Berita</h2>
+      <h2 class="text-lg font-semibold">New Article</h2>
       <button type="button" onclick="closeAddModal()" class="text-white hover:text-gray-200 text-sm">
         <i class="fas fa-times"></i>
       </button>
@@ -17,12 +17,12 @@
         @csrf
 
         <div>
-          <label class="block text-sm font-medium mb-1">Judul</label>
+          <label class="block text-sm font-medium mb-1">Title</label>
           <input type="text" name="judul" required class="w-full px-4 py-2 border rounded text-gray-800" />
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-1">Gambar Berita</label>
+          <label class="block text-sm font-medium mb-1">Article Image</label>
           <input type="file" name="gambar" accept="image/*"
                  class="w-full px-4 py-2 border rounded text-gray-800 bg-white 
                         file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 
@@ -30,12 +30,12 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-1">Konten</label>
+          <label class="block text-sm font-medium mb-1">Content</label>
           <textarea name="konten" rows="5" required class="w-full px-4 py-2 border rounded text-gray-800"></textarea>
         </div>
 
         <div>
-  <label class="block text-sm font-medium mb-1">Tanggal Berita</label>
+  <label class="block text-sm font-medium mb-1">Article Date</label>
   <input type="date" 
          name="berita_date" 
          required 
@@ -44,12 +44,12 @@
 
 
         <div>
-          <label class="block text-sm font-medium mb-1">Nama Reporter</label>
+          <label class="block text-sm font-medium mb-1">Reporter Name</label>
           <input type="text" name="nama_reporter" required class="w-full px-4 py-2 border rounded text-gray-800" />
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-1">Email Reporter</label>
+          <label class="block text-sm font-medium mb-1">Reporter Email</label>
           <input type="email" name="email_reporter" required class="w-full px-4 py-2 border rounded text-gray-800" />
         </div>
       </form>
@@ -60,7 +60,7 @@
       
       <button type="submit" form="formAddNews"
               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-        <i class="fas fa-save mr-1"></i> Simpan
+        <i class="fas fa-save mr-1"></i> Submit
       </button>
     </div>
   </div>

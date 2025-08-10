@@ -37,7 +37,7 @@ class BeritaController extends Controller
     $data['status'] = 'pending';
     Berita::create($data);
 
-    return redirect()->back()->with('success', 'Berita berhasil ditambahkan.');
+    return redirect()->back()->with('success', 'Article has been successfully added.');
 }
 
 
@@ -47,7 +47,7 @@ class BeritaController extends Controller
         $berita->status = 'approved';
         $berita->save();
 
-        return redirect()->back()->with('success', 'Berita "' . $berita->judul . '" disetujui.');
+        return redirect()->back()->with('success', 'Berita "' . $berita->judul . '" has been approved.');
     }
 
     public function reject(Request $request, $id)
@@ -57,7 +57,7 @@ class BeritaController extends Controller
         $berita->save();
 
         // Bisa juga simpan alasan penolakan ke kolom baru, misalnya: $berita->alasan = $request->alasan;
-        return redirect()->back()->with('success', 'Berita "' . $berita->judul . '" ditolak karena: ' . $request->alasan);
+        return redirect()->back()->with('success', 'Berita "' . $berita->judul . '" was rejected, because:' . $request->alasan);
     }
 
     public function dashboard()
@@ -74,13 +74,13 @@ class BeritaController extends Controller
     $berita = Berita::findOrFail($id);
 
     if ($berita->status !== 'approved') {
-        return redirect()->back()->with('error', 'Berita harus disetujui sebelum dipublikasikan.');
+        return redirect()->back()->with('error', 'The article must be approved before it can be published.');
     }
 
     $berita->is_published = true;
     $berita->save();
 
-    return redirect()->back()->with('success', 'Berita berhasil dipublikasikan.');
+    return redirect()->back()->with('success', 'Article has been successfully published.');
 }
 
 public function unpublish($id)
@@ -89,7 +89,7 @@ public function unpublish($id)
     $berita->is_published = false;
     $berita->save();
 
-    return redirect()->back()->with('success', 'Berita berhasil dihentikan tayangnya.');
+    return redirect()->back()->with('success', 'Article has been successfully unpublished.');
 }
 
 
@@ -121,7 +121,7 @@ public function update(Request $request, $id)
 
     $berita->update($validated);
 
-    return redirect()->back()->with('success', 'Berita berhasil diperbarui.');
+    return redirect()->back()->with('success', 'Article has been successfully updated.');
 }
 
 public function destroy($id)
@@ -135,7 +135,7 @@ public function destroy($id)
 
     $berita->delete();
 
-    return redirect()->back()->with('success', 'Berita berhasil dihapus.');
+    return redirect()->back()->with('success', 'Article has been successfully deleted.');
 }
 
 }

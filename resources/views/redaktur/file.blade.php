@@ -6,7 +6,7 @@
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow relative z-10">
     <div class="flex justify-between items-center mb-4 border-b pb-2 flex-wrap gap-2">
-        <h2 class="text-lg font-semibold text-gray-800">Daftar File</h2>
+        <h2 class="text-lg font-semibold text-gray-800">Directory listing</h2>
         <div class="flex items-center gap-2">
             <button id="btnUploadFile" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
                 + Upload File
@@ -19,7 +19,7 @@
             <tr>
                 <th class="px-4 py-2">ID</th>
                 <th class="px-4 py-2">Date Added</th>
-                <th class="px-4 py-2">Nama File</th>
+                <th class="px-4 py-2">File Name</th>
                 <th class="px-4 py-2">Slug Path</th>
                 <th class="px-4 py-2">User</th>
                 <th class="px-4 py-2">Action</th>
@@ -84,14 +84,14 @@
             <form id="uploadForm" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div>
-                    <label for="namaFile" class="block text-sm font-medium text-gray-700 mb-1">Nama File</label>
+                    <label for="namaFile" class="block text-sm font-medium text-gray-700 mb-1">File Name</label>
                     <input type="text" name="nama_file" id="namaFile"
                            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                           placeholder="Masukkan nama file">
+                           placeholder="Enter file name">
                 </div>
                 
                 <div>
-                    <label for="uploadFile" class="block text-sm font-medium text-gray-700 mb-1">Pilih File</label>
+                    <label for="uploadFile" class="block text-sm font-medium text-gray-700 mb-1">Choose File</label>
                     <input type="file" name="file" id="uploadFile"
                            class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                            required>
@@ -113,21 +113,20 @@
 <div id="detailModal"
      class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all duration-300">
 
-
   <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-fade-in-up">
     <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
-      <h2 class="text-lg font-semibold">Detail File</h2>
+      <h2 class="text-lg font-semibold">File Properties</h2>
       <button onclick="closeDetailModal()" class="text-white hover:text-gray-200 text-sm">
         <i class="fas fa-times"></i>
       </button>
     </div>
     <div class="px-6 py-5 text-sm text-gray-700 space-y-3">
       <div class="flex items-center gap-3"><i class="fas fa-file-alt text-blue-500"></i>
-        <p><strong>Nama:</strong> <span id="detailNama"></span></p></div>
+        <p><strong>File Name:</strong> <span id="detailNama"></span></p></div>
       <div class="mt-4" id="previewContainer">
   <p class="font-semibold mb-1">Preview:</p>
   <div id="filePreview" class="w-full h-64 border rounded overflow-hidden bg-white flex items-center justify-center">
-    <span class="text-gray-400 italic">Tidak ada preview tersedia</span>
+    <span class="text-gray-400 italic">Preview not available</span>
   </div>
 </div>
       <div class="flex items-center gap-3"><i class="fas fa-link text-blue-500"></i>
@@ -135,9 +134,9 @@
       <div class="flex items-center gap-3"><i class="fas fa-user text-blue-500"></i>
         <p><strong>User/Role:</strong> <span id="detailUser"></span></p></div>
       <div class="flex items-center gap-3"><i class="fas fa-calendar-plus text-blue-500"></i>
-        <p><strong>Dibuat:</strong> <span id="detailCreated"></span></p></div>
+        <p><strong>Created at:</strong> <span id="detailCreated"></span></p></div>
       <div class="flex items-center gap-3"><i class="fas fa-calendar-check text-blue-500"></i>
-        <p><strong>Diupdate:</strong> <span id="detailUpdated"></span></p></div>
+        <p><strong>Updated at:</strong> <span id="detailUpdated"></span></p></div>
     </div>
     
   </div>
@@ -162,12 +161,12 @@
             dom: '<"top flex flex-col md:flex-row md:items-center justify-between mb-4"lf><"table-responsive"t><"bottom flex flex-col md:flex-row md:items-center justify-between mt-4"ip>',
             language: {
                 search: "_INPUT_",
-                searchPlaceholder: "Cari...",
-                lengthMenu: "Tampilkan _MENU_ data",
-                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                searchPlaceholder: "Search...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
                 paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
+                    first: "First",
+                    last: "Last",
                     next: "<i class='fas fa-chevron-right'></i>",
                     previous: "<i class='fas fa-chevron-left'></i>"
                 }
@@ -229,15 +228,15 @@
     .then(data => {
       if (data.success) {
         closeUploadModal();
-        showUploadSuccessToast("File berhasil diupload!");
+        showUploadSuccessToast("File uploaded successfully!");
         setTimeout(() => window.location.reload(), 2000);
       } else {
-        showUploadErrorToast("Upload gagal.");
+        showUploadErrorToast("Upload failed.");
       }
     })
     .catch(err => {
       console.error(err);
-      showUploadErrorToast("Terjadi kesalahan saat upload.");
+      showUploadErrorToast("An error occurred during the upload.");
     });
   });
 
@@ -265,7 +264,7 @@
       <img src="${this.dataset.url}" alt="Preview Gambar" class="max-h-full max-w-full object-contain">
     `;
   } else {
-    previewContainer.innerHTML = `<span class="text-gray-400 italic">Preview tidak tersedia untuk jenis file ini</span>`;
+    previewContainer.innerHTML = `<span class="text-gray-400 italic">Preview not available for this file type</span>`;
   }
 
   document.getElementById('detailModal').classList.remove('hidden');
@@ -284,48 +283,49 @@
   }
 
   function showUploadSuccessToast(message) {
-    const toast = document.createElement("div");
-    toast.setAttribute("x-data", "{ show: true }");
-    toast.setAttribute("x-init", "setTimeout(() => show = false, 3000)");
-    toast.setAttribute("x-show", "show");
-    toast.setAttribute("x-transition.opacity", "");
-    toast.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/40";
+  const toast = document.createElement("div");
+  toast.setAttribute("x-data", "{ show: true }");
+  toast.setAttribute("x-init", "setTimeout(() => show = false, 3000)");
+  toast.setAttribute("x-show", "show");
+  toast.setAttribute("x-transition.opacity", "");
+  toast.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/40";
 
-    toast.innerHTML = `
-      <div class="bg-gradient-to-br from-teal-400 to-cyan-500 text-white rounded-xl shadow-xl p-8 w-[90%] max-w-md text-center relative">
-        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 mb-4" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-        <h2 class="text-2xl font-bold mb-1">Success!</h2>
-        <p class="text-sm">${message}</p>
-      </div>
-    `;
+  toast.innerHTML = `
+    <div class="bg-gradient-to-br from-teal-400 to-cyan-500 text-white rounded-2xl shadow-2xl px-12 py-10 w-full max-w-xl text-center relative">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 mb-4" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      <h2 class="text-3xl font-bold mb-2">Success!</h2>
+      <p class="text-lg">${message}</p>
+    </div>
+  `;
 
-    document.body.appendChild(toast);
-  }
+  document.body.appendChild(toast);
+}
 
-  function showUploadErrorToast(message) {
-    const toast = document.createElement("div");
-    toast.setAttribute("x-data", "{ show: true }");
-    toast.setAttribute("x-init", "setTimeout(() => show = false, 3000)");
-    toast.setAttribute("x-show", "show");
-    toast.setAttribute("x-transition.opacity", "");
-    toast.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/40";
+function showUploadErrorToast(message) {
+  const toast = document.createElement("div");
+  toast.setAttribute("x-data", "{ show: true }");
+  toast.setAttribute("x-init", "setTimeout(() => show = false, 3000)");
+  toast.setAttribute("x-show", "show");
+  toast.setAttribute("x-transition.opacity", "");
+  toast.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/40";
 
-    toast.innerHTML = `
-      <div class="bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-xl shadow-xl p-8 w-[90%] max-w-md text-center relative">
-        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-14 w-14 mb-4" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5a7 7 0 110 14a7 7 0 010-14z" />
-        </svg>
-        <h2 class="text-2xl font-bold mb-1">Error!</h2>
-        <p class="text-sm">${message}</p>
-      </div>
-    `;
+  toast.innerHTML = `
+    <div class="bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-2xl shadow-2xl px-12 py-10 w-full max-w-xl text-center relative">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 mb-4" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5a7 7 0 110 14a7 7 0 010-14z" />
+      </svg>
+      <h2 class="text-3xl font-bold mb-2">Whoops!</h2>
+      <p class="text-lg">${message}</p>
+    </div>
+  `;
 
-    document.body.appendChild(toast);
-  }
+  document.body.appendChild(toast);
+}
+
 
    document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.btn-hapus').forEach(button => {
@@ -333,14 +333,14 @@
       const form = this.closest('form');
 
       Swal.fire({
-        title: 'Yakin ingin menghapus?',
-        text: "Berita yang dihapus tidak bisa dikembalikan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#e3342f',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
+        title: 'Are you sure?',
+text: "The file will be permanently deleted and cannot be recovered!",
+icon: 'warning',
+showCancelButton: true,
+confirmButtonColor: '#e3342f',
+cancelButtonColor: '#6c757d',
+confirmButtonText: 'Yes, delete!',
+cancelButtonText: 'Cancel'
       }).then((result) => {
         if (result.isConfirmed) {
           form.submit();
@@ -356,11 +356,12 @@ document.querySelectorAll('.btn-copy').forEach(button => {
 
       navigator.clipboard.writeText(url)
         .then(() => {
-          showUploadSuccessToast("URL berhasil disalin!");
-        })
-        .catch(() => {
-          showUploadErrorToast("Gagal menyalin URL.");
-        });
+          showUploadSuccessToast("URL copied successfully!");
+})
+.catch(() => {
+  showUploadErrorToast("Failed to copy URL.");
+});
+
     });
   });
   

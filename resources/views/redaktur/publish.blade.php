@@ -1,7 +1,7 @@
 @extends('layouts.redaktur')
 
-@section('title', 'Approval Berita - Redaktur')
-@section('page-title', 'Publish Berita')
+@section('title', 'Publish Articles - Redaktur')
+@section('page-title', 'Publish Articles')
 
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow relative z-10">
@@ -16,7 +16,7 @@
                 <th class="px-4 py-2">Date Added</th>
                 <th class="px-4 py-2">Title</th>
                 <th class="px-4 py-2">Image</th>
-                <th class="px-4 py-2">Berita Date</th>
+                <th class="px-4 py-2">Article Date</th>
                 <th class="px-4 py-2">Full Name</th>
                 <th class="px-4 py-2">Email</th>
                 <th class="px-4 py-2">Action</th>
@@ -33,14 +33,14 @@
                     @if($berita->gambar)
                         <img src="{{ asset('storage/' . $berita->gambar) }}" class="w-24 h-16 object-cover rounded shadow border"/>
                     @else
-                        <span class="text-gray-400 italic">Tidak ada gambar</span>
+                        <span class="text-gray-400 italic"> Image not available</span>
                     @endif
                 </td>
                 <td class="px-4 py-2">
                     @if($berita->berita_date)
                         {{ \Carbon\Carbon::parse($berita->berita_date)->format('d F Y') }}
                     @else
-                        <span class="text-gray-400 italic">Tanggal tidak tersedia</span>
+                        <span class="text-gray-400 italic">Date not available</span>
                     @endif
                 </td>
                 <td class="px-4 py-2">{{ $berita->nama_reporter }}</td>
@@ -123,12 +123,12 @@
         dom: '<"top flex flex-col md:flex-row md:items-center justify-between mb-4"lf><"table-responsive"t><"bottom flex flex-col md:flex-row md:items-center justify-between mt-4"ip>',
         language: {
             search: "_INPUT_", // Mengatur input pencarian tanpa label bawaan
-            searchPlaceholder: "Cari...", // Placeholder modern untuk input pencarian
-            lengthMenu: "Tampilkan _MENU_ data",
-            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-            paginate: {
-                first: "Pertama",
-                last: "Terakhir",
+            searchPlaceholder: "Search...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    first: "First",
+                    last: "Last",
                 next: "<i class='fas fa-chevron-right'></i>",
                 previous: "<i class='fas fa-chevron-left'></i>"
             }
@@ -247,14 +247,14 @@ window.closeEditModal = function () {
       const form = this.closest('form');
 
       Swal.fire({
-        title: 'Yakin ingin menghapus?',
-        text: "Berita yang dihapus tidak bisa dikembalikan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#e3342f',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
+        title: 'Are you sure?',
+text: "The article will be permanently deleted and cannot be recovered!",
+icon: 'warning',
+showCancelButton: true,
+confirmButtonColor: '#e3342f',
+cancelButtonColor: '#6c757d',
+confirmButtonText: 'Yes, delete!',
+cancelButtonText: 'Cancel'
       }).then((result) => {
         if (result.isConfirmed) {
           form.submit();

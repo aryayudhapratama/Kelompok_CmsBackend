@@ -6,7 +6,7 @@
     
     <!-- Header -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
-      <h2 class="text-lg font-semibold">Detail Berita</h2>
+      <h2 class="text-lg font-semibold">Article Properties</h2>
       <button onclick="closeEditModal()" class="text-white hover:text-gray-200 text-sm">
         <i class="fas fa-times"></i>
       </button>
@@ -19,38 +19,38 @@
       <input type="hidden" id="editId" name="id" />
 
       <div>
-        <label class="block font-medium mb-1">Judul</label>
+        <label class="block font-medium mb-1">Title</label>
         <input type="text" id="editJudul" name="judul" class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
       </div>
 
       <div id="gambarContainer">
-        <label class="block font-medium mb-1">Gambar Berita</label>
+        <label class="block font-medium mb-1">Article Image</label>
         <img id="editGambar" src="" alt="Gambar Berita" class="w-64 h-40 object-cover rounded shadow border mb-2 hidden" />
         <input type="file" name="gambar" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
       </div>
 
       <div>
-        <label class="block font-medium mb-1">Konten</label>
+        <label class="block font-medium mb-1">Content</label>
         <textarea id="editKonten" name="konten" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
       </div>
 
       <div>
-        <label class="block font-medium mb-1">Tanggal Berita</label>
+        <label class="block font-medium mb-1">Article Date</label>
         <input type="date" id="editBeritaDate" name="berita_date" class="w-full px-4 py-2 border border-gray-300 rounded-lg" />
       </div>
 
       <div>
-        <label class="block font-medium mb-1">Nama Reporter</label>
+        <label class="block font-medium mb-1">Reporter Name</label>
         <input type="text" id="editNama" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly />
       </div>
 
       <div>
-        <label class="block font-medium mb-1">Email Reporter</label>
+        <label class="block font-medium mb-1">Reporter Email</label>
         <input type="text" id="editEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly />
       </div>
 
       <div>
-        <label class="block font-medium mb-1">Tanggal Dibuat</label>
+        <label class="block font-medium mb-1">Date Added</label>
         <input type="text" id="editTanggal" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" readonly />
       </div>
 
@@ -62,7 +62,7 @@
       <!-- Footer -->
       <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-          <i class="fas fa-save mr-1"></i> Simpan
+          <i class="fas fa-save mr-1"></i> Save
         </button>
        
       </div>
