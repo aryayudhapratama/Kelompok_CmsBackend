@@ -23,18 +23,22 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // ======================= ADMIN =======================
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', function () {
-        return view('admin.admin');
-    })->name('admin.admin');
+    // Perbaiki: arahkan ke AdminController@index, bukan closure
+    Route::get('/admin', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.admin');
+
     // Route Untuk User
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
     Route::put('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+
     // Route Untuk File Manager
-     Route::get('/admin/file-manager', [AdminFile2Controller::class, 'index'])->name('admin.file-manager.index');
+    Route::get('/admin/file-manager', [AdminFile2Controller::class, 'index'])->name('admin.file-manager.index');
     Route::post('/admin/file-manager/upload', [AdminFile2Controller::class, 'upload'])->name('admin.file-manager.upload');
     Route::delete('/admin/file-manager/{id}', [AdminFile2Controller::class, 'destroy'])->name('admin.file-manager.destroy');
+
+    // Route Edit Profile
+    Route::put('/settings', [ProfileController::class, 'update'])->name('settings.update');
 });
 
 // ======================= REDAKTUR =======================
