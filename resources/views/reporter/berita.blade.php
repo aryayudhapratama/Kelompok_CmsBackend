@@ -1,353 +1,314 @@
-<!DOCTYPE html>
-<html>
+@extends('layouts.reporter')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets2/img/apple-icon.png') }}" />
-    <link rel="icon" type="image/png" href="{{ asset('assets2/img/favicon.png') }}" />
-    <title>REPORTER - KELOLA BERITA</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <link href="{{ asset('assets2/css/nucleo-icons.css') }}" rel="stylesheet" />
-    <link href="{{ asset('assets2/css/nucleo-svg.css') }}" rel="stylesheet" />
-    <link href="{{ asset('assets2/css/argon-dashboard-tailwind.css?v=1.0.1') }}" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
+@section('title', 'Reporter - Manage News')
+@section('page-title', 'Manage News')
 
-</head>
-
-<body
-    class="m-0 font-sans text-base antialiased font-normal dark:bg-slate-900 leading-default bg-gray-50 text-slate-500">
-    <div class="absolute w-full bg-blue-500 dark:hidden min-h-75"></div>
-    <aside
-        class="fixed inset-y-0 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl dark:shadow-none dark:bg-slate-850 max-w-64 ease-nav-brand z-990 xl:ml-6 rounded-2xl xl:left-0 xl:translate-x-0"
-        aria-expanded="false">
-        <div class="h-19">
-            <i class="absolute top-0 right-0 p-4 opacity-50 cursor-pointer fas fa-times dark:text-white text-slate-400 xl:hidden"
-                sidenav-close></i>
-            <a class="block px-8 py-6 m-0 text-sm whitespace-nowrap dark:text-white text-slate-700" href="javascript:;">
-                <img src="{{ asset('assets2/img/logo-ct-dark.png') }}"
-                    class="inline h-full max-w-full transition-all duration-200 dark:hidden ease-nav-brand max-h-8"
-                    alt="main_logo" />
-                <img src="{{ asset('assets2/img/logo-ct.png') }}"
-                    class="hidden h-full max-w-full transition-all duration-200 dark:inline ease-nav-brand max-h-8"
-                    alt="main_logo" />
-                <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">REPORTER PANEL</span>
-            </a>
+@section('content')
+    <div class="bg-white p-6 rounded-lg shadow relative z-10">
+        <div class="flex justify-between items-center mb-4 border-b pb-2">
+            <h2 class="text-lg font-semibold text-gray-800">News List</h2>
+            <button id="btnAddNews"
+                class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-plus-circle mr-1"></i> Add News
+            </button>
         </div>
 
-        <hr
-            class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
+        <table id="beritaTable" class="w-full text-sm text-left table-fixed">
+            <thead class="bg-gray-100 text-gray-600">
+                <tr>
+                    <th class="px-4 py-2">ID</th>
+                    <th class="px-4 py-2">Date Added</th>
+                    <th class="px-4 py-2">Title</th>
+                    <th class="px-4 py-2">Image</th>
+                    <th class="px-4 py-2">Article Date</th>
+                    <th class="px-4 py-2">Full Name</th>
+                    <th class="px-4 py-2">Email</th>
+                    <th class="px-4 py-2">Actions</th>
+                    <th class="px-4 py-2">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($beritas as $berita)
+                    <tr class="border-t hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ $berita->id }}</td>
+                        <td class="px-4 py-2">{{ $berita->created_at->format('d F Y') }}</td>
+                        <td class="px-4 py-2">{{ $berita->judul }}</td>
+                        <td class="px-4 py-2">
+                            @if ($berita->gambar)
+                                <img src="{{ asset('storage/' . $berita->gambar) }}"
+                                    class="w-24 h-16 object-cover rounded shadow border" />
+                            @else
+                                <span class="text-gray-400 italic">Image not available</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-2">
+                            @if ($berita->berita_date)
+                                {{ \Carbon\Carbon::parse($berita->berita_date)->format('d F Y') }}
+                            @else
+                                <span class="text-gray-400 italic">Date not available</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-2">{{ $berita->nama_reporter }}</td>
+                        <td class="px-4 py-2">{{ $berita->email_reporter }}</td>
 
-        <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
-            <ul class="flex flex-col pl-0 mb-0">
-                <li class="mt-0.5 w-full">
-                    <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
-                        href="{{ route('reporter.dashboard') }}">
-                        <div
-                            class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-tv-2"></i>
-                        </div>
-                        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Dashboard</span>
-                    </a>
-                </li>
-                <li class="mt-0.5 w-full">
-                    <a class="py-2.7 bg-blue-500/13 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
-                        href="{{ route('reporter.berita') }}">
-                        <div
-                            class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-calendar-grid-58"></i>
-                        </div>
-                        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Kelola Berita</span>
-                    </a>
-                </li>
-                <li class="mt-0.5 w-full">
-                    <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
-                        href="{{ route('reporter.file') }}">
-                        <div
-                            class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="relative top-0 text-sm leading-normal text-green-500 ni ni-single-copy-04"></i>
-                        </div>
-                        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">File Manager</span>
-                    </a>
-                </li>
-                <li class="mt-0.5 w-full">
-                    <form action="/logout" method="POST" class="m-0 p-0">
-                        @csrf
-                        <button type="submit"
-                            class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors w-full text-left">
-                            <div
-                                class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                                <i class="relative top-0 text-sm leading-normal text-red-500 ni ni-button-power"></i>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button type="button"
+                                    class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition"
+                                    title="Lihat Detail" data-id="{{ $berita->id }}" data-judul="{{ $berita->judul }}"
+                                    data-konten="{{ $berita->konten }}" data-nama="{{ $berita->nama_reporter }}"
+                                    data-email="{{ $berita->email_reporter }}"
+                                    data-tanggal="{{ $berita->created_at ? $berita->created_at->format('d F Y H:i') : '' }}"
+                                    data-status="{{ $berita->status }}"
+                                    data-gambar="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : '' }}"
+                                    data-date="{{ $berita->berita_date ? \Carbon\Carbon::parse($berita->berita_date)->format('d F Y H:i') : '' }}">
+                                    <i class="fas fa-eye text-base"></i>
+                                </button>
+                                <form method="POST" action="{{ route('reporter.berita.destroy', $berita->id) }}"
+                                    class="form-hapus">
+                                    @csrf
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="button"
+                                        class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition"
+                                        title="Hapus Berita">
+                                        <i class="fas fa-trash text-base"></i>
+                                    </button>
+                                </form>
                             </div>
-                            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Logout</span>
-                        </button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </aside>
+                        </td>
+                        <!-- Status: Always Pending -->
+                        <td class="px-4 py-2">
+                            <span class="text-sm font-semibold px-4 py-2 rounded-lg bg-yellow-100 text-yellow-700">
+                                Pending
+                            </span>
+                        </td>
 
-    <main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
-        <nav class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all ease-in shadow-none duration-250 rounded-2xl lg:flex-nowrap lg:justify-start"
-            navbar-main navbar-scroll="false">
-            <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
-                <nav>
-                    <ol class="flex flex-wrap pt-1 mr-12 bg-transparent rounded-lg sm:mr-16">
-                        <li class="text-sm leading-normal">
-                            <a class="text-white opacity-50" href="javascript:;">Pages</a>
-                        </li>
-                        <li class="text-sm pl-2 capitalize leading-normal text-white before:float-left before:pr-2 before:text-white before:content-['/']"
-                            aria-current="page">Kelola Berita</li>
-                    </ol>
-                    <h6 class="mb-0 font-bold text-white capitalize">Kelola Berita</h6>
-                </nav>
-            </div>
-        </nav>
-
-        <div class="w-full px-6 py-6 mx-auto">
-            <div class="flex justify-end mb-4">
-                <button id="btnAddNews"
-                    class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:shadow-xs hover:-translate-y-px bg-150 bg-x-25 leading-pro text-xs ease-in tracking-tight-rem shadow-md bg-clip-padding bg-gradient-to-tl from-blue-500 to-violet-500">
-                    + Tambah Berita
-                </button>
-            </div>
-
-            <div class="flex flex-wrap -mx-3">
-                <div class="w-full max-w-full px-3 mt-0 mb-6">
-                    <div
-                        class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-                        <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
-                            <h6 class="dark:text-white">Daftar Berita</h6>
-                        </div>
-                        <div class="flex-auto px-0 pt-0 pb-2">
-                            <div class="p-0 overflow-x-auto">
-                                <table
-                                    class="items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
-                                    <thead class="align-bottom">
-                                        <tr>
-                                            <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Judul
-                                            </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Nama Reporter
-                                            </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Email
-                                            </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Tanggal
-                                            </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Status
-                                            </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Gambar
-                                            </th>
-                                            <th
-                                                class="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500 bg-gray-100 dark:bg-slate-700 dark:text-white">
-                                                Aksi
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($beritas as $berita)
-                                            <tr
-                                                class="border-b dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700">
-                                                <td
-                                                    class="px-6 py-4 text-sm text-slate-700 dark:text-white whitespace-nowrap">
-                                                    {{ $berita->judul }}
-                                                </td>
-                                                <td
-                                                    class="px-6 py-4 text-sm text-slate-700 dark:text-white whitespace-nowrap">
-                                                    {{ $berita->nama_reporter }}
-                                                </td>
-                                                <td
-                                                    class="px-6 py-4 text-sm text-slate-700 dark:text-white whitespace-nowrap">
-                                                    {{ $berita->email_reporter }}
-                                                </td>
-                                                <td
-                                                    class="px-6 py-4 text-sm text-slate-700 dark:text-white whitespace-nowrap">
-                                                    {{ $berita->created_at->format('d M Y') }}
-                                                </td>
-                                                <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                                    <span
-                                                        class="text-xs font-semibold px-3 py-1 rounded-full
-                    {{ $berita->status == 'approved' ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200' : ($berita->status == 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200') }}">
-                                                        {{ ucfirst($berita->status) }}
-                                                    </span>
-                                                </td>
-                                                <td
-                                                    class="p-1 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                                                    @if ($berita->gambar)
-                                                        <img src="{{ asset('storage/' . $berita->gambar) }}"
-                                                            class="rounded" width="120" alt="Gambar">
-                                                    @else
-                                                        <span class="text-xs text-gray-500">Tidak ada</span>
-                                                    @endif
-                                                </td>
-                                                <td
-                                                    class="px-6 py-4 text-sm text-blue-500 hover:underline whitespace-nowrap">
-                                                    <a href="javascript:;" class="btn-detail"
-                                                        data-id="{{ $berita->id }}"
-                                                        data-url="{{ route('reporter.berita.update', $berita->id) }}"
-                                                        data-judul="{{ $berita->judul }}"
-                                                        data-konten="{{ $berita->konten }}"
-                                                        data-nama="{{ $berita->nama_reporter }}"
-                                                        data-email="{{ $berita->email_reporter }}"
-                                                        data-tanggal="{{ $berita->created_at->format('d F Y H:i') }}"
-                                                        data-gambar="{{ $berita->gambar }}"
-                                                        data-status="{{ $berita->status }}">
-                                                        Detail
-                                                    </a>
-
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <div id="addModal"
-        class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000]">
-        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/2 shadow-2xl">
-            <h5 class="text-lg font-bold mb-4 dark:text-white">Tambah Berita Baru</h5>
-            <form id="formAddNews" action="{{ route('berita.store') }}" method="POST"
-                enctype="multipart/form-data">
-                @csrf
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Judul Berita</label>
-                    <input type="text" name="judul"
-                        class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Konten Berita</label>
-                    <textarea name="konten" rows="6" class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white"
-                        required></textarea>
-                </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm dark:text-white">Gambar (Optional)</label>
-                    <input type="file" name="gambar" accept="image/*"
-                        class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="closeAddModal()"
-                        class="px-4 py-2 mr-2 text-sm bg-gray-300 rounded-lg dark:bg-slate-600 dark:text-white">Batal</button>
-                    <button type="submit" class="px-4 py-2 text-sm text-white bg-blue-500 rounded-lg">Simpan</button>
-                </div>
-            </form>
-        </div>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 
-    {{-- Modal Edit --}}
-    <div id="editModal"
-        class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000]">
-        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-1/2 shadow-2xl">
-            <h5 class="text-lg font-bold mb-4 dark:text-white">Edit Berita</h5>
-            <form id="formEditNews" method="POST" action="#" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="id" id="editId">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block mb-1 text-sm dark:text-white">Judul</label>
-                        <input type="text" name="judul" id="editJudul"
-                            class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white">
-                    </div>
-                    <div>
-                        <label class="block mb-1 text-sm dark:text-white">Konten</label>
-                        <textarea name="konten" id="editKonten" rows="6"
-                            class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"></textarea>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block mb-1 text-sm dark:text-white">Gambar (Opsional)</label>
-                        <input type="file" name="gambar" accept="image/*"
-                            class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block mb-1 text-sm dark:text-white">Tanggal Dibuat</label>
-                            <input type="text" id="editTanggal"
-                                class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"
-                                readonly>
-                        </div>
-                        <div>
-                            <label class="block mb-1 text-sm dark:text-white">Status</label>
-                            <input type="text" id="editStatus"
-                                class="w-full px-3 py-2 border rounded-lg bg-gray-100 dark:bg-slate-700 dark:text-white"
-                                readonly>
-                        </div>
-                    </div>
-                    <div class="flex justify-end mt-6 gap-2">
-                        <button type="button" onclick="closeEditModal()"
-                            class="px-4 py-2 text-sm bg-gray-300 rounded-lg dark:bg-slate-600 dark:text-white">Tutup</button>
-                        <button type="submit"
-                            class="px-4 py-2 text-sm bg-gray-300 rounded-lg dark:bg-slate-600 dark:text-white">Simpan</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+    @include('reporter.modal-add')
+    @include('reporter.modal-detail')
+@endsection
 
-</body>
-<script src="{{ asset('assets2/js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script src="{{ asset('assets2/js/argon-dashboard-tailwind.js') }}"></script>
+@push('scripts')
+    <script>
+        // Inisialisasi DataTable (tetap di luar DOMContentLoaded)
+        $(document).ready(function() {
+            $('#beritaTable').DataTable({
+                pageLength: 10,
+                ordering: true,
+                responsive: true,
+                // Konfigurasi DOM untuk memodernisasi tata letak
+                dom: '<"top flex flex-col md:flex-row md:items-center justify-between mb-4"lf><"table-responsive"t><"bottom flex flex-col md:flex-row md:items-center justify-between mt-4"ip>',
+                language: {
+                    search: "_INPUT_", // Mengatur input pencarian tanpa label bawaan
+                    searchPlaceholder: "Search...",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "<i class='fas fa-chevron-right'></i>",
+                        previous: "<i class='fas fa-chevron-left'></i>"
+                    }
+                },
+                // Fungsi ini akan dijalankan setelah tabel selesai diinisialisasi
+                initComplete: function() {
+                    // Styling untuk elemen pencarian
+                    const searchInput = $('#beritaTable_filter input');
+                    searchInput.addClass(
+                        'w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    );
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Modal Edit
-        document.querySelectorAll('.btn-detail').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('editJudul').value = this.dataset.judul;
-                document.getElementById('editKonten').value = this.dataset.konten;
-                document.getElementById('editTanggal').value = this.dataset.tanggal;
-                document.getElementById('editStatus').value = this.dataset.status;
-                document.getElementById('editId').value = this.dataset.id;
+                    // Styling untuk elemen dropdown "Tampilkan data"
+                    const lengthSelect = $('#beritaTable_length select');
+                    lengthSelect.addClass('border rounded-lg p-2 mr-2');
 
-                // Set form action ke URL update Laravel
-                document.getElementById('formEditNews').action = this.dataset.url;
+                    // Styling untuk tombol paginasi
+                    const paginateContainer = $('#beritaTable_paginate');
+                    paginateContainer.addClass('flex items-center gap-2');
 
-                // Tampilkan modal
-                const modal = document.getElementById('editModal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+                    // Tambahkan kelas untuk setiap tombol paginasi
+                    $('#beritaTable_paginate .paginate_button').each(function() {
+                        $(this).addClass(
+                            'px-3 py-1 border rounded-lg hover:bg-gray-200 transition');
+                    });
+                    // Hapus kelas 'current' dari tombol aktif untuk styling yang lebih bersih
+                    $('#beritaTable_paginate .paginate_button.current').addClass(
+                        'bg-blue-600 text-white hover:bg-blue-700').removeClass('bg-gray-100');
+                }
             });
         });
 
-        // Tutup Modal Edit
-        window.closeEditModal = function() {
-            const modal = document.getElementById('editModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            // Logika untuk SweetAlert
+            const setupSwalConfirm = (button, form, title, text, icon, confirmText) => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault(); // Mencegah form terkirim secara langsung
+                    Swal.fire({
+                        title: title,
+                        text: text,
+                        icon: icon,
+                        showCancelButton: true,
+                        confirmButtonColor: icon === 'success' ? '#3085d6' : '#e3342f',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: confirmText,
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            };
 
-        // Modal Tambah (jika ada)
-        document.getElementById('btnAddNews')?.addEventListener('click', function() {
-            const modal = document.getElementById('addModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            // Konfirmasi Approve
+            document.querySelectorAll('form[action*="/approve"] button[type="submit"]').forEach(button => {
+                const form = button.closest('form');
+                setupSwalConfirm(
+                    button,
+                    form,
+                    'Are you sure you want to approve?',
+                    'This article will be published immediately.',
+                    'success',
+                    'Yes, Approve!'
+
+                );
+            });
+
+            // Konfirmasi Reject dari Dropdown (sekarang dinamis)
+            document.querySelectorAll('.reject-form-template button[type="submit"]').forEach(button => {
+                const form = button.closest('form');
+                const alasan = form.querySelector('input[name="alasan"]').value;
+                setupSwalConfirm(
+                    button,
+                    form,
+                    'Are you sure you want to reject?',
+                    `This article will be rejected for the following reason: "${alasan}".`,
+                    'warning',
+                    'Yes, Reject!'
+
+                );
+            });
+
+            // Modal detail
+            document.querySelectorAll('.btn-detail').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    document.getElementById('editId').value = id;
+                    document.getElementById('formUpdateDetail').action = `/reporter/berita/${id}`;
+                    // isi data form
+                    document.getElementById('editJudul').value = btn.dataset.judul;
+                    document.getElementById('editKonten').value = btn.dataset.konten;
+
+                    if (btn.dataset.date) {
+                        const dateVal = new Date(btn.dataset.date);
+                        document.getElementById('editBeritaDate').value = dateVal.toISOString()
+                            .split('T')[0];
+                    }
+
+                    if (btn.dataset.gambar) {
+                        const img = document.getElementById('editGambar');
+                        img.src = btn.dataset.gambar;
+                        img.classList.remove('hidden');
+                    }
+
+                    // buka modal
+                    document.getElementById('editModal').classList.remove('hidden');
+                    document.getElementById('editModal').classList.add('flex');
+                    document.body.classList.add('overflow-hidden');
+                });
+            });
+
+            window.closeEditModal = function() {
+                const modal = document.getElementById('editModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.classList.remove('overflow-hidden');
+            };
+
+
+            // Modal tambah
+            document.getElementById('btnAddNews')?.addEventListener('click', function() {
+                const modal = document.getElementById('addModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.classList.add('overflow-hidden');
+            });
+
+            window.closeAddModal = function() {
+                const modal = document.getElementById('addModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.classList.remove('overflow-hidden');
+                document.getElementById('formAddNews').reset();
+            };
+
+            // --- Logika Baru untuk Dropdown Reject Dinamis ---
+            const dynamicDropdown = document.getElementById('dynamic-dropdown-menu');
+
+            document.querySelectorAll('.btn-reject').forEach(btn => {
+                btn.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Mencegah event dari menutup dropdown
+                    const rect = btn.getBoundingClientRect();
+                    const beritaId = this.dataset.id;
+
+                    // Tutup dropdown lain yang terbuka
+                    dynamicDropdown.classList.add('hidden');
+
+                    // Atur posisi dropdown agar muncul di bawah tombol
+                    dynamicDropdown.style.top = `${rect.bottom + window.scrollY}px`;
+                    dynamicDropdown.style.right =
+                        `${window.innerWidth - (rect.right + window.scrollX)}px`;
+                    dynamicDropdown.style.left =
+                        'auto'; // Pastikan left tidak diatur agar `right` berfungsidynamicDropdown.style.left = `${rect.right + window.scrollX - dynamicDropdown.offsetWidth}px`;
+                    dynamicDropdown.classList.remove('hidden');
+
+                    // Update form action di dalam dropdown
+                    const forms = dynamicDropdown.querySelectorAll('.reject-form-template');
+                    forms.forEach(form => {
+                        form.action = `/redaktur/berita/${beritaId}/reject`;
+                    });
+                });
+            });
+
+            // Tutup dropdown saat klik di luar
+            window.addEventListener('click', function(event) {
+                if (!dynamicDropdown.contains(event.target) && !event.target.closest('.btn-reject')) {
+                    dynamicDropdown.classList.add('hidden');
+                }
+            });
+
+            // Konfirmasi hapus
+            document.querySelectorAll('.form-hapus button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const form = this.closest('form');
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "The article will be permanently deleted and cannot be recovered!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e3342f',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, delete!',
+                        cancelButtonText: 'Cancel',
+                        // Lifecycle hooks untuk menambahkan dan menghapus kelas
+                        didOpen: () => {
+                            document.body.classList.add('swal-open-body');
+                        },
+                        willClose: () => {
+                            document.body.classList.remove('swal-open-body');
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
         });
-
-        window.closeAddModal = function() {
-            const modal = document.getElementById('addModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.getElementById('formAddNews')?.reset();
-        };
-    });
-</script>
-
-
-</html>
+    </script>
+@endpush

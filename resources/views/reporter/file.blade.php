@@ -1,388 +1,383 @@
-<!DOCTYPE html>
-<html>
+@extends('layouts.reporter')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- 🔐 Penting untuk AJAX -->
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets2/img/apple-icon.png') }}" />
-    <link rel="icon" type="image/png" href="{{ asset('assets2/img/favicon.png') }}" />
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-uMu7F1...etc" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>REPORTER - FILE MANAGER</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <link href="{{ asset('assets2/css/nucleo-icons.css') }}" rel="stylesheet" />
-    <link href="{{ asset('assets2/css/nucleo-svg.css') }}" rel="stylesheet" />
-    <link href="{{ asset('assets2/css/argon-dashboard-tailwind.css?v=1.0.1') }}" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+@section('title', 'Reporter - File Manager')
+@section('page-title', 'File Manager')
 
-<body
-    class="m-0 font-sans text-base antialiased font-normal dark:bg-slate-900 leading-default bg-gray-50 text-slate-500">
-    <div class="absolute w-full bg-blue-500 dark:hidden min-h-75"></div>
-    <aside
-        class="fixed inset-y-0 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl dark:shadow-none dark:bg-slate-850 max-w-64 ease-nav-brand z-990 xl:ml-6 rounded-2xl xl:left-0 xl:translate-x-0"
-        aria-expanded="false">
-        <div class="h-19">
-            <i class="absolute top-0 right-0 p-4 opacity-50 cursor-pointer fas fa-times dark:text-white text-slate-400 xl:hidden"
-                sidenav-close></i>
-            <a class="block px-8 py-6 m-0 text-sm whitespace-nowrap dark:text-white text-slate-700" href="javascript:;">
-                <img src="{{ asset('assets2/img/logo-ct-dark.png') }}"
-                    class="inline h-full max-w-full transition-all duration-200 dark:hidden ease-nav-brand max-h-8"
-                    alt="main_logo" />
-                <img src="{{ asset('assets2/img/logo-ct.png') }}"
-                    class="hidden h-full max-w-full transition-all duration-200 dark:inline ease-nav-brand max-h-8"
-                    alt="main_logo" />
-                <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">REPORTER PANEL</span>
-            </a>
+@section('content')
+    <div class="bg-white p-6 rounded-lg shadow relative z-10">
+        <div class="flex justify-between items-center mb-4 border-b pb-2 flex-wrap gap-2">
+            <h2 class="text-lg font-semibold text-gray-800">Directory listing</h2>
+            <div class="flex items-center gap-2">
+                <button id="btnUploadFile" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                    + Upload File
+                </button>
+            </div>
         </div>
-        <hr
-            class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
-        <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
-            <ul class="flex flex-col pl-0 mb-0">
-                <li class="mt-0.5 w-full">
-                    <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
-                        href="{{ route('reporter.dashboard') }}">
-                        <div
-                            class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-tv-2"></i>
-                        </div>
-                        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Dashboard</span>
-                    </a>
-                </li>
-                <li class="mt-0.5 w-full">
-                    <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
-                        href="{{ route('reporter.berita') }}">
-                        <div
-                            class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-calendar-grid-58"></i>
-                        </div>
-                        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Kelola Berita</span>
-                    </a>
-                </li>
-                <li class="mt-0.5 w-full">
-                    <a class="py-2.7 bg-blue-500/13 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
-                        href="{{ route('reporter.file') }}">
-                        <div
-                            class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="relative top-0 text-sm leading-normal text-green-500 ni ni-single-copy-04"></i>
-                        </div>
-                        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">File Manager</span>
-                    </a>
-                </li>
-                <li class="mt-0.5 w-full">
-                    <form action="/logout" method="POST" class="m-0 p-0">
-                        @csrf
-                        <button type="submit"
-                            class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors w-full text-left">
-                            <div
-                                class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                                <i class="relative top-0 text-sm leading-normal text-red-500 ni ni-button-power"></i>
+
+        <table id="fileTable" class="w-full text-sm text-left table-fixed">
+            <thead class="bg-gray-100 text-gray-600">
+                <tr>
+                    <th class="px-4 py-2">ID</th>
+                    <th class="px-4 py-2">Date Added</th>
+                    <th class="px-4 py-2">File Name</th>
+                    <th class="px-4 py-2">Slug Path</th>
+                    <th class="px-4 py-2">User</th>
+                    <th class="px-4 py-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($files as $file)
+                    <tr class="border-t hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ $file->id }}</td>
+                        <td class="px-4 py-2">{{ $file->created_at->format('d F Y') }}</td>
+                        <td class="px-4 py-2 max-w-[180px] truncate whitespace-nowrap overflow-hidden">
+                            {{ strtoupper($file->nama) }}
+                        </td>
+                        <td
+                            class="px-4 py-2 max-w-[260px] truncate whitespace-nowrap overflow-hidden text-blue-600 underline">
+                            <a href="{{ url($file->slug_path) }}" target="_blank" class="text-blue-600 underline">
+                                {{ url($file->slug_path) }}
+                            </a>
+                        </td>
+                        <td class="px-4 py-2">{{ $file->user }}</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button type="button"
+                                    class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition"
+                                    title="Lihat Detail" data-nama="{{ $file->nama }}"
+                                    data-url="{{ url($file->slug_path) }}" data-user="{{ $file->user }}"
+                                    data-created="{{ $file->created_at }}" data-updated="{{ $file->updated_at }}">
+                                    <i class="fas fa-eye text-base"></i>
+                                </button>
+                                <button type="button"
+                                    class="w-10 h-10 bg-green-100 text-green-700 hover:bg-green-200 rounded-md flex items-center justify-center transition btn-copy"
+                                    title="Copy Link" data-url="{{ url($file->slug_path) }}">
+                                    <i class="fas fa-copy text-base"></i>
+                                </button>
+                                <form method="POST" action="{{ route('file.delete', $file->id) }}"
+                                    class="form-hapus inline-block m-0 p-0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button"
+                                        class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition btn-hapus"
+                                        title="Hapus File" data-id="{{ $file->id }}">
+                                        <i class="fas fa-trash text-base"></i>
+                                    </button>
+                                </form>
                             </div>
-                            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Logout</span>
-                        </button>
-                    </form>
-                </li>
-            </ul>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-4 py-4 text-center text-gray-400 italic">Belum ada file</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+@endsection
+
+<div id="uploadModal"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all duration-300">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-fade-in-up">
+        <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Upload File</h2>
+            <button type="button" onclick="closeUploadModal()" class="text-white hover:text-gray-200 text-sm">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-    </aside>
 
-    <main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
-        <nav class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all ease-in shadow-none duration-250 rounded-2xl lg:flex-nowrap lg:justify-start"
-            navbar-main navbar-scroll="false">
-            <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
-                <nav>
-                    <ol class="flex flex-wrap pt-1 mr-12 bg-transparent rounded-lg sm:mr-16">
-                        <li class="text-sm leading-normal">
-                            <a class="text-white opacity-50" href="javascript:;">Pages</a>
-                        </li>
-                        <li class="text-sm pl-2 capitalize leading-normal text-white before:float-left before:pr-2 before:text-white before:content-['/']"
-                            aria-current="page">File Manager</li>
-                    </ol>
-                    <h6 class="mb-0 font-bold text-white capitalize">File Manager</h6>
-                </nav>
-            </div>
-        </nav>
-
-        <div class="w-full px-6 py-6 mx-auto">
-            <div class="flex flex-wrap items-center justify-between mb-4 -mx-3">
-                <div class="w-full max-w-full px-3 shrink-0 md:w-8/12 md:flex-0">
-                </div>
-                <div class="w-full max-w-full px-3 shrink-0 md:w-4/12 md:flex-0">
-                    <div class="flex items-center justify-end gap-2">
-                        <button id="btnAddNew"
-                            class="inline-block px-6 py-2.5 font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg cursor-pointer hover:shadow-lg hover:-translate-y-px text-xs leading-pro ease-in tracking-tight-rem shadow-md">
-                            <i class="fas fa-plus mr-1"></i> Tambah Baru
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Table -->
-            <div class="flex flex-wrap -mx-3">
-                <div class="w-full max-w-full px-3 mt-0 mb-6">
-                    <div
-                        class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-                        <div class="flex-auto px-0 pt-0 pb-2">
-                            <div class="p-0 overflow-x-auto">
-                                <table
-                                    class="items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
-                                    <thead class="align-bottom">
-                                        <tr>
-                                            <th
-                                                class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
-                                                ID</th>
-                                            <th
-                                                class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
-                                                Date Added</th>
-                                            <th
-                                                class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
-                                                Nama File</th>
-                                            <th
-                                                class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
-                                                Slug Path</th>
-                                            <th
-                                                class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
-                                                User</th>
-                                            <th
-                                                class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">
-                                                Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="file-table-body">
-                                        @forelse($files as $file)
-                                            <tr class="border-t hover:bg-gray-50">
-                                                <td class="px-4 py-2">{{ $file->id }}</td>
-                                                <td class="px-4 py-2">{{ $file->created_at->format('d F Y') }}</td>
-                                                <td class="px-4 py-2">{{ $file->nama }}</td>
-                                                <td class="px-4 py-2 text-blue-600 underline">
-                                                    <a href="{{ $file->slug_path }}"
-                                                        target="_blank">{{ Str::limit($file->slug_path, 50) }}</a>
-                                                </td>
-                                                <td class="px-4 py-2">{{ $file->user }}</td>
-                                                <td class="px-4 py-2">
-                                                    <div class="flex items-center gap-2">
-                                                        <!-- Tombol Lihat Detail -->
-                                                        <button type="button"
-                                                            class="w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition btn-detail"
-                                                            title="Lihat Detail" data-judul="{{ $file->nama }}"
-                                                            data-konten="{{ $file->konten ?? 'Tidak tersedia' }}"
-                                                            data-path="{{ $file->slug_path }}">
-                                                            <i class="fas fa-eye text-base"></i>
-                                                        </button>
-
-                                                        <!-- Tombol Hapus (AJAX) -->
-                                                        <button type="button"
-                                                            class="w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition btn-hapus"
-                                                            title="Hapus File" data-id="{{ $file->id }}"
-                                                            data-url="{{ route('file.delete', $file->id) }}">
-                                                            <i class="fas fa-trash text-base"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="6"
-                                                    class="px-4 py-6 text-center text-gray-500 dark:text-gray-400">
-                                                    Tidak ada file ditemukan.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Modal Tambah -->
-    <div id="addModal"
-        class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000] p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h5 class="text-lg font-bold dark:text-white">Tambah Konten Baru</h5>
-                <button onclick="closeAddModal()"
-                    class="text-gray-500 hover:text-gray-800 dark:text-gray-400">&times;</button>
-            </div>
-            <form id="formAddNew" action="{{ route('upload.file') }}" method="POST" enctype="multipart/form-data">
+        <div class="px-6 py-5">
+            <form id="uploadForm" enctype="multipart/form-data" class="space-y-4">
                 @csrf
-                <div class="space-y-4">
-                    <div>
-                        <label class="block mb-1 text-sm font-medium dark:text-white">Judul</label>
-                        <input type="text" name="judul"
-                            class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required>
-                    </div>
-                    <div>
-                        <label class="block mb-1 text-sm font-medium dark:text-white">Isi Konten</label>
-                        <textarea name="konten" rows="6"
-                            class="w-full px-3 py-2 border rounded-lg dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                    </div>
-                    <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload File
-                            PDF</label>
-                        <input type="file" name="file" accept=".pdf" required
-                            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
-                        <p class="mt-1 text-sm text-gray-500">Hanya file PDF yang diizinkan (max 20MB).</p>
-                    </div>
+                <div>
+                    <label for="namaFile" class="block text-sm font-medium text-gray-700 mb-1">File Name</label>
+                    <input type="text" name="nama_file" id="namaFile"
+                        class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        placeholder="Enter file name">
                 </div>
-                <div class="flex justify-end gap-2 mt-6">
-                    <button type="button" onclick="closeAddModal()"
-                        class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-slate-600 dark:text-white">Batal</button>
-                    <button type="submit"
-                        class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">Simpan</button>
+
+                <div>
+                    <label for="uploadFile" class="block text-sm font-medium text-gray-700 mb-1">Choose File</label>
+                    <input type="file" name="file" id="uploadFile"
+                        class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        required>
                 </div>
             </form>
         </div>
-    </div>
 
-    <!-- Modal Detail -->
-    <div id="detailModal"
-        class="hidden fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-black/50 z-[1000] p-4">
-        <div
-            class="bg-white dark:bg-slate-800 rounded-lg p-6 w-11/12 md:w-3/4 lg:w-2/3 shadow-2xl flex flex-col max-h-[90vh]">
-            <div class="flex justify-between items-center mb-4">
-                <h5 id="detailJudul" class="text-xl font-bold dark:text-white">Detail File</h5>
-                <button onclick="closeDetailModal()"
-                    class="text-gray-500 hover:text-gray-800 dark:text-gray-400">&times;</button>
-            </div>
-            <div class="flex-grow overflow-y-auto pr-2 space-y-4">
-                <div>
-                    <h6 class="text-sm font-bold text-slate-500 dark:text-slate-400">Konten</h6>
-                    <p id="detailKonten" class="text-sm dark:text-white whitespace-pre-wrap"></p>
-                </div>
-                <hr class="dark:border-slate-600">
-                <div>
-                    <h6 class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-2">Pratinjau PDF</h6>
-                    <div class="w-full h-[50vh] bg-gray-200 dark:bg-slate-700 rounded">
-                        <iframe id="detailPdfPreview" class="w-full h-full" src=""></iframe>
-                    </div>
-                </div>
-            </div>
-            <div class="flex justify-end mt-6">
-                <button type="button" onclick="closeDetailModal()"
-                    class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-slate-600 dark:text-white">Tutup</button>
-            </div>
+        <div class="bg-gray-100 px-6 py-3 text-right space-x-2">
+            <button type="submit" form="uploadForm"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-semibold transition">
+                Upload
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- JavaScript -->
-    <script src="https://demos.creative-tim.com/argon-dashboard-tailwind/assets/js/plugins/perfect-scrollbar.min.js">
-    </script>
-    <script src="https://demos.creative-tim.com/argon-dashboard-tailwind/assets/js/argon-dashboard-tailwind.js?v=1.0.1">
-    </script>
+
+<!-- Modal Detail -->
+<div id="detailModal"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all duration-300">
+
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-fade-in-up">
+        <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">
+            <h2 class="text-lg font-semibold">File Properties</h2>
+            <button onclick="closeDetailModal()" class="text-white hover:text-gray-200 text-sm">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="px-6 py-5 text-sm text-gray-700 space-y-3">
+            <div class="flex items-center gap-3"><i class="fas fa-file-alt text-blue-500"></i>
+                <p><strong>File Name:</strong> <span id="detailNama"></span></p>
+            </div>
+            <div class="mt-4" id="previewContainer">
+                <p class="font-semibold mb-1">Preview:</p>
+                <div id="filePreview"
+                    class="w-full h-64 border rounded overflow-hidden bg-white flex items-center justify-center">
+                    <span class="text-gray-400 italic">Preview not available</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3"><i class="fas fa-link text-blue-500"></i>
+                <p><strong>URL:</strong> <a id="detailUrl" href="#" target="_blank"
+                        class="text-blue-600 underline break-all"></a></p>
+            </div>
+            <div class="flex items-center gap-3"><i class="fas fa-user text-blue-500"></i>
+                <p><strong>User/Role:</strong> <span id="detailUser"></span></p>
+            </div>
+            <div class="flex items-center gap-3"><i class="fas fa-calendar-plus text-blue-500"></i>
+                <p><strong>Created at:</strong> <span id="detailCreated"></span></p>
+            </div>
+            <div class="flex items-center gap-3"><i class="fas fa-calendar-check text-blue-500"></i>
+                <p><strong>Updated at:</strong> <span id="detailUpdated"></span></p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const addModal = document.getElementById('addModal');
-            const detailModal = document.getElementById('detailModal');
-            const formAddNew = document.getElementById('formAddNew');
+        // Inisialisasi DataTable untuk fileTable
+        $(document).ready(function() {
 
-            // --- Modal Tambah ---
-            document.getElementById('btnAddNew')?.addEventListener('click', () => {
-                addModal.classList.remove('hidden');
-                addModal.classList.add('flex');
-            });
+            // Inisialisasi DataTable dengan DOM yang sama seperti halaman lain
+            $('#fileTable').DataTable({
+                pageLength: 10,
+                ordering: true,
+                responsive: true,
 
-            window.closeAddModal = () => {
-                addModal.classList.add('hidden');
-                addModal.classList.remove('flex');
-                formAddNew?.reset();
-            };
+                // Ini akan memastikan tombol Anda tidak dipindahkan.
+                dom: '<"top flex flex-col md:flex-row md:items-center justify-between mb-4"lf><"table-responsive"t><"bottom flex flex-col md:flex-row md:items-center justify-between mt-4"ip>',
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search...",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "<i class='fas fa-chevron-right'></i>",
+                        previous: "<i class='fas fa-chevron-left'></i>"
+                    }
+                },
+                initComplete: function() {
+                    // Styling untuk elemen pencarian
+                    const searchInput = $('#fileTable_filter input');
+                    searchInput.addClass(
+                        'w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    );
 
-            // --- Upload File (AJAX) ---
-            formAddNew?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                const btn = this.querySelector('button[type="submit"]');
-                const original = btn.innerHTML;
-                btn.innerHTML = 'Mengunggah...';
-                btn.disabled = true;
+                    // Styling untuk dropdown "Tampilkan data"
+                    const lengthSelect = $('#fileTable_length select');
+                    lengthSelect.addClass('border rounded-lg p-2 mr-2');
 
-                fetch(this.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Berhasil diunggah!');
-                            closeAddModal();
-                            location.reload();
-                        } else {
-                            alert(data.message || 'Gagal!');
-                        }
-                    })
-                    .catch(() => alert('Kesalahan jaringan.'))
-                    .finally(() => {
-                        btn.innerHTML = original;
-                        btn.disabled = false;
+                    // Styling untuk tombol paginasi
+                    const paginateContainer = $('#fileTable_paginate');
+                    paginateContainer.addClass('flex items-center gap-2');
+
+                    $('#fileTable_paginate .paginate_button').each(function() {
+                        $(this).addClass(
+                            'px-3 py-1 border rounded-lg hover:bg-gray-200 transition');
                     });
-            });
 
-            // --- Modal Detail ---
-            document.getElementById('file-table-body').addEventListener('click', function(e) {
-                const btn = e.target.closest('.btn-detail');
-                if (btn) {
-                    document.getElementById('detailJudul').textContent = btn.dataset.judul;
-                    document.getElementById('detailKonten').textContent = btn.dataset.konten;
-                    document.getElementById('detailPdfPreview').src = btn.dataset.path;
-                    detailModal.classList.remove('hidden');
-                    detailModal.classList.add('flex');
-                }
-            });
+                    $('#fileTable_paginate .paginate_button.current').addClass(
+                        'bg-blue-600 text-white hover:bg-blue-700').removeClass('bg-gray-100');
 
-            window.closeDetailModal = () => {
-                detailModal.classList.add('hidden');
-                detailModal.classList.remove('flex');
-                document.getElementById('detailPdfPreview').src = '';
-            };
-
-            // --- Hapus File (AJAX) ---
-document.getElementById('file-table-body').addEventListener('click', function(e) {
-    const btn = e.target.closest('.btn-hapus');
-    if (btn) {
-        const url = btn.dataset.url;
-        if (confirm('Yakin ingin hapus file ini?')) {
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('File dihapus!');
-                    // Hapus baris dari tabel
-                    btn.closest('tr').remove();
-                } else {
-                    alert(data.message || 'Gagal hapus.');
-                }
-            })
-            .catch(() => alert('Kesalahan jaringan.'));
-        }
-    }
-});
-
-
-            // Tutup modal dengan Escape
-            document.addEventListener('keydown', e => {
-                if (e.key === 'Escape') {
-                    closeAddModal();
-                    closeDetailModal();
+                    // Wrap the table in a div for better responsiveness
+                    $('#fileTable').wrap('<div class="overflow-x-auto"></div>');
                 }
             });
         });
-    </script>
-</body>
 
-</html>
+        // Buka Modal Upload
+        document.getElementById('btnUploadFile').addEventListener('click', function() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+            document.getElementById('uploadModal').classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+        });
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.getElementById('uploadModal').classList.remove('flex');
+            document.getElementById('uploadForm').reset();
+            document.body.classList.remove('overflow-hidden');
+
+        }
+
+        // Upload File
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch("{{ route('upload.file') }}", {
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        closeUploadModal();
+                        showUploadSuccessToast("File uploaded successfully!");
+                        setTimeout(() => window.location.reload(), 2000);
+                    } else {
+                        showUploadErrorToast("Upload failed.");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showUploadErrorToast("An error occurred during the upload.");
+                });
+        });
+
+        // Modal Detail
+        document.querySelectorAll('.btn-detail').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('detailNama').innerText = this.dataset.nama;
+                document.getElementById('detailUrl').innerText = this.dataset.url;
+                document.getElementById('detailUrl').href = this.dataset.url;
+                document.getElementById('detailUser').innerText = this.dataset.user;
+                document.getElementById('detailCreated').innerText = this.dataset.created;
+                document.getElementById('detailUpdated').innerText = this.dataset.updated;
+
+                // Preview file
+                const previewContainer = document.getElementById('filePreview');
+                const fileUrl = this.dataset.url.toLowerCase();
+                previewContainer.innerHTML = ""; // Kosongkan
+
+                if (fileUrl.endsWith(".pdf")) {
+                    previewContainer.innerHTML = `
+      <iframe src="${this.dataset.url}" class="w-full h-full" frameborder="0"></iframe>
+    `;
+                } else if (fileUrl.match(/\.(jpeg|jpg|png|gif|webp)$/)) {
+                    previewContainer.innerHTML = `
+      <img src="${this.dataset.url}" alt="Preview Gambar" class="max-h-full max-w-full object-contain">
+    `;
+                } else {
+                    previewContainer.innerHTML =
+                        `<span class="text-gray-400 italic">Preview not available for this file type</span>`;
+                }
+
+                document.getElementById('detailModal').classList.remove('hidden');
+                document.getElementById('detailModal').classList.add('flex');
+                document.body.classList.add('overflow-hidden');
+            });
+
+        });
+
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+            document.getElementById('detailModal').classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+
+        }
+
+        function showUploadSuccessToast(message) {
+            const toast = document.createElement("div");
+            toast.setAttribute("x-data", "{ show: true }");
+            toast.setAttribute("x-init", "setTimeout(() => show = false, 3000)");
+            toast.setAttribute("x-show", "show");
+            toast.setAttribute("x-transition.opacity", "");
+            toast.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/40";
+
+            toast.innerHTML = `
+    <div class="bg-gradient-to-br from-teal-400 to-cyan-500 text-white rounded-2xl shadow-2xl px-12 py-10 w-full max-w-xl text-center relative">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 mb-4" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      <h2 class="text-3xl font-bold mb-2">Success!</h2>
+      <p class="text-lg">${message}</p>
+    </div>
+  `;
+
+            document.body.appendChild(toast);
+        }
+
+        function showUploadErrorToast(message) {
+            const toast = document.createElement("div");
+            toast.setAttribute("x-data", "{ show: true }");
+            toast.setAttribute("x-init", "setTimeout(() => show = false, 3000)");
+            toast.setAttribute("x-show", "show");
+            toast.setAttribute("x-transition.opacity", "");
+            toast.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/40";
+
+            toast.innerHTML = `
+    <div class="bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-2xl shadow-2xl px-12 py-10 w-full max-w-xl text-center relative">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 mb-4" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5a7 7 0 110 14a7 7 0 010-14z" />
+      </svg>
+      <h2 class="text-3xl font-bold mb-2">Whoops!</h2>
+      <p class="text-lg">${message}</p>
+    </div>
+  `;
+
+            document.body.appendChild(toast);
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-hapus').forEach(button => {
+                button.addEventListener('click', function() {
+                    const form = this.closest('form');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "The file will be permanently deleted and cannot be recovered!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e3342f',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, delete!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-copy').forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.dataset.url;
+
+                navigator.clipboard.writeText(url)
+                    .then(() => {
+                        showUploadSuccessToast("URL copied successfully!");
+                    })
+                    .catch(() => {
+                        showUploadErrorToast("Failed to copy URL.");
+                    });
+
+            });
+        });
+    </script>
+@endpush
