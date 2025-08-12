@@ -19,7 +19,8 @@ use App\Http\Controllers\Redaktur\BannerController;
 
 
 // ======================= LANDING PAGE =======================
-Route::get('/', [HomeController::class, 'index'])->name('home');
+// Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index']);
 
 // ======================= ADMIN =======================
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -70,8 +71,11 @@ Route::middleware(['auth', 'role:redaktur'])
         Route::put('/landing/{id}', [LandingSectionController::class, 'update'])->name('landing.update');
         Route::delete('/landing/{id}', [LandingSectionController::class, 'destroy'])->name('landing.destroy');
 
-        // ✅ Banner
-        Route::get('/banner', [\App\Http\Controllers\Redaktur\BannerController::class, 'index'])->name('banner.index');
+        // ✅ Banner (Fixed)
+        Route::get('/banner', [BannerController::class, 'index'])->name('banner.index');
+        Route::post('/banner', [BannerController::class, 'store'])->name('banner.store');
+        Route::put('/banner/{id}', [BannerController::class, 'update'])->name('banner.update');
+        Route::delete('/banner/{id}', [BannerController::class, 'destroy'])->name('banner.delete');
     });
 
 
