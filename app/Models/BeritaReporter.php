@@ -17,11 +17,7 @@ class BeritaReporter extends Model
         'gambar',
         'status',
         'user_id',
+        'berita_date',
     ];
 
-    // Jika ingin relasi
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
 }

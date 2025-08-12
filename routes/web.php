@@ -104,9 +104,12 @@ Route::middleware(['auth', 'role.reporter'])->group(
         // Update Berita Reporter
         Route::put('/reporter/berita/{id}', [ReporterBeritaController::class, 'update'])->name('reporter.berita.update');
 
+        Route::delete('/reporter/berita/{id}', [ReporterBeritaController::class, 'destroy'])->name('reporter.berita.destroy');
+
         Route::post('/upload-file', [ReporterFileController::class, 'upload'])->name('upload.file');
         Route::get('/file', [ReporterFileController::class, 'index'])->name('file.index');
         Route::delete('/file/{id}', [ReporterFileController::class, 'destroy'])->name('file.delete');
+        // Route Edit Profile
+        Route::put('/settings', [ProfileController::class, 'update'])->name('settings.update');
     }
 );
-

@@ -15,14 +15,9 @@ class ReporterFileController extends Controller
     {
         $query = FileManager::query();
 
-        if ($request->has('search')) {
-            $query->where('nama', 'like', '%' . $request->search . '%');
-        }
-
-        $files = $query->orderBy('id', 'asc')->paginate(10);
+        $files = $query->orderBy('id', 'asc')->get();
         return view('reporter.file', compact('files'));
     }
-
 
     public function upload(Request $request)
     {
@@ -31,22 +26,30 @@ class ReporterFileController extends Controller
         ]);
 
         $file = $request->file('file');
+
+        // Cek apakah ada input nama_file
+        $fileNameInput = $request->input('nama_file');
+
+        // Tentukan nama file yang akan disimpan di database
+        // Jika nama file diinput, gunakan itu. Jika tidak, gunakan nama asli dari file yang diunggah.
+        $finalFileName = $fileNameInput ?: pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
         $datePath = Carbon::now()->format('mY');
-        $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $fileName = Str::slug($finalFileName) . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
 
         $file->storeAs("public/dokumen/$datePath", $fileName);
 
-        $url = Storage::url("dokumen/$datePath/$fileName"); // Hasil: /storage/dokumen/082025/nama.pdf
+        $url = Storage::url("dokumen/$datePath/$fileName");
 
         FileManager::create([
-            'nama' => $file->getClientOriginalName(),
+            'nama' => $finalFileName . '.' . $file->getClientOriginalExtension(), // Simpan nama file lengkap dengan ekstensi
             'slug_path' => $url,
-            'user' => auth()->user()->role, // ✅ cukup ini
+            'user' => auth()->user()->role,
         ]);
 
         return response()->json([
             'success' => true,
-            'url' => asset($url), // Public full URL: http://localhost:8000/storage/...
+            'url' => asset($url),
         ]);
     }
 
@@ -54,22 +57,12 @@ class ReporterFileController extends Controller
     {
         $file = FileManager::findOrFail($id);
 
-        // Opsional: cek ownership
-        // if ($file->user !== auth()->user()->role) {
-        //     return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
-        // }
-
-        // Hapus file dari storage
-        // $relativePath = str_replace('/storage/', '', $file->slug_path);
-        // if (Storage::exists('public/' . $relativePath)) {
-        //     Storage::delete('public/' . $relativePath);
-        // }
+        // Hapus file fisik dari storage (jika ada)
+        $relativePath = str_replace('/storage/', '', $file->slug_path);
+        Storage::delete('public/' . $relativePath);
 
         $file->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'File berhasil dihapus.'
-        ]);
+        return redirect()->back()->with('success', 'File deleted successfully.');
     }
 }

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\BeritaReporter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 
 class Berita2Controller extends Controller
 {
@@ -18,6 +20,7 @@ class Berita2Controller extends Controller
             'judul' => 'required|string|max:255',
             'konten' => 'required',
             'gambar' => 'nullable|image|max:2048', // Maks 2MB
+            'berita_date' => 'nullable|date',
         ]);
 
         $data = [
@@ -27,6 +30,7 @@ class Berita2Controller extends Controller
             'user_id' => Auth::id(),
             'nama_reporter' => Auth::user()->name,
             'email_reporter' => Auth::user()->email,
+            'berita_date' => $request->berita_date ?? now(),
         ];
 
         // Upload gambar jika ada
@@ -45,23 +49,49 @@ class Berita2Controller extends Controller
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'gambar' => 'nullable|image|max:2048',
+            'berita_date' => 'required|date',
+
         ]);
 
         $berita = BeritaReporter::findOrFail($id);
 
-        // Opsional: pastikan user yang sedang login hanya bisa update miliknya
+        // Pastikan user hanya bisa update miliknya
         if (auth()->id() !== $berita->user_id) {
             abort(403);
         }
 
         $berita->judul = $request->judul;
         $berita->konten = $request->konten;
+        // Simpan berita_date jika diisi
+        if ($request->filled('berita_date')) {
+            $berita->berita_date = $request->berita_date;
+        }
+
         // Update gambar jika ada
         if ($request->hasFile('gambar')) {
             $berita->gambar = $request->file('gambar')->store('berita', 'public');
         }
+
         $berita->save();
 
         return redirect()->route('reporter.berita')->with('success', 'Berita berhasil diperbarui.');
+    }
+    public function destroy($id)
+    {
+        $berita = BeritaReporter::findOrFail($id);
+
+        // Opsional: pastikan user hanya bisa hapus miliknya
+        if (auth()->id() !== $berita->user_id) {
+            abort(403);
+        }
+
+        // Hapus file gambar jika ada
+        if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
+            Storage::disk('public')->delete($berita->gambar);
+        }
+
+        $berita->delete();
+
+        return redirect()->route('reporter.berita')->with('success', 'Berita berhasil dihapus.');
     }
 }
