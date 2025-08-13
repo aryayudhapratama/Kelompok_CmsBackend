@@ -54,14 +54,13 @@ class AdminFile2Controller extends Controller
 
 public function destroy($id)
 {
-    $file = FileManager2::findOrFail($id);
-
-    // Hapus file fisik dari storage (jika ada)
-    $relativePath = str_replace('/storage/', '', $file->slug_path);
-    Storage::delete('public/' . $relativePath);
-
+   $file = FileManager2::findOrFail($id);
+    Storage::delete($file->slug_path);
     $file->delete();
 
-    return redirect()->back()->with('success', 'File berhasil dihapus.');
+    return response()->json([
+        'success' => true,
+        'message' => 'File deleted successfully.'
+    ]);
 }
 }
