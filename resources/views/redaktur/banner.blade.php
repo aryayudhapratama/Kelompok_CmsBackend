@@ -63,7 +63,7 @@
                             data-role="{{ $banner->role }}">
                             <i class="fas fa-edit text-base"></i>
                         </button>
-                        <!-- Hapus pakai AJAX, bukan form -->
+                        <!-- Hapus pakai AJAX -->
                         <button type="button" class="btn-hapus w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition" title="Hapus Banner" data-id="{{ $banner->id }}">
                             <i class="fas fa-trash text-base"></i>
                         </button>
@@ -215,6 +215,46 @@
 
 @push('scripts')
 <script>
+    // Inisialisasi DataTable
+    $(document).ready(function() {
+        $('#bannerTable').DataTable({
+            pageLength: 10,
+            ordering: true,
+            responsive: true,
+            dom: '<"top flex flex-col md:flex-row md:items-center justify-between mb-4"lf><"table-responsive"t><"bottom flex flex-col md:flex-row md:items-center justify-between mt-4"ip>',
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    first: "First",
+                    last: "Last",
+                    next: "<i class='fas fa-chevron-right'></i>",
+                    previous: "<i class='fas fa-chevron-left'></i>"
+                }
+            },
+            initComplete: function() {
+                const searchInput = $('#bannerTable_filter input');
+                searchInput.addClass('w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500');
+
+                const lengthSelect = $('#bannerTable_length select');
+                lengthSelect.addClass('border rounded-lg p-2 mr-2');
+
+                const paginateContainer = $('#bannerTable_paginate');
+                paginateContainer.addClass('flex items-center gap-2');
+                
+                $('#bannerTable_paginate .paginate_button').each(function() {
+                    $(this).addClass('px-3 py-1 border rounded-lg hover:bg-gray-200 transition');
+                });
+                
+                $('#bannerTable_paginate .paginate_button.current').addClass('bg-blue-600 text-white hover:bg-blue-700').removeClass('bg-gray-100');
+
+                $('#bannerTable').wrap('<div class="overflow-x-auto"></div>');
+            }
+        });
+    });
+
     // Buka Modal Tambah
     document.getElementById('btnAddBanner').addEventListener('click', function () {
         document.getElementById('uploadModal').classList.remove('hidden');
