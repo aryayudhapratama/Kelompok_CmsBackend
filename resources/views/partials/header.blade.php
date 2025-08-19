@@ -6,71 +6,34 @@
 
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li>
-          <a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Beranda</a>
-        </li>
-
-        <li class="dropdown {{ request()->is('profile*') ? 'active' : '' }}">
-          <a href="#"><span>Profile</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-          <ul>
-            <li><a href="#">Seputar PPID</a></li>
-            <li><a href="#">Tugas dan Fungsi</a></li>
-            <li><a href="#">Struktur Organisasi</a></li>
-            <li><a href="#">Visi dan Misi</a></li>
-            <li><a href="#">Maklumat Pelayanan</a></li>
-          </ul>
-        </li>
-
-        <li class="dropdown {{ request()->is('regulasi*') ? 'active' : '' }}">
-          <a href="#"><span>Regulasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-          <ul>
-            <li><a href="#">Undang-Undang</a></li>
-            <li><a href="#">Peraturan Pemerintah</a></li>
-            <li><a href="#">Peraturan Menteri Dalam Negeri</a></li>
-            <li><a href="#">Peraturan Komisi Informasi</a></li>
-            <li><a href="#">Peraturan Gubernur Jawa Timur</a></li>
-          </ul>
-        </li>
-
-        <li class="dropdown {{ request()->is('dokumen*') ? 'active' : '' }}">
-          <a href="#"><span>Dokumen</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-          <ul>
-            <li><a href="#">Standar Operasional Prosedur</a></li>
-            <li><a href="#">Surat Keputusan</a></li>
-            <li><a href="#">Laporan Layanan Informasi Publik</a></li>
-            <li><a href="#">Laporan Akses Layanan Publik</a></li>
-          </ul>
-        </li>
-
-        <li class="dropdown {{ request()->is('informasi*') ? 'active' : '' }}">
-          <a href="#"><span>Daftar Informasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-          <ul>
-            <li><a href="#">Informasi Berkala</a></li>
-            <li><a href="#">Informasi Serta Merta</a></li>
-            <li><a href="#">Informasi Setiap Saat</a></li>
-            <li><a href="#">Informasi Yang Dikecualikan</a></li>
-          </ul>
-        </li>
-
-        <li class="dropdown {{ request()->routeIs('berita.index') || request()->routeIs('berita.show') ? 'active' : '' }}">
-          <a href="#"><span>Publikasi</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-          <ul>
-            <li><a href="#">Agenda</a></li>
+        {{-- Loop untuk menu utama --}}
+        @foreach($menus as $menu)
+          {{-- Periksa apakah menu ini memiliki anak (sub-menu) --}}
+          @if($menu->children->isNotEmpty())
+            <li class="dropdown">
+              <a href="#"><span>{{ $menu->title }}</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                {{-- Loop untuk sub-menu --}}
+                @foreach($menu->children->sortBy('order') as $child)
+                  <li>
+                    <a href="{{ url($child->url) }}"
+                       class="{{ request()->is($child->url . '*') ? 'active' : '' }}">
+                       {{ $child->title }}
+                    </a>
+                  </li>
+                @endforeach
+              </ul>
+            </li>
+          @else
+            {{-- Jika tidak punya anak, tampilkan sebagai menu tunggal --}}
             <li>
-              <a href="{{ route('berita.index') }}"
-                 class="{{ request()->routeIs('berita.index') || request()->routeIs('berita.show') ? 'active' : '' }}">
-                Berita
+              <a href="{{ url($menu->url) }}"
+                 class="{{ request()->is($menu->url . '*') ? 'active' : '' }}">
+                 {{ $menu->title }}
               </a>
             </li>
-          </ul>
-        </li>
-
-        <li>
-          <a href="#"
-             class="{{ request()->is('data-publik*') ? 'active' : '' }}">
-            Data Publik
-          </a>
-        </li>
+          @endif
+        @endforeach
       </ul>
 
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
