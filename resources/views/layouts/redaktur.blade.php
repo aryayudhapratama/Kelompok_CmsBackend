@@ -49,138 +49,140 @@
 
   <!-- SIDEBAR -->
   <aside
-    class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transition-transform duration-300 ease-in-out translate-x-0"
-    :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
-    id="sidebar"
-  >
-    <div class="px-6 py-6">
-  <!-- Logo / Title -->
-  <a href="/redaktur" class="flex items-center gap-3 mb-4">
-    <div class="bg-blue-600 p-2 rounded-lg shadow-sm">
-      <i class="fas fa-pen-nib text-white text-lg"></i>
-    </div>
-    <span class="text-xl font-extrabold text-gray-800 tracking-wide">Redaktur</span>
-  </a>
+  class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transition-transform duration-300 ease-in-out translate-x-0"
+  :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
+  id="sidebar"
+>
+  <div class="px-6 py-6">
+    <!-- Logo / Title -->
+    <a href="/redaktur" class="flex items-center gap-3 mb-4">
+      <div class="bg-blue-600 p-2 rounded-lg shadow-sm">
+        <i class="fas fa-pen-nib text-white text-lg"></i>
+      </div>
+      <span class="text-xl font-extrabold text-gray-800 tracking-wide">Redaktur</span>
+    </a>
 
-  <!-- Divider -->
-  <hr class="border-t border-gray-200 mb-4">
+    <!-- Divider -->
+    <hr class="border-t border-gray-200 mb-4">
 
-  <!-- Profile Info -->
-  <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-    <!-- Foto Profil -->
-    <img class="h-10 w-10 rounded-full object-cover"
-     src="{{ Auth::user()->profile_photo_path ? asset('storage/profile-photos/' . Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
-     alt="{{ Auth::user()->name }}" />
-    <!-- Nama + Role -->
-    <div>
-      <div class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</div>
-      <div class="text-xs text-gray-500 capitalize">{{ Auth::user()->role ?? 'User' }}</div>
+    <!-- Profile Info -->
+    <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+      <img class="h-10 w-10 rounded-full object-cover"
+       src="{{ Auth::user()->profile_photo_path ? asset('storage/profile-photos/' . Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+       alt="{{ Auth::user()->name }}" />
+      <div>
+        <div class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</div>
+        <div class="text-xs text-gray-500 capitalize">{{ Auth::user()->role ?? 'User' }}</div>
+      </div>
     </div>
   </div>
-</div>
-    <hr class="my-2 mx-4 border-t border-gray-200" />
-    <div class="overflow-y-auto h-[calc(100vh-120px)] scrollbar-hide">
-      <ul class="flex flex-col px-3 py-2 space-y-1 text-sm">
-  <!-- Articles dengan submenu -->
-  <li 
-    x-data="{ open: {{ request()->is('redaktur') || request()->is('redaktur/kelola*') || request()->is('redaktur/publish*') ? 'true' : 'false' }} }"
-  >
-    <button @click="open = !open"
-      class="w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-150 
-      {{ request()->is('redaktur') || request()->is('redaktur/kelola*') || request()->is('redaktur/publish*') 
-        ? 'bg-pink-100 text-pink-700 font-semibold' 
-        : 'text-gray-700 hover:bg-gray-100' }}">
-      <div class="flex items-center gap-3">
-        <i class="fas fa-newspaper text-base"></i>
-        <span>Articles</span>
-      </div>
-      <i :class="open ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" class="text-xs"></i>
-    </button>
 
-    <!-- Submenu -->
-    <ul x-show="open" x-transition class="pl-10 space-y-1 mt-1">
+  <hr class="my-2 mx-4 border-t border-gray-200" />
+
+  <div class="overflow-y-auto h-[calc(100vh-120px)] scrollbar-hide">
+    <ul class="flex flex-col px-3 py-2 space-y-1 text-sm">
+
+      <!-- Articles dengan submenu -->
+      <li 
+        x-data="{ open: {{ request()->is('redaktur') || request()->is('redaktur/kelola*') || request()->is('redaktur/publish*') ? 'true' : 'false' }} }"
+      >
+        <button @click="open = !open"
+          class="w-full flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-150 
+          {{ request()->is('redaktur') || request()->is('redaktur/kelola*') || request()->is('redaktur/publish*') 
+            ? 'bg-blue-100 text-blue-700 font-semibold' 
+            : 'text-gray-700 hover:bg-gray-100' }}">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-newspaper text-blue-500 text-base"></i>
+            <span>Articles</span>
+          </div>
+          <i :class="open ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" class="text-xs"></i>
+        </button>
+
+        <!-- Submenu -->
+        <ul x-show="open" x-transition class="pl-10 space-y-1 mt-1">
+          <li>
+            <a href="/redaktur"
+              class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
+              {{ request()->is('redaktur') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+              <i class="fas fa-home text-blue-500"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="/redaktur/kelola"
+              class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
+              {{ request()->is('redaktur/kelola*') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+              <i class="fas fa-edit text-green-500"></i>
+              <span>Manage Articles</span>
+            </a>
+          </li>
+          <li>
+            <a href="/redaktur/publish"
+              class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
+              {{ request()->is('redaktur/publish*') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+              <i class="fas fa-paper-plane text-red-500"></i>
+              <span>Publish Articles</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Navbar Menu -->
+        <li>
+          <a href="{{ route('redaktur.navbar_menu.index') }}"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
+            {{ request()->routeIs('redaktur.navbar_menu.index') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+            <i class="fas fa-sitemap text-cyan-500"></i>
+            <span>Navbar Menu</span>
+          </a>
+        </li>
+
+      <!-- Carousel -->
       <li>
-        <a href="/redaktur"
+        <a href="{{ route('redaktur.landing.index') }}"
           class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
-          {{ request()->is('redaktur') ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-          <i class="fas fa-tachometer-alt text-base"></i>
-          <span>Dashboard</span>
+          {{ request()->is('redaktur/landing*') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+          <i class="fas fa-images text-yellow-500"></i>
+          <span>Carousel</span>
         </a>
       </li>
+
+      <!-- Banner -->
       <li>
-        <a href="/redaktur/kelola"
+        <a href="{{ route('redaktur.banner.index') }}"
           class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
-          {{ request()->is('redaktur/kelola*') ? 'bg-green-50 text-green-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-          <i class="fas fa-tasks text-base"></i>
-          <span>Manage Articles</span>
+          {{ request()->routeIs('redaktur.banner.index') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+          <i class="fas fa-rectangle-ad text-orange-500"></i>
+          <span>Banner</span>
         </a>
       </li>
+
+      <!-- File Manager -->
       <li>
-        <a href="/redaktur/publish"
+        <a href="{{ route('redaktur.file.index') }}"
           class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
-          {{ request()->is('redaktur/publish*') ? 'bg-red-50 text-red-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-          <i class="fas fa-check-circle text-base"></i>
-          <span>Publish Articles</span>
+          {{ request()->routeIs('redaktur.file.index') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+          <i class="fas fa-folder text-indigo-500"></i>
+          <span>File Manager</span>
         </a>
       </li>
-      
+
+      <!-- Logout -->
+      <li>
+        <form method="POST" action="/logout">
+          @csrf
+          <button type="submit"
+            class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-all duration-150">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
+        </form>
+      </li>
     </ul>
-  </li>
-
-  <!-- Menu lain -->
-  <li>
-    <a href="{{ route('redaktur.landing.index') }}"
-      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
-      {{ request()->is('redaktur/landing*') ? 'bg-yellow-100 text-yellow-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-      <i class="fas fa-images text-base"></i>
-      <span>Carousel</span>
-    </a>
-  </li>
-
-  <li>
-    <a href="{{ route('redaktur.banner.index') }}"
-      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
-      {{ request()->routeIs('redaktur.banner.index') ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-      <i class="fas fa-bullhorn text-base"></i>
-      <span>Banner</span>
-    </a>
-  </li>
-
-  <li>
-    <a href="{{ route('redaktur.file.index') }}"
-      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
-      {{ request()->routeIs('redaktur.file.index') ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-      <i class="fas fa-folder-open text-base"></i>
-      <span>File Manager</span>
-    </a>
-  </li>
-
-  <li>
-    <a href="{{ route('redaktur.navbar_menu.index') }}"
-      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
-      {{ request()->routeIs('redaktur.menu.index') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
-      <i class="fas fa-folder-open text-base"></i>
-      <span>Navbar Menu</span>
-    </a>
-  </li>
-
-  <!-- Logout -->
-  <li>
-    <form method="POST" action="/logout">
-      @csrf
-      <button type="submit"
-        class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-all duration-150">
-        <i class="fas fa-sign-out-alt text-base"></i>
-        <span>Logout</span>
-      </button>
-    </form>
-  </li>
-</ul>
+  </div>
+</aside>
 
 
-
-    </div>
-  </aside>
 
   <!-- Overlay -->
   <div x-show="sidebarOpen" class="fixed inset-0 bg-black/40 z-30 xl:hidden" @click="sidebarOpen = false"></div>
