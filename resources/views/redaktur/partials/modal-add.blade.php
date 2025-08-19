@@ -1,7 +1,6 @@
 <!-- Modal Tambah Berita -->
 <div id="addModal"
      class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center z-[1000] transition-all duration-300">
-
   <div class="bg-white rounded-xl shadow-2xl w-full max-w-xl mx-auto overflow-hidden animate-fade-in-up">
     <!-- Header -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white px-6 py-4 flex items-center justify-between">

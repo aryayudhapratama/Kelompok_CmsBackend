@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Berita;
 use App\Models\LandingSection;
-use App\Models\Banner; // Pastikan ini ada
+use App\Models\Banner;
+use App\Models\NavbarMenu;
 
 class HomeController extends Controller
 {
@@ -54,6 +55,12 @@ class HomeController extends Controller
                 ]
             ]);
         }
+
+        $menus = NavbarMenu::with('children') // Menggunakan 'with' untuk eager loading, lebih efisien
+            ->whereNull('parent_id')
+            ->where('status_aktif', 1)
+            ->orderBy('order')
+            ->get();
 
         return view('home2', compact('hero', 'kabarBerita', 'galeriBerita', 'banners'));
     }

@@ -326,13 +326,13 @@
         const form = this.closest('form');
         Swal.fire({
             title: 'Are you sure?',
-text: "The article will be permanently deleted and cannot be recovered!",
-icon: 'warning',
-showCancelButton: true,
-confirmButtonColor: '#e3342f',
-cancelButtonColor: '#6c757d',
-confirmButtonText: 'Yes, delete!',
-cancelButtonText: 'Cancel',
+            text: "The article will be permanently deleted and cannot be recovered!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e3342f',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete!',
+            cancelButtonText: 'Cancel',
             // Lifecycle hooks untuk menambahkan dan menghapus kelas
             didOpen: () => {
                 document.body.classList.add('swal-open-body');
@@ -340,13 +340,13 @@ cancelButtonText: 'Cancel',
             willClose: () => {
                 document.body.classList.remove('swal-open-body');
             }
-        }).then((result) => {
-            if (result.isConfirmed) {
+            }).then((result) => {
+                if (result.isConfirmed) {
                 form.submit();
             }
         });
+        });
     });
 });
-    });
 </script>
 @endpush

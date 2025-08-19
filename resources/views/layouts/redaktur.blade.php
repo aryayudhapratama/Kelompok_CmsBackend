@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
   <style>
     body { font-family: 'Inter', sans-serif; }
@@ -121,6 +123,7 @@
           <span>Publish Articles</span>
         </a>
       </li>
+      
     </ul>
   </li>
 
@@ -149,6 +152,15 @@
       {{ request()->routeIs('redaktur.file.index') ? 'bg-indigo-100 text-indigo-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
       <i class="fas fa-folder-open text-base"></i>
       <span>File Manager</span>
+    </a>
+  </li>
+
+  <li>
+    <a href="{{ route('redaktur.navbar_menu.index') }}"
+      class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-150 
+      {{ request()->routeIs('redaktur.menu.index') ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
+      <i class="fas fa-folder-open text-base"></i>
+      <span>Navbar Menu</span>
     </a>
   </li>
 
@@ -182,13 +194,7 @@
       </button>
     </div>
 
-    <div class="flex items-center space-x-6">
-      <div class="relative">
-        <button class="relative text-blue-600 text-xl focus:outline-none">
-          <i class="fas fa-bell"></i>
-          <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">3</span>
-        </button>
-      </div>
+    
       
   <!-- Trigger Modal Langsung -->
 <button @click="openEditModal = true" class="ml-3 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">

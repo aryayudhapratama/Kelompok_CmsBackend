@@ -14,6 +14,8 @@ use App\Http\Controllers\Redaktur\BeritaController as RedakturBeritaController;
 use App\Http\Controllers\Reporter\Berita2Controller as ReporterBeritaController;
 use App\Http\Controllers\Redaktur\ProfileController;
 use App\Http\Controllers\Redaktur\BannerController;
+use App\Http\Controllers\Redaktur\NavbarMenuController;
+
 
 
 
@@ -76,6 +78,14 @@ Route::middleware(['auth', 'role:redaktur'])
         Route::post('/banner', [BannerController::class, 'store'])->name('banner.store');
         Route::put('/banner/{id}', [BannerController::class, 'update'])->name('banner.update');
         Route::delete('/banner/{id}', [BannerController::class, 'destroy'])->name('banner.delete');
+
+        // ✅ Fitur Kelola Navbar Menu
+        Route::get('/navbar-menu', [NavbarMenuController::class, 'index'])->name('navbar_menu.index');
+        Route::post('/navbar-menu', [NavbarMenuController::class, 'store'])->name('navbar_menu.store');
+        Route::put('/navbar-menu/{menu}', [NavbarMenuController::class, 'update'])->name('navbar_menu.update');
+        Route::delete('/navbar-menu/{menu}', [NavbarMenuController::class, 'destroy'])->name('navbar_menu.destroy');
+        Route::post('/navbar-menu/{menu}/update-order', [NavbarMenuController::class, 'updateOrder'])->name('navbar_menu.update_order');
+        
     });
 
 

@@ -189,15 +189,6 @@
 }
 
 
-.navmenu a:hover {
-  color: #2FC3FF;
-  border-bottom: 2px solid #2FC3FF;
-}
-
-.navmenu a.active {
-  color: #2FC3FF !important;
-  border-bottom: 2px solid #2FC3FF;
-}
 
 
 .navmenu .dropdown.active > a > span {
@@ -232,6 +223,24 @@
   background-color: rgba(28, 34, 48, 0.98) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
+
+.btn-get-started {
+  display: inline-block;
+  padding: 10px 24px;
+  background: #2FC3FF;
+  color: #fff !important;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none !important;
+  border: none !important; /* ini yang matiin garis bawah putih */
+  transition: 0.3s ease;
+}
+
+.btn-get-started:hover {
+  background: #1AAED8;
+  color: #fff !important;
+}
+
 
 #berita-detail {
   background: #f4f8fb;

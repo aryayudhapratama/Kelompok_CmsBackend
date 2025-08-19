@@ -327,7 +327,7 @@ function showUploadErrorToast(message) {
 }
 
 
-   document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.btn-hapus').forEach(button => {
     button.addEventListener('click', function () {
       const form = this.closest('form');
