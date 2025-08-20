@@ -8,30 +8,36 @@
       <ul>
         {{-- Loop untuk menu utama --}}
         @foreach($menus as $menu)
-          {{-- Periksa apakah menu ini memiliki anak (sub-menu) --}}
-          @if($menu->children->isNotEmpty())
-            <li class="dropdown">
-              <a href="#"><span>{{ $menu->title }}</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-              <ul>
-                {{-- Loop untuk sub-menu --}}
-                @foreach($menu->children->sortBy('order') as $child)
-                  <li>
-                    <a href="{{ url($child->url) }}"
-                       class="{{ request()->is($child->url . '*') ? 'active' : '' }}">
-                       {{ $child->title }}
-                    </a>
-                  </li>
-                @endforeach
-              </ul>
-            </li>
-          @else
-            {{-- Jika tidak punya anak, tampilkan sebagai menu tunggal --}}
-            <li>
-              <a href="{{ url($menu->url) }}"
-                 class="{{ request()->is($menu->url . '*') ? 'active' : '' }}">
-                 {{ $menu->title }}
-              </a>
-            </li>
+          {{-- TAMBAHKAN PENGECEKAN status_aktif UNTUK MENU PARENT --}}
+          @if($menu->status_aktif)
+            {{-- Periksa apakah menu ini memiliki anak (sub-menu) --}}
+            @if($menu->children->isNotEmpty())
+              <li class="dropdown">
+                <a href="#"><span>{{ $menu->title }}</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <ul>
+                  {{-- Loop untuk sub-menu --}}
+                  @foreach($menu->children->sortBy('order') as $child)
+                    {{-- TAMBAHKAN PENGECEKAN status_aktif UNTUK SUBMENU --}}
+                    @if($child->status_aktif)
+                      <li>
+                        <a href="{{ url($child->url) }}"
+                           class="{{ request()->is($child->url . '*') ? 'active' : '' }}">
+                          {{ $child->title }}
+                        </a>
+                      </li>
+                    @endif
+                  @endforeach
+                </ul>
+              </li>
+            @else
+              {{-- Jika tidak punya anak, tampilkan sebagai menu tunggal --}}
+              <li>
+                <a href="{{ url($menu->url) }}"
+                   class="{{ request()->is($menu->url . '*') ? 'active' : '' }}">
+                    {{ $menu->title }}
+                </a>
+              </li>
+            @endif
           @endif
         @endforeach
       </ul>

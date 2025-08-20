@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('banners', function (Blueprint $table) {
+        Schema::table('banner', function (Blueprint $table) {
             $table->string('button_text')->nullable()->after('link');
         });
     }

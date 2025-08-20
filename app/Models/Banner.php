@@ -9,7 +9,7 @@ class Banner extends Model
 {
     use HasFactory;
 
-    protected $table = 'banners';
+    protected $table = 'banner';
      
     protected $fillable = [
         'name',
