@@ -15,6 +15,7 @@ class Banner extends Model
         'name',
         'description',
         'link',
+        'button_text',
         'role',
     ];
 }

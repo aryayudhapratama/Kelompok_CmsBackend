@@ -4,6 +4,11 @@
 @section('page-title', 'File Manager')
 
 @section('content')
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
 <div class="bg-white p-6 rounded-lg shadow relative z-10">
     <div class="flex justify-between items-center mb-4 border-b pb-2 flex-wrap gap-2">
         <h2 class="text-lg font-semibold text-gray-800">Directory listing</h2>
@@ -32,25 +37,33 @@
                 <td class="px-4 py-2">{{ $file->created_at->format('d F Y') }}</td>
                 <td class="px-4 py-2 max-w-[180px] truncate whitespace-nowrap overflow-hidden">{{ $file->nama }}</td>
                 <td class="px-4 py-2 max-w-[260px] truncate whitespace-nowrap overflow-hidden text-blue-600 underline">
-                    <a href="{{ url($file->slug_path) }}" target="_blank" class="text-blue-600 underline">
-                        {{ url($file->slug_path) }}
+                    <a href="{{ Storage::url($file->slug_path) }}" target="_blank" class="text-blue-600 underline">
+                        {{ Storage::url($file->slug_path) }}
                     </a>
                 </td>
-                <td class="px-4 py-2">{{ $file->user }}</td>
+                <td class="px-4 py-2">{{ $file->user?->name ?? 'User Tidak Ditemukan' }}</td>
                 <td class="px-4 py-2">
                     <div class="flex items-center gap-2">
-                        <button type="button" class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition" title="Lihat Detail"
-                            data-nama="{{ $file->nama }}"
-                            data-url="{{ url($file->slug_path) }}"
-                            data-user="{{ $file->user }}"
-                            data-created="{{ $file->created_at }}"
-                            data-updated="{{ $file->updated_at }}">
+                        <button type="button"
+                                class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition"
+                                title="Lihat Detail"
+                                data-nama="{{ $file->nama }}"
+                                data-url="{{ Storage::url($file->slug_path) }}"
+                                data-user="{{ $file->user?->name ?? 'Unknown' }}"
+                                data-created="{{ $file->created_at }}"
+                                data-updated="{{ $file->updated_at }}">
                             <i class="fas fa-eye text-base"></i>
                         </button>
-                        <button type="button" class="btn-copy w-10 h-10 bg-green-100 text-green-700 hover:bg-green-200 rounded-md flex items-center justify-center transition" title="Copy Link" data-url="{{ url($file->slug_path) }}">
+                        <button type="button"
+                                class="btn-copy w-10 h-10 bg-green-100 text-green-700 hover:bg-green-200 rounded-md flex items-center justify-center transition"
+                                title="Copy Link"
+                                data-url="{{ Storage::url($file->slug_path) }}">
                             <i class="fas fa-copy text-base"></i>
                         </button>
-                        <button type="button" class="btn-hapus w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition" title="Hapus File" data-id="{{ $file->id }}">
+                        <button type="button"
+                                class="btn-hapus w-10 h-10 bg-red-100 text-red-700 hover:bg-red-200 rounded-md flex items-center justify-center transition"
+                                title="Hapus File"
+                                data-id="{{ $file->id }}">
                             <i class="fas fa-trash text-base"></i>
                         </button>
                     </div>
@@ -123,7 +136,7 @@
             <div class="flex items-center gap-3"><i class="fas fa-link text-blue-500"></i>
                 <p><strong>URL:</strong> <a id="detailUrl" href="#" target="_blank" class="text-blue-600 underline break-all"></a></p></div>
             <div class="flex items-center gap-3"><i class="fas fa-user text-blue-500"></i>
-                <p><strong>User/Role:</strong> <span id="detailUser"></span></p></div>
+                <p><strong>User:</strong> <span id="detailUser"></span></p></div>
             <div class="flex items-center gap-3"><i class="fas fa-calendar-plus text-blue-500"></i>
                 <p><strong>Created at:</strong> <span id="detailCreated"></span></p></div>
             <div class="flex items-center gap-3"><i class="fas fa-calendar-check text-blue-500"></i>
@@ -133,8 +146,12 @@
 </div>
 
 @push('scripts')
+<!-- jQuery & DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
 <script>
-    // Inisialisasi DataTable
     $(document).ready(function() {
         $('#fileTable').DataTable({
             pageLength: 10,
@@ -274,18 +291,14 @@
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch(`/admin/file-manager/${fileId}`, {
+                    fetch("{{ route('admin.file-manager.destroy', '') }}/" + fileId, {
                         method: 'DELETE',
                         headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         }
                     })
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
+                        if (!response.ok) throw new Error('Gagal hapus');
                         return response.json();
                     })
                     .then(data => {
@@ -293,7 +306,7 @@
                             showSuccessToast("File berhasil dihapus!");
                             setTimeout(() => window.location.reload(), 1500);
                         } else {
-                            showErrorToast("Gagal: " + (data.message || "Unknown error"));
+                            showErrorToast("Gagal: " + (data.message || "Unknown"));
                         }
                     })
                     .catch(err => {

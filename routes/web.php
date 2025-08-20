@@ -36,9 +36,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 
     // Route Untuk File Manager
-    Route::get('/admin/file-manager', [AdminFile2Controller::class, 'index'])->name('admin.file-manager.index');
-    Route::post('/admin/file-manager/upload', [AdminFile2Controller::class, 'upload'])->name('admin.file-manager.upload');
-    Route::delete('/admin/file-manager/{id}', [AdminFile2Controller::class, 'destroy'])->name('admin.file-manager.destroy');
+    Route::get('/file-manager', [AdminFile2Controller::class, 'index'])->name('admin.file-manager.index');
+    Route::post('/file-manager/upload', [AdminFile2Controller::class, 'upload'])->name('admin.file-manager.upload');
+    Route::delete('/file-manager/{id}', [AdminFile2Controller::class, 'destroy'])->name('admin.file-manager.destroy');
 
     // Route Edit Profile
     Route::put('/settings', [ProfileController::class, 'update'])->name('settings.update');

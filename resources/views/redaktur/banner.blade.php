@@ -21,7 +21,8 @@
                 <th class="px-4 py-2">Name</th>
                 <th class="px-4 py-2">Description</th>
                 <th class="px-4 py-2">Link</th>
-                <th class="px-4 py-2">Role</th>
+                <th class="px-4 py-2">Button Text</th>
+                <th class="px-4 py-2">User</th>
                 <th class="px-4 py-2">Action</th>
             </tr>
         </thead>
@@ -36,13 +37,8 @@
                         {{ $banner->link }}
                     </a>
                 </td>
-                <td class="px-4 py-2">
-                    <span class="px-2 py-1 text-xs rounded-full 
-                        {{ $banner->role == 'admin' ? 'bg-red-100 text-red-800' : 
-                           ($banner->role == 'redaktur' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800') }}">
-                        {{ ucfirst($banner->role) }}
-                    </span>
-                </td>
+                <td class="px-4 py-2">{{ $banner->button_text ?? '-' }}</td>
+                <td class="px-4 py-2">{{ Auth::user()->name }}</td>
                 <td class="px-4 py-2">
                     <div class="flex items-center gap-2">
                         <button type="button" class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition" title="Lihat Detail"
@@ -50,7 +46,8 @@
                             data-name="{{ $banner->name }}"
                             data-description="{{ $banner->description }}"
                             data-link="{{ $banner->link }}"
-                            data-role="{{ $banner->role }}"
+                            data-button-text="{{ $banner->button_text }}"
+                            data-user="{{ Auth::user()->name }}"
                             data-created="{{ $banner->created_at->format('d F Y H:i') }}"
                             data-updated="{{ $banner->updated_at->format('d F Y H:i') }}">
                             <i class="fas fa-eye text-base"></i>
@@ -60,7 +57,7 @@
                             data-name="{{ $banner->name }}"
                             data-description="{{ $banner->description }}"
                             data-link="{{ $banner->link }}"
-                            data-role="{{ $banner->role }}">
+                            data-button-text="{{ $banner->button_text }}">
                             <i class="fas fa-edit text-base"></i>
                         </button>
                         <!-- Hapus pakai AJAX -->
@@ -72,7 +69,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" class="px-4 py-4 text-center text-gray-400 italic">Belum ada banner</td>
+                <td colspan="7" class="px-4 py-4 text-center text-gray-400 italic">Belum ada banner</td>
             </tr>
             @endforelse
         </tbody>
@@ -113,13 +110,12 @@
                            placeholder="https://example.com" required>
                 </div>
                 <div>
-                    <label for="roleBanner" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                    <select name="role" id="roleBanner" class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        <option value="admin">Admin</option>
-                        <option value="redaktur">Redaktur</option>
-                        <option value="reporter">Reporter</option>
-                    </select>
+                    <label for="buttonText" class="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                    <input type="text" name="button_text" id="buttonText"
+                           class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                           placeholder="Contoh: Selengkapnya">
                 </div>
+                <!-- ❌ Input Role DIHAPUS karena otomatis redaktur -->
             </form>
         </div>
 
@@ -166,13 +162,11 @@
                            required>
                 </div>
                 <div>
-                    <label for="editRole" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                    <select name="role" id="editRole" class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        <option value="admin">Admin</option>
-                        <option value="redaktur">Redaktur</option>
-                        <option value="reporter">Reporter</option>
-                    </select>
+                    <label for="editButtonText" class="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                    <input type="text" name="button_text" id="editButtonText"
+                           class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
                 </div>
+                <!-- ❌ Input Role DIHAPUS karena otomatis redaktur -->
             </form>
         </div>
 
@@ -203,8 +197,10 @@
                 <p><strong>Description:</strong> <span id="detailDescription"></span></p></div>
             <div class="flex items-center gap-3"><i class="fas fa-link text-blue-500"></i>
                 <p><strong>Link:</strong> <a id="detailLink" href="#" target="_blank" class="text-blue-600 underline break-all"></a></p></div>
-            <div class="flex items-center gap-3"><i class="fas fa-user-tag text-blue-500"></i>
-                <p><strong>Role:</strong> <span id="detailRole"></span></p></div>
+            <div class="flex items-center gap-3"><i class="fas fa-tag text-blue-500"></i>
+                <p><strong>Button Text:</strong> <span id="detailButtonText"></span></p></div>
+            <div class="flex items-center gap-3"><i class="fas fa-user text-blue-500"></i>
+                <p><strong>User:</strong> <span id="detailUser"></span></p></div>
             <div class="flex items-center gap-3"><i class="fas fa-calendar-plus text-blue-500"></i>
                 <p><strong>Created at:</strong> <span id="detailCreated"></span></p></div>
             <div class="flex items-center gap-3"><i class="fas fa-calendar-check text-blue-500"></i>
@@ -273,6 +269,9 @@
     document.getElementById('uploadForm').addEventListener('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
+        // Otomatis tambahkan role 'redaktur'
+        formData.append('role', 'redaktur');
+
         fetch("{{ route('redaktur.banner.store') }}", {
             method: "POST",
             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
@@ -301,7 +300,7 @@
             document.getElementById('editName').value = this.dataset.name;
             document.getElementById('editDescription').value = this.dataset.description;
             document.getElementById('editLink').value = this.dataset.link;
-            document.getElementById('editRole').value = this.dataset.role;
+            document.getElementById('editButtonText').value = this.dataset.buttonText || '';
             document.getElementById('editModal').classList.remove('hidden');
             document.getElementById('editModal').classList.add('flex');
             document.body.classList.add('overflow-hidden');
@@ -320,6 +319,8 @@
         e.preventDefault();
         const formData = new FormData(this);
         const id = document.getElementById('editId').value;
+        formData.append('role', 'redaktur'); // Otomatis redaktur
+
         fetch(`/redaktur/banner/${id}`, {
             method: "POST",
             headers: { 
@@ -352,7 +353,8 @@
             document.getElementById('detailDescription').innerText = this.dataset.description;
             document.getElementById('detailLink').innerText = this.dataset.link;
             document.getElementById('detailLink').href = this.dataset.link;
-            document.getElementById('detailRole').innerText = this.dataset.role;
+            document.getElementById('detailButtonText').innerText = this.dataset.buttonText || '-';
+            document.getElementById('detailUser').innerText = this.dataset.user;
             document.getElementById('detailCreated').innerText = this.dataset.created;
             document.getElementById('detailUpdated').innerText = this.dataset.updated;
             document.getElementById('detailModal').classList.remove('hidden');
