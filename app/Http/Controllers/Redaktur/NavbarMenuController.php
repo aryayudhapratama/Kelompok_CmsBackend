@@ -16,10 +16,14 @@ class NavbarMenuController extends Controller
     // Mengambil data dari database yang sudah diurutkan
     $menus = NavbarMenu::with('children')
                         ->whereNull('parent_id')
-                        ->orderBy('order', 'asc') // <-- Ini adalah kunci untuk mengurutkan row di UI
+                        ->orderBy('order', 'asc') 
                         ->get();
 
-    return view('redaktur.menu', compact('menus'));
+    // Hitung nilai urutan tertinggi untuk menu utama (parent_id = null)
+    $maxOrderParent = NavbarMenu::whereNull('parent_id')->max('order');
+
+    // Kirim kedua variabel ke view
+    return view('redaktur.menu', compact('menus', 'maxOrderParent'));
 }
 
     /**

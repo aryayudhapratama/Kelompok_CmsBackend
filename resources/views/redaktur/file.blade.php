@@ -36,13 +36,13 @@
                         {{ url($file->slug_path) }}
                     </a>
                 </td>
-                <td class="px-4 py-2">{{ $file->user }}</td>
+                <td class="px-4 py-2">{{ Auth::user()->name }}</td>
                 <td class="px-4 py-2">
                     <div class="flex items-center gap-2">
                         <button type="button" class="btn-detail w-10 h-10 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md flex items-center justify-center transition" title="Lihat Detail"
                             data-nama="{{ $file->nama }}"
                             data-url="{{ url($file->slug_path) }}"
-                            data-user="{{ $file->user }}"
+                            data-user="{{ Auth::user()->name }}"
                             data-created="{{ $file->created_at }}"
                             data-updated="{{ $file->updated_at }}">
                             <i class="fas fa-eye text-base"></i>

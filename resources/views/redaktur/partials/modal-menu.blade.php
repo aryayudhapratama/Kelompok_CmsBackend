@@ -27,11 +27,11 @@
 
                 <div>
                     <label for="parent_id" class="block text-sm font-medium text-gray-700 mb-1">Parent Menu</label>
-                    <select name="parent_id" id="parent_id"
+                    <select name="parent_id" id="parent_id" 
                             class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        <option value="">-- Tidak ada (menu utama) --</option>
+                        <option value="" data-max-order="{{ $maxOrderParent }}" selected>-- Tidak ada (menu utama) --</option>
                         @foreach($menus as $menu)
-                            <option value="{{ $menu->id }}">{{ $menu->title }}</option>
+                            <option value="{{ $menu->id }}" data-max-order="{{ $menu->children->max('order') }}">{{ $menu->title }}</option>
                         @endforeach
                     </select>
                 </div>

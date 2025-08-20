@@ -25,9 +25,9 @@
                         </div>
                         <!-- Tombol Aksi -->
                         <div class="mt-auto">
-                            <a href="{{ $banner->link }}" target="_blank" class="btn btn-primary btn-sm px-4 py-2 rounded-pill shadow-sm hover:shadow-md transition">
-                                {{ $banner->button_text ?? 'Selengkapnya' }}
-                            </a>
+                            <a href="{{ $banner->link ?? '#' }}" target="_blank" class="btn btn-primary btn-sm px-4 py-2 rounded-pill shadow-sm hover:shadow-md transition">
+    {{ $banner->button_text ?? 'Selengkapnya' }}
+</a>
                         </div>
                     </div>
                 </div>

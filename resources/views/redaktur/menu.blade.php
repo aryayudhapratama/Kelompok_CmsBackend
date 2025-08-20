@@ -289,6 +289,24 @@ $(document).ready(function() {
         document.getElementById('formAddMenu').reset();
     };
 
+    document.addEventListener('DOMContentLoaded', function () {
+        const parentSelect = document.getElementById('parent_id');
+        const orderInput = document.getElementById('order');
+
+        parentSelect.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const maxOrder = selectedOption.dataset.maxOrder;
+            const newOrder = maxOrder ? parseInt(maxOrder) + 1 : 1;
+            
+            orderInput.value = newOrder;
+        });
+
+        // Pastikan order terisi saat modal dibuka
+        document.getElementById('btnAddMenu').addEventListener('click', function() {
+            parentSelect.dispatchEvent(new Event('change'));
+        });
+    });
+
     document.querySelectorAll('.btn-detail').forEach(btn => {
     btn.addEventListener('click', () => {
         const id = btn.dataset.id;
