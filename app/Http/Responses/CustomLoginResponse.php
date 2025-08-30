@@ -12,11 +12,11 @@ class CustomLoginResponse implements LoginResponseContract
         $user = $request->user();
 
         // Redirect berdasarkan role
-        if ($user->role === 'admin') {
+        if ($user->role_id === 1) {
             return redirect()->intended('/admin');
-        } elseif ($user->role === 'redaktur') {
+        } elseif ($user->role_id === 2) {
             return redirect()->intended('/redaktur');
-        } elseif ($user->role === 'reporter') {
+        } elseif ($user->role_id === 3) {
             return redirect()->intended('/reporter');
         }
 

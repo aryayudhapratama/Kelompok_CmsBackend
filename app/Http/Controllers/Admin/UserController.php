@@ -4,64 +4,82 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('admin:admin'); // pastikan Anda punya middleware 'admin'
+    }
+
     public function index()
     {
-        $users = User::all();
-        return view('admin.users', compact('users'));
+        $users = User::with('role')->get(); // Pastikan relasi 'role' sudah didefinisikan di model User
+        $roles = Role::all();
+        return view('admin.users', compact('users', 'roles'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'role' => 'required|in:admin,redaktur,reporter',
-        ]);
+        try {
+            $request->validate([
+                'name'     => 'required|string|max:255',
+                'email'    => 'required|email|unique:users',
+                'password' => 'required|min:6',
+                'role_id'  => 'required|exists:roles,id',
+            ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-        ]);
+            User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+                'role_id'  => $request->role_id,
+            ]);
 
-        return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan');
+            return response()->json(['success' => true, 'message' => 'User berhasil ditambahkan.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menambahkan user: ' . $e->getMessage()], 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'role' => 'required|in:admin,redaktur,reporter',
-            'password' => 'nullable|min:6',
-        ]);
+        try {
+            $user = User::findOrFail($id);
 
-        $user = User::findOrFail($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->role = $request->role;
+            $request->validate([
+                'name'    => 'required|string|max:255',
+                'email'   => 'required|email|unique:users,email,' . $user->id,
+                'role_id' => 'required|exists:roles,id',
+            ]);
 
-        if ($request->password) {
-            $user->password = Hash::make($request->password);
+            $user->fill($request->only('name', 'email', 'role_id'));
+
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+
+            $user->save();
+
+            return response()->json(['success' => true, 'message' => 'User berhasil diperbarui.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal memperbarui user: ' . $e->getMessage()], 500);
         }
-
-        $user->save();
-
-        return redirect()->route('admin.users')->with('success', 'User berhasil diupdate');
     }
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
 
-        return redirect()->route('admin.users')->with('success', 'User berhasil dihapus');
+            return response()->json(['success' => true, 'message' => 'User berhasil dihapus.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus user: ' . $e->getMessage()], 500);
+        }
     }
 }

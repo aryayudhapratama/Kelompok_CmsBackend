@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'role.redaktur' => \App\Http\Middleware\EnsureUserIsRedaktur::class,
         'role.reporter' => \App\Http\Middleware\EnsureUserIsReporter::class,
         'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+        'admin' => \App\Http\Middleware\EnsureUserHasRole::class,
     ];
 }

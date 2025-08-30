@@ -58,11 +58,12 @@
             <div
                 class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
                 <img class="h-10 w-10 rounded-full object-cover"
-                    src="{{ Auth::user()->profile_photo_path ? asset('storage/profile-photos/' . Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+                    src="{{ Auth::user()->profile_photo_path
+                        ? asset('storage/profile-photos/' . Auth::user()->profile_photo_path)
+                        : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
                     alt="{{ Auth::user()->name }}" />
                 <div>
                     <div class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</div>
-                    <div class="text-xs text-gray-500 capitalize">{{ Auth::user()->role ?? 'User' }}</div>
                 </div>
             </div>
         </div>

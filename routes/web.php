@@ -4,17 +4,19 @@ use App\Models\LandingSection;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PublikasiController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Redaktur\BannerController;
 use App\Http\Controllers\Admin\AdminFile2Controller;
+use App\Http\Controllers\Redaktur\ProfileController;
+use App\Http\Controllers\Admin\Profile2Controller;
 use App\Http\Controllers\Reporter\ReporterController;
+use App\Http\Controllers\Redaktur\NavbarMenuController;
 use App\Http\Controllers\Redaktur\RedakturFileController;
 use App\Http\Controllers\Reporter\ReporterFileController;
 use App\Http\Controllers\Redaktur\LandingSectionController;
 use App\Http\Controllers\Redaktur\BeritaController as RedakturBeritaController;
 use App\Http\Controllers\Reporter\Berita2Controller as ReporterBeritaController;
-use App\Http\Controllers\Redaktur\ProfileController;
-use App\Http\Controllers\Redaktur\BannerController;
-use App\Http\Controllers\Redaktur\NavbarMenuController;
 
 
 
@@ -23,6 +25,10 @@ use App\Http\Controllers\Redaktur\NavbarMenuController;
 // ======================= LANDING PAGE =======================
 // Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index']);
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
 
 // ======================= ADMIN =======================
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -34,14 +40,23 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
     Route::put('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-
+    
     // Route Untuk File Manager
     Route::get('/file-manager', [AdminFile2Controller::class, 'index'])->name('admin.file-manager.index');
     Route::post('/file-manager/upload', [AdminFile2Controller::class, 'upload'])->name('admin.file-manager.upload');
     Route::delete('/file-manager/{id}', [AdminFile2Controller::class, 'destroy'])->name('admin.file-manager.destroy');
 
     // Route Edit Profile
-    Route::put('/settings', [ProfileController::class, 'update'])->name('settings.update');
+    // Route::put('/settings', [ProfileController::class, 'update'])->name('settings.update');
+    // Route::put('/admin/profile', [Profile2Controller::class, 'update'])->name('admin.profile.update');
+    Route::put('/admin/profile', [App\Http\Controllers\Admin\Profile2Controller::class, 'update'])
+        ->name('admin.profile.update');
+
+    // Route Untuk Role
+    Route::get   ('/roles',        [RoleController::class, 'index'])->name('roles.index');
+    Route::post  ('/roles',        [RoleController::class, 'store'])->name('roles.store');
+    Route::put   ('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 });
 
 // ======================= REDAKTUR =======================
@@ -64,6 +79,7 @@ Route::middleware(['auth', 'role:redaktur'])
         Route::post('/upload-file', [RedakturFileController::class, 'upload'])->name('upload.file');
         Route::get('/file', [RedakturFileController::class, 'index'])->name('file.index');
         Route::delete('/file/{id}', [RedakturFileController::class, 'destroy'])->name('file.delete');
+
         Route::put('/settings', [ProfileController::class, 'update'])->name('settings.update');
 
         // ✅ Carousel
