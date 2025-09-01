@@ -32,8 +32,9 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1">Content</label>
-                    <textarea name="konten" rows="5" required class="w-full px-4 py-2 border rounded text-gray-800"></textarea>
+                    <label class="block font-medium mb-1">Content</label>
+                    <div id="quill-add-editor" class="border border-gray-300 rounded-lg p-2 h-48 bg-white"></div>
+                    <input type="hidden" name="konten" id="konten_hidden">
                 </div>
 
                 <div>
