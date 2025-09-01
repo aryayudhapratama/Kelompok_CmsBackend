@@ -76,13 +76,11 @@
                                 </form>
                             </div>
                         </td>
-                        <!-- Status: Always Pending -->
                         <td class="px-4 py-2">
                             <span class="text-sm font-semibold px-4 py-2 rounded-lg bg-yellow-100 text-yellow-700">
                                 Pending
                             </span>
                         </td>
-
                     </tr>
                 @endforeach
             </tbody>
@@ -94,17 +92,27 @@
 @endsection
 
 @push('scripts')
+    <!-- jQuery & DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- Quill.js -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        // Inisialisasi DataTable (tetap di luar DOMContentLoaded)
         $(document).ready(function() {
             $('#beritaTable').DataTable({
                 pageLength: 10,
                 ordering: true,
                 responsive: true,
-                // Konfigurasi DOM untuk memodernisasi tata letak
                 dom: '<"top flex flex-col md:flex-row md:items-center justify-between mb-4"lf><"table-responsive"t><"bottom flex flex-col md:flex-row md:items-center justify-between mt-4"ip>',
                 language: {
-                    search: "_INPUT_", // Mengatur input pencarian tanpa label bawaan
+                    search: "_INPUT_",
                     searchPlaceholder: "Search...",
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -115,28 +123,17 @@
                         previous: "<i class='fas fa-chevron-left'></i>"
                     }
                 },
-                // Fungsi ini akan dijalankan setelah tabel selesai diinisialisasi
                 initComplete: function() {
-                    // Styling untuk elemen pencarian
                     const searchInput = $('#beritaTable_filter input');
                     searchInput.addClass(
                         'w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
-                    );
+                        );
 
-                    // Styling untuk elemen dropdown "Tampilkan data"
                     const lengthSelect = $('#beritaTable_length select');
                     lengthSelect.addClass('border rounded-lg p-2 mr-2');
 
-                    // Styling untuk tombol paginasi
-                    const paginateContainer = $('#beritaTable_paginate');
-                    paginateContainer.addClass('flex items-center gap-2');
-
-                    // Tambahkan kelas untuk setiap tombol paginasi
-                    $('#beritaTable_paginate .paginate_button').each(function() {
-                        $(this).addClass(
-                            'px-3 py-1 border rounded-lg hover:bg-gray-200 transition');
-                    });
-                    // Hapus kelas 'current' dari tombol aktif untuk styling yang lebih bersih
+                    $('#beritaTable_paginate .paginate_button').addClass(
+                        'px-3 py-1 border rounded-lg hover:bg-gray-200 transition');
                     $('#beritaTable_paginate .paginate_button.current').addClass(
                         'bg-blue-600 text-white hover:bg-blue-700').removeClass('bg-gray-100');
                 }
@@ -144,143 +141,123 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Logika untuk SweetAlert
-            const setupSwalConfirm = (button, form, title, text, icon, confirmText) => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault(); // Mencegah form terkirim secara langsung
-                    Swal.fire({
-                        title: title,
-                        text: text,
-                        icon: icon,
-                        showCancelButton: true,
-                        confirmButtonColor: icon === 'success' ? '#3085d6' : '#e3342f',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: confirmText,
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
+            let quillAdd = null;
+            let quillEdit = null;
+
+            // === INISIALISASI QUILL UNTUK MODAL TAMBAH ===
+            if (document.getElementById('quill-add-editor')) {
+                quillAdd = new Quill('#quill-add-editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            ['link', 'image'],
+                            [{
+                                list: 'ordered'
+                            }, {
+                                list: 'bullet'
+                            }],
+                            ['clean']
+                        ]
+                    }
                 });
-            };
 
-            // Konfirmasi Approve
-            document.querySelectorAll('form[action*="/approve"] button[type="submit"]').forEach(button => {
-                const form = button.closest('form');
-                setupSwalConfirm(
-                    button,
-                    form,
-                    'Are you sure you want to approve?',
-                    'This article will be published immediately.',
-                    'success',
-                    'Yes, Approve!'
+                // Submit form tambah
+                document.getElementById('formAddNews').addEventListener('submit', function(e) {
+                    const content = quillAdd.root.innerHTML;
+                    document.getElementById('konten_hidden').value = content;
+                });
+            }
 
-                );
-            });
-
-            // Konfirmasi Reject dari Dropdown (sekarang dinamis)
-            document.querySelectorAll('.reject-form-template button[type="submit"]').forEach(button => {
-                const form = button.closest('form');
-                const alasan = form.querySelector('input[name="alasan"]').value;
-                setupSwalConfirm(
-                    button,
-                    form,
-                    'Are you sure you want to reject?',
-                    `This article will be rejected for the following reason: "${alasan}".`,
-                    'warning',
-                    'Yes, Reject!'
-
-                );
-            });
-
-            // Modal detail
+            // === MODAL DETAIL (EDIT) ===
             document.querySelectorAll('.btn-detail').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = btn.dataset.id;
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
                     document.getElementById('editId').value = id;
                     document.getElementById('formUpdateDetail').action = `/reporter/berita/${id}`;
-                    // isi data form
-                    document.getElementById('editJudul').value = btn.dataset.judul;
-                    document.getElementById('editKonten').value = btn.dataset.konten;
+                    document.getElementById('editJudul').value = this.dataset.judul;
 
-                    if (btn.dataset.date) {
-                        const dateVal = new Date(btn.dataset.date);
+                    // --- INISIALISASI QUILL EDIT (hanya sekali) ---
+                    const editorElement = document.getElementById('quill-edit-editor');
+                    if (editorElement && !quillEdit) {
+                        quillEdit = new Quill('#quill-edit-editor', {
+                            theme: 'snow',
+                            modules: {
+                                toolbar: [
+                                    ['bold', 'italic', 'underline'],
+                                    ['link', 'image'],
+                                    [{
+                                        list: 'ordered'
+                                    }, {
+                                        list: 'bullet'
+                                    }],
+                                    ['clean']
+                                ]
+                            }
+                        });
+                    }
+
+                    // Isi konten ke Quill
+                    if (quillEdit && this.dataset.konten) {
+                        quillEdit.clipboard.dangerouslyPasteHTML(this.dataset.konten);
+                    }
+
+                    // Isi tanggal
+                    if (this.dataset.date) {
+                        const dateVal = new Date(this.dataset.date);
                         document.getElementById('editBeritaDate').value = dateVal.toISOString()
                             .split('T')[0];
                     }
 
-                    if (btn.dataset.gambar) {
+                    // Gambar
+                    if (this.dataset.gambar) {
                         const img = document.getElementById('editGambar');
-                        img.src = btn.dataset.gambar;
+                        img.src = this.dataset.gambar;
                         img.classList.remove('hidden');
                     }
 
-                    // buka modal
+                    // Buka modal
                     document.getElementById('editModal').classList.remove('hidden');
                     document.getElementById('editModal').classList.add('flex');
                     document.body.classList.add('overflow-hidden');
                 });
             });
 
+            // Submit form edit
+            if (document.getElementById('formUpdateDetail')) {
+                document.getElementById('formUpdateDetail').addEventListener('submit', function(e) {
+                    if (quillEdit) {
+                        const content = quillEdit.root.innerHTML;
+                        document.getElementById('konten_hidden_edit').value = content;
+                    }
+                });
+            }
+
+            // Close modal edit
             window.closeEditModal = function() {
-                const modal = document.getElementById('editModal');
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
+                document.getElementById('editModal').classList.add('hidden');
+                document.getElementById('editModal').classList.remove('flex');
                 document.body.classList.remove('overflow-hidden');
             };
-
 
             // Modal tambah
             document.getElementById('btnAddNews')?.addEventListener('click', function() {
-                const modal = document.getElementById('addModal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+                document.getElementById('addModal').classList.remove('hidden');
+                document.getElementById('addModal').classList.add('flex');
                 document.body.classList.add('overflow-hidden');
+
+                // Reset Quill Add
+                if (quillAdd) {
+                    quillAdd.setText('');
+                }
             });
 
             window.closeAddModal = function() {
-                const modal = document.getElementById('addModal');
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
+                document.getElementById('addModal').classList.add('hidden');
+                document.getElementById('addModal').classList.remove('flex');
                 document.body.classList.remove('overflow-hidden');
                 document.getElementById('formAddNews').reset();
             };
-
-            // --- Logika Baru untuk Dropdown Reject Dinamis ---
-            const dynamicDropdown = document.getElementById('dynamic-dropdown-menu');
-
-            document.querySelectorAll('.btn-reject').forEach(btn => {
-                btn.addEventListener('click', function(event) {
-                    event.stopPropagation(); // Mencegah event dari menutup dropdown
-                    const rect = btn.getBoundingClientRect();
-                    const beritaId = this.dataset.id;
-
-                    // Tutup dropdown lain yang terbuka
-                    dynamicDropdown.classList.add('hidden');
-
-                    // Atur posisi dropdown agar muncul di bawah tombol
-                    dynamicDropdown.style.top = `${rect.bottom + window.scrollY}px`;
-                    dynamicDropdown.style.right =
-                        `${window.innerWidth - (rect.right + window.scrollX)}px`;
-                    dynamicDropdown.style.left =
-                        'auto'; // Pastikan left tidak diatur agar `right` berfungsidynamicDropdown.style.left = `${rect.right + window.scrollX - dynamicDropdown.offsetWidth}px`;
-                    dynamicDropdown.classList.remove('hidden');
-
-                    // Update form action di dalam dropdown
-                    const forms = dynamicDropdown.querySelectorAll('.reject-form-template');
-                    forms.forEach(form => {
-                        form.action = `/redaktur/berita/${beritaId}/reject`;
-                    });
-                });
-            });
-
-            // Tutup dropdown saat klik di luar
-            window.addEventListener('click', function(event) {
-                if (!dynamicDropdown.contains(event.target) && !event.target.closest('.btn-reject')) {
-                    dynamicDropdown.classList.add('hidden');
-                }
-            });
 
             // Konfirmasi hapus
             document.querySelectorAll('.form-hapus button').forEach(button => {
@@ -288,20 +265,13 @@
                     const form = this.closest('form');
                     Swal.fire({
                         title: 'Are you sure?',
-                        text: "The article will be permanently deleted and cannot be recovered!",
+                        text: "The article will be permanently deleted!",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#e3342f',
                         cancelButtonColor: '#6c757d',
                         confirmButtonText: 'Yes, delete!',
-                        cancelButtonText: 'Cancel',
-                        // Lifecycle hooks untuk menambahkan dan menghapus kelas
-                        didOpen: () => {
-                            document.body.classList.add('swal-open-body');
-                        },
-                        willClose: () => {
-                            document.body.classList.remove('swal-open-body');
-                        }
+                        cancelButtonText: 'Cancel'
                     }).then((result) => {
                         if (result.isConfirmed) {
                             form.submit();
